@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "react-dev": "webpack -w",
-    "start": "nodemon ./server/server.js"
+    "start": "nodemon ./server/server.js",
+    "seed-database": "node seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,8 @@
     "@babel/preset-react": "^7.6.3",
     "babel-loader": "^8.0.6",
     "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "moment": "^2.24.0",
     "nodemon": "^1.19.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
