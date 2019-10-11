@@ -61,16 +61,8 @@ for (let i = 1; i <= 100; i++) {
   
 
   var pRequired_Week_Booking_Days = getRandomInt(3,8); 
-  // console.log('pMax_guests: ' + pMax_guests + ' pNightly_price: ' + pNightly_price + 
-  //               ' pCleaning_fee: ' + pCleaning_fee + ' pService_fee: ' + pService_fee + ' pTaxes_fees: ' + pTaxes_fees + 
-  //               ' pBulkDiscount: ' + pBulkDiscount + ' pRequired_Week_Booking_Days: ' + pRequired_Week_Booking_Days);
-
   var pRequired_Weekend_Booking_Days = getRandomInt(3,8); 
-  // console.log('pMax_guests: ' + pMax_guests + ' pNightly_price: ' + pNightly_price + 
-  //               ' pCleaning_fee: ' + pCleaning_fee + ' pService_fee: ' + pService_fee + ' pTaxes_fees: ' + pTaxes_fees + 
-  //               ' pBulkDiscount: ' + pBulkDiscount + ' pRequired_Weekend_Booking_Days: ' + pRequired_Weekend_Booking_Days);
 
-  //INSERT QUERY FOR properties DB HERE
   db.Properties.create({ pMax_guests: pMax_guests,
                          pNightly_price: pNightly_price,
                          pCleaning_fee: pCleaning_fee,
