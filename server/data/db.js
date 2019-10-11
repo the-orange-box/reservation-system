@@ -48,7 +48,10 @@ const Properties = sequelize.define('properties', {
   pBulkDiscount: {
     type: Sequelize.DECIMAL(3, 2)
   },
-  pRequired_Booking_days: {
+  pRequired_Week_Booking_Days: {
+    type: Sequelize.INTEGER
+  },
+  pRequired_Weekend_Booking_Days: {
     type: Sequelize.INTEGER
   }
 }, {
