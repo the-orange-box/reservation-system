@@ -19,20 +19,26 @@ var shouldBeDisplayed = function(value) {
   }
 }
 
-var populateBookedDates = function(startDate, endDate, bProperty_ID, bUser_ID) {
-  var generatedDates = new Set();
-  var bookedDatesPerMonth = getRandomInt(3, 11);
-  var promises = [];
-  for (let j = 0; j < bookedDatesPerMonth; j++) {
-    var date = moment(faker.date.between(startDate, endDate)).format('YYYY-MM-DD');
-    if(generatedDates.has(date)) {
-      while(generatedDates.has(date)) {
-        date = moment(faker.date.between(startDate, endDate)).format('YYYY-MM-DD');
+var populateBookedDates = function(bProperty_ID, bUser_ID) {
+  var startDate = moment().format();
+  var endDate   = moment().endOf('month').format();
+  for (let i = 0; i < 4; i++) {
+    var generatedDates = new Set();
+    var bookedDatesPerMonth = getRandomInt(3, 11);
+    var promises = [];
+    for (let j = 0; j < bookedDatesPerMonth; j++) {
+      var date = moment(faker.date.between(startDate, endDate)).format('YYYY-MM-DD');
+      if(generatedDates.has(date)) {
+        while(generatedDates.has(date)) {
+          date = moment(faker.date.between(startDate, endDate)).format('YYYY-MM-DD');
+        }
       }
+      generatedDates.add(date);
+      // console.log('bProperty_ID: ' + bProperty_ID + ' bUser_ID: ' + bUser_ID + ' Date: ' + date);
+      promises.push(db.Booked.create({bProperty_ID: bProperty_ID, bUser_ID: bUser_ID, Date: date}));
     }
-    generatedDates.add(date);
-    // console.log('bProperty_ID: ' + bProperty_ID + ' bUser_ID: ' + bUser_ID + ' Date: ' + date);
-    promises.push(db.Booked.create({bProperty_ID: bProperty_ID, bUser_ID: bUser_ID, Date: date}));
+    startDate = moment().startOf('month').add(i + 1, 'months').format();
+    endDate   = moment().endOf('month').add(i + 1, 'months').format();
   }
   Promise.all(promises);
 }
@@ -76,21 +82,6 @@ for (let i = 1; i <= 100; i++) {
                 .then(()=>{
                   var bProperty_ID = i 
                   var bUser_ID = 1; //just going to be 1 user table for stretch goal.
-                
-                  var startOfMonth = moment().format();
-                  var endOfMonth   = moment().endOf('month').format();
-                  populateBookedDates(startOfMonth, endOfMonth, bProperty_ID, bUser_ID);
-                
-                  var startOfSecondMonth = moment().startOf('month').add(1, 'months').format();
-                  var endOfSecondMonth   = moment().endOf('month').add(1, 'months').format();
-                  populateBookedDates(startOfSecondMonth, endOfSecondMonth, bProperty_ID, bUser_ID);
-                
-                  var startOfThirdMonth = moment().startOf('month').add(2, 'months').format();
-                  var endOfThirdMonth   = moment().endOf('month').add(2, 'months').format();
-                  populateBookedDates(startOfThirdMonth, endOfThirdMonth, bProperty_ID, bUser_ID);
-                
-                  var startOfFourthMonth = moment().startOf('month').add(3, 'months').format();
-                  var endOfFourthMonth   = moment().endOf('month').add(3, 'months').format();
-                  populateBookedDates(startOfFourthMonth, endOfFourthMonth, bProperty_ID, bUser_ID);
+                  populateBookedDates(bProperty_ID, bUser_ID);
                 }).catch(err => console.log(err));
 }
