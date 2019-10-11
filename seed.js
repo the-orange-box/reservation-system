@@ -7,6 +7,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * Math.floor(max-min));
 }
 
+
 //momentJS
 // var randomOct = faker.date.between("10/10/2019", "10/31/2019");
 // let formattedDate = moment(randomOct).format();
