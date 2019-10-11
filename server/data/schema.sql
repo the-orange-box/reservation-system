@@ -22,7 +22,8 @@ CREATE TABLE properties (
   pService_fee DECIMAL(10,2),
   pTaxes_fees DECIMAL(10,2),
   pBulkDiscount DECIMAL(3,2),
-  pRequired_Booking_days int,
+  pRequired_Week_Booking_Days int,
+  pRequired_Weekend_Booking_Days int,
 
   PRIMARY KEY (pID)
 );
@@ -32,7 +33,7 @@ CREATE TABLE booked (
   bID int AUTO_INCREMENT,
   bProperty_ID int,
   bUser_ID int,
-  Date DATETIME,
+  Date VARCHAR(30),
 
   PRIMARY KEY (bID),
 
