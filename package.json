@@ -4,10 +4,9 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "jest",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "react-dev": "webpack -w",
-    "start": "nodemon ./server/server.js",
-    "seed-database": "node seed.js"
+    "start": "nodemon ./server/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,16 +15,10 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "babel-loader": "^8.0.6",
-    "bluebird": "^3.7.0",
     "express": "^4.17.1",
-    "faker": "^4.1.0",
-    "jest": "^24.9.0",
-    "moment": "^2.24.0",
-    "mysql2": "^1.7.0",
     "nodemon": "^1.19.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "sequelize": "^5.19.5",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
   },
