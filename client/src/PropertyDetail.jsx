@@ -2,7 +2,7 @@ import React from 'react';
 
 //includes daily rate and star rating link
 const PropertyDetail = () => (
-  <div>
+  <div className="properties">
     <div className="pricePerNight">
       $89 per night
     </div>

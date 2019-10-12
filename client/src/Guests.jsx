@@ -3,7 +3,7 @@ import React from 'react';
 //guest drop down
 const Guests = () => (
   <div>
-    <div>
+    <div className="guestsHeader">
       Guests
     </div>
     <div className="guests">

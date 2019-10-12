@@ -8,20 +8,90 @@
   flex-direction: column;
 }
 
-.calendar, .reserve, .guests, .review, .pricePerNight {
-  width: 350px;
+.calendar, .reserve, .guests {
+  width: 325px;
   height: 55px;
   display: flex;
   flex-direction: row;
   align-content: stretch;
 }
 
+.properties {
+  margin-top: 20px;
+  width: 325px;
+  height: 55px;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  border-bottom-style: solid;
+  border-bottom-color: aquamarine;
+  border-bottom-width: 1px;
+  padding-bottom: 2px;
+}
+.reserve {
+  margin-top: 5px;
+  padding-bottom: 5px;
+}
 
-.calenderInputs {
-  flex: 10;
+.calendarHeader {
+  margin-top: 15px;
+}
+
+
+.calendarArrow {
+  padding-top: 7px;
+  background-color: white;
+  font-size: 24px;  
+  flex-grow: 0;
+  width: 20px;
+  align-content: center;
+  margin-right: 0px;
+  padding-right: 2px;
+  margin-bottom: 14px;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-top-width: 2px;
+  border-top-color: black;
+  border-bottom-color: grey;
+}
+
+#checkin {
+  border-color: grey;
+  border-right-style: hidden;
+}
+
+#checkout {
+  border-color: grey;
+  border-left-style: none;
+}
+
+.calendarInputs {
+  padding-left: 10px;
+  font-size: 15px;  
+  flex-grow: 2;
+  width: 20px;
+  height: 35px;
+}
+
+.guestsHeader {
+  margin-top: -1px;
 }
 
 .guestsInput {
   flex:1;
+  height: 35px;
+  font-size: 17px;
+  padding-left: 10px;
 }
 
+.reserveButton {
+  flex: 1;
+  height: 47px;
+  font-size: 17px;
+}
+
+.calenderInputs {
+  flex: 1;
+  height: 35px;
+}
