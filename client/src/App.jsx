@@ -12,17 +12,17 @@ class App extends React.Component {
 
   render() {
     return(
-      <div>
+      <div className="container">
         <div>
           <PropertyDetail/>
         </div>
         <div>
           <Calendar/>
-        </div>
+        </div> 
         <div>
           <Guests/>
         </div>
-        <div>
+        <div className="reserve">
           <Reserve/>
         </div>
         You won't be charged yet

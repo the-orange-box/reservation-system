@@ -1,0 +1,27 @@
+.container {
+  background: greenyellow;
+  width: 375px;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  align-content: stretch;
+  flex-direction: column;
+}
+
+.calendar, .reserve, .guests, .review, .pricePerNight {
+  width: 350px;
+  height: 55px;
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+}
+
+
+.calenderInputs {
+  flex: 10;
+}
+
+.guestsInput {
+  flex:1;
+}
+

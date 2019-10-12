@@ -3,10 +3,10 @@ import React from 'react';
 //includes daily rate and star rating link
 const PropertyDetail = () => (
   <div>
-    <div>
+    <div className="pricePerNight">
       $89 per night
     </div>
-    <div>
+    <div className="review">
       4.14 (7 reviews)
     </div>
   </div>

@@ -6,8 +6,8 @@ const Guests = () => (
     <div>
       Guests
     </div>
-    <div>
-      <input classname="guests" id="guests" value="1 guest"/>
+    <div className="guests">
+      <input className="guestsInput" id="guestsInput" value="1 guest"/>
     </div>
   </div>
 )
