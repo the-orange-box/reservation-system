@@ -1,4 +1,8 @@
 import React from 'react';
+import PropertyDetail from './PropertyDetail';
+import Calendar from './Calendar';
+import Guests from './Guests';
+import Reserve from './Reserve';
 
 
 class App extends React.Component {
@@ -8,8 +12,22 @@ class App extends React.Component {
 
   render() {
     return(
-      <div>
-        hello World
+      <div className="container">
+        <div className="propertyContainer">
+          <PropertyDetail/>
+        </div>
+        <div className="calendarContainer">
+          <Calendar/>
+        </div> 
+        <div className="guestsContainer">
+          <Guests/>
+        </div>
+        <div className="reserveContainer">
+          <Reserve/>
+        </div>
+        <div className="footer">
+          You won't be charged yet
+        </div>
       </div>
     );
   }

@@ -61,16 +61,10 @@ for (let i = 1; i <= 100; i++) {
   
 
   var pRequired_Week_Booking_Days = getRandomInt(3,8); 
-  // console.log('pMax_guests: ' + pMax_guests + ' pNightly_price: ' + pNightly_price + 
-  //               ' pCleaning_fee: ' + pCleaning_fee + ' pService_fee: ' + pService_fee + ' pTaxes_fees: ' + pTaxes_fees + 
-  //               ' pBulkDiscount: ' + pBulkDiscount + ' pRequired_Week_Booking_Days: ' + pRequired_Week_Booking_Days);
-
   var pRequired_Weekend_Booking_Days = getRandomInt(3,8); 
-  // console.log('pMax_guests: ' + pMax_guests + ' pNightly_price: ' + pNightly_price + 
-  //               ' pCleaning_fee: ' + pCleaning_fee + ' pService_fee: ' + pService_fee + ' pTaxes_fees: ' + pTaxes_fees + 
-  //               ' pBulkDiscount: ' + pBulkDiscount + ' pRequired_Weekend_Booking_Days: ' + pRequired_Weekend_Booking_Days);
+  var pRating = Math.floor(Math.random() * (500 - 100) + 100) / 100;
+  var pReviews = getRandomInt(5,2750);
 
-  //INSERT QUERY FOR properties DB HERE
   db.Properties.create({ pMax_guests: pMax_guests,
                          pNightly_price: pNightly_price,
                          pCleaning_fee: pCleaning_fee,
@@ -78,7 +72,9 @@ for (let i = 1; i <= 100; i++) {
                          pTaxes_fees: pTaxes_fees,
                          pBulkDiscount: pBulkDiscount,
                          pRequired_Week_Booking_Days: pRequired_Week_Booking_Days,
-                         pRequired_Weekend_Booking_Days: pRequired_Weekend_Booking_Days})
+                         pRequired_Weekend_Booking_Days: pRequired_Weekend_Booking_Days,
+                         pRating: pRating,
+                         pReviews: pReviews})
                 .then(()=>{
                   var bProperty_ID = i 
                   var bUser_ID = 1; //just going to be 1 user table for stretch goal.

@@ -24,6 +24,8 @@ CREATE TABLE properties (
   pBulkDiscount DECIMAL(3,2),
   pRequired_Week_Booking_Days int,
   pRequired_Weekend_Booking_Days int,
+  pRating DECIMAL(3,2),
+  pReviews int,
 
   PRIMARY KEY (pID)
 );
