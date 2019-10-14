@@ -13,19 +13,21 @@ class App extends React.Component {
   render() {
     return(
       <div className="container">
-        <div>
+        <div className="propertyContainer">
           <PropertyDetail/>
         </div>
-        <div>
+        <div className="calendarContainer">
           <Calendar/>
         </div> 
-        <div>
+        <div className="guestsContainer">
           <Guests/>
         </div>
-        <div className="reserve">
+        <div className="reserveContainer">
           <Reserve/>
         </div>
-        You won't be charged yet
+        <div className="footer">
+          You won't be charged yet
+        </div>
       </div>
     );
   }

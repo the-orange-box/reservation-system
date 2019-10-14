@@ -4,11 +4,23 @@ import React from 'react';
 const PropertyDetail = () => (
   <div className="properties">
     <div className="pricePerNight">
-      $89 per night
+      <span id="price">
+        $150 
+      </span>
+      <span id="priceText">
+        per night
+      </span>
+
     </div>
-    <div className="review">
-      4.14 (7 reviews)
-    </div>
+    <button className="review">
+      <svg className="star" width="10px" height="10px">
+        <polygon points ="5,0.5 2,9.9 9.5,3.9 0.5,3.9 8,9.9" fill="teal" />
+      </svg>
+      4.14 
+      <span id="totalReviews">
+        (7 reviews)
+      </span>
+    </button>
   </div>
 )
 
