@@ -60,6 +60,8 @@
 
 .review {
   font-size: 12px;
+  cursor: pointer;
+  outline: none;
 }
 #totalReviews {
   padding-left: 1px;
@@ -125,6 +127,13 @@
   padding-left: 5px;
   font-weight: 100;
   color:rgb(117, 117, 117);
+  outline: none;
+  border-radius: 3px;
+}
+
+.checkin:focus {
+  background-color: rgb(153, 237, 229);
+  color: rgb(0, 120, 133);
 }
 
 .checkout {
@@ -138,7 +147,13 @@
   font-size: 17px;
   font-weight: 100;
   color: rgb(117, 117, 117);
-  /* color:#484848; this is when selected */
+  outline: none;
+  border-radius: 3px;
+}
+
+.checkout:focus {
+  background-color: rgb(153, 237, 229);
+  color: rgb(0, 120, 133);
 }
 
 .guests {
@@ -164,6 +179,7 @@
   color:rgb(72, 72, 72);
   font-weight: 100;
   align-self: center;
+  cursor: pointer;
 }
 
 #guestButtonText {
@@ -171,6 +187,13 @@
   padding-top: 9px;
   text-align: center;
 }
+
+/* USE THIS FOR WHEN BUTTON IS CLICKED */
+#guestButtonText:focus {
+  background-color: rgb(153, 237, 229);
+  color: rgb(0, 120, 133);
+}
+
 #downwardPoint {
   flex: 1;
 }
@@ -186,6 +209,18 @@
   background-color: rgb(255, 90, 95);
   color: white;
   border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease-out;
+  outline: none;
+  margin: 5px;
+}
+
+
+.reserveButton:active {
+  border-color: black;
+  border-style: solid;
+  border-width: 2px;
+  background-color: rgb(223, 60, 70);
 }
 
 .footer {

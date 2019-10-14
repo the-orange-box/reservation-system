@@ -7,7 +7,7 @@ const Guests = () => (
       Guests
     </div>
     <div className="guestsInputContainer">
-      <button className="guestsInput" id="guestsInput" value="">
+      <button className="guestsInput" id="guestsInput">
         <div id="guestButtonText">
           1 guest
         </div>
