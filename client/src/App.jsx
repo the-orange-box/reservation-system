@@ -47,7 +47,7 @@ class App extends React.Component {
     }
     this.setState({
       guestDropdownVisibility
-    }, console.log(this.state.guestDropdownVisibility))
+    })
   }
 }
 
