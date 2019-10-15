@@ -8,6 +8,12 @@ import Reserve from './Reserve';
 class App extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      guestDropdownVisibility: "hidden"
+    };
+
+    this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
   }
 
   render() {
@@ -20,7 +26,7 @@ class App extends React.Component {
           <Calendar/>
         </div> 
         <div className="guestsContainer">
-          <Guests/>
+          <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} guestVisibility={this.state.guestDropdownVisibility}/>
         </div>
         <div className="reserveContainer">
           <Reserve/>
@@ -30,6 +36,18 @@ class App extends React.Component {
         </div>
       </div>
     );
+  }
+
+  toggleGuestsDropdown() {
+    let guestDropdownVisibility;
+    if(this.state.guestDropdownVisibility === "hidden") {
+      guestDropdownVisibility = "visible";
+    } else {
+      guestDropdownVisibility = "hidden";
+    }
+    this.setState({
+      guestDropdownVisibility
+    }, console.log(this.state.guestDropdownVisibility))
   }
 }
 
