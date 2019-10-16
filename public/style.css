@@ -362,6 +362,10 @@
   border-style: solid;
   border-width: 1px;
 }
+.addButton:disabled, .minusButton:disabled {
+  color: rgb(190, 218, 220);
+  border-color: rgb(190, 218, 220);
+}
 
 .minusButton {
   grid-column-start: 2;
