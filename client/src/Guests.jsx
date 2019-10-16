@@ -2,7 +2,9 @@ import React from 'react';
 import GuestsDropdown from './GuestsDropdown';
 
 //guest drop down
-const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown}) => (
+const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, numAdults, numChildren, 
+                numInfants, incrementGuestsCounter, decrementGuestsCounter, disableAdultPlus, 
+                disableAdultMinus, disableChildrenPlus, disableChildrenMinus, disableInfantPlus, disableInfantMinus}) => (
   <div className="guests">
     <div className="guestsHeader">
       Guests
@@ -18,7 +20,19 @@ const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown}) =>
         </svg>
       </button>
     </div>
-    <GuestsDropdown guestVisibility={guestVisibility} closeGuestsDropdown={closeGuestsDropdown}/>
+    <GuestsDropdown guestVisibility={guestVisibility} 
+                    closeGuestsDropdown={closeGuestsDropdown}
+                    numAdults={numAdults}
+                    numChildren={numChildren}
+                    numInfants={numInfants}
+                    decrementGuestsCounter={decrementGuestsCounter}
+                    incrementGuestsCounter={incrementGuestsCounter}
+                    disableAdultPlus={disableAdultPlus}
+                    disableAdultMinus={disableAdultMinus}
+                    disableChildrenPlus={disableChildrenPlus}
+                    disableChildrenMinus={disableChildrenMinus}
+                    disableInfantPlus={disableInfantPlus}
+                    disableInfantMinus={disableInfantMinus}/>
   </div>
 )
 
