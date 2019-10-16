@@ -2,8 +2,8 @@ import React from 'react';
 import GuestsDropdown from './GuestsDropdown';
 
 //guest drop down
-const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, numAdults, numChildren, 
-                numInfants, incrementGuestsCounter, decrementGuestsCounter, disableAdultPlus, 
+const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, numAdults, numChildren, displayGuests,
+                numInfants, incrementGuestsCounter, decrementGuestsCounter, disableAdultPlus, displayMaxGuests,
                 disableAdultMinus, disableChildrenPlus, disableChildrenMinus, disableInfantPlus, disableInfantMinus}) => (
   <div className="guests">
     <div className="guestsHeader">
@@ -12,7 +12,7 @@ const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, num
     <div className="guestsInputContainer">
       <button className="guestsInput" id="guestsInput" onClick={toggleGuestsDropdown}>
         <div id="guestButtonText">
-          1 guest
+          {displayGuests()}
         </div>
         <svg className="downwardPoint" width="40px" height="35px">
           <line x1="10" x2="18" y1="14.5" y2="23" stroke="black" strokeWidth="1.5" strokeLinecap="butt"/>
@@ -32,7 +32,8 @@ const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, num
                     disableChildrenPlus={disableChildrenPlus}
                     disableChildrenMinus={disableChildrenMinus}
                     disableInfantPlus={disableInfantPlus}
-                    disableInfantMinus={disableInfantMinus}/>
+                    disableInfantMinus={disableInfantMinus}
+                    displayMaxGuests={displayMaxGuests}/>
   </div>
 )
 

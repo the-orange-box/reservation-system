@@ -1,6 +1,6 @@
 import React from'react';
 
-const GuestsDropdown = ({guestVisibility, closeGuestsDropdown, numAdults, numChildren, numInfants, 
+const GuestsDropdown = ({guestVisibility, closeGuestsDropdown, numAdults, numChildren, numInfants, displayMaxGuests,
                           incrementGuestsCounter, decrementGuestsCounter, disableAdultPlus, disableAdultMinus, 
                           disableChildrenPlus, disableChildrenMinus, disableInfantPlus, disableInfantMinus}) => (
   <div className="guestsDropdown" id="guestsDropdown" style={{visibility: guestVisibility}}>
@@ -25,7 +25,7 @@ const GuestsDropdown = ({guestVisibility, closeGuestsDropdown, numAdults, numChi
       <button className="addButton" id="infantAdd" disabled={disableInfantPlus} onClick={() => incrementGuestsCounter("infant")}>+</button>
     </div>
     <div className="guestsDropdownFooter" id="guestsDropdownFooter">
-      XX guests maximum. Infants don't count toward the number of guests.
+      {displayMaxGuests()}
     </div>
     <div id="closeGuestDropdown">
       <button className="guestsCloseButton" id="guestsCloseButton" onClick={closeGuestsDropdown}>Close</button>

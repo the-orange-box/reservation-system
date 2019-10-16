@@ -4,14 +4,13 @@ import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       guestDropdownVisibility: "hidden",
-      numAdults: 0,
+      numAdults: 1,
       numChildren: 0,
       numInfants: 0,
       maxGuests: 8, //TODO: update to dynamic from DB
@@ -20,7 +19,10 @@ class App extends React.Component {
       disableChildrenPlus: false,
       disableChildrenMinus: true,
       disableInfantPlus: false,
-      disableInfantMinus: true
+      disableInfantMinus: true,
+      perPerNight: 130,
+      starRating: 4.16,
+      numReviews: 10
     };
 
     this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
@@ -28,7 +30,11 @@ class App extends React.Component {
     this.closeGuestsDropdown = this.closeGuestsDropdown.bind(this);
     this.incrementGuestsCounter = this.incrementGuestsCounter.bind(this);
     this.decrementGuestsCounter = this.decrementGuestsCounter.bind(this);
+    this.updateAdultChildrenButtonStatus = this.updateAdultChildrenButtonStatus.bind(this);
+    this.updateInfantButtonStatus = this.updateInfantButtonStatus.bind(this);
     this.updateButtonStatus = this.updateButtonStatus.bind(this);
+    this.displayMaxGuests = this.displayMaxGuests.bind(this);
+    this.displayGuests = this.displayGuests.bind(this);
   }
 
   componentDidMount() {
@@ -43,7 +49,9 @@ class App extends React.Component {
     return(
       <div className="container">
         <div className="propertyContainer">
-          <PropertyDetail/>
+          <PropertyDetail perPerNight={this.state.perPerNight}
+                          starRating={this.state.starRating}
+                          numReviews={this.state.numReviews}/>
         </div>
         <div className="calendarContainer">
           <Calendar/>
@@ -62,7 +70,9 @@ class App extends React.Component {
                   disableChildrenPlus={this.state.disableChildrenPlus}
                   disableChildrenMinus={this.state.disableChildrenMinus}
                   disableInfantPlus={this.state.disableInfantPlus}
-                  disableInfantMinus={this.state.disableInfantMinus}/>
+                  disableInfantMinus={this.state.disableInfantMinus}
+                  displayMaxGuests={this.displayMaxGuests}
+                  displayGuests={this.displayGuests}/>
         </div>
         <div className="reserveContainer">
           <Reserve/>
@@ -115,7 +125,7 @@ class App extends React.Component {
   }
 
   decrementGuestsCounter(type) {
-      if(type === "adult" && this.state.numAdults > 0) {
+      if(type === "adult" && this.state.numAdults > 1) {
         let numAdults = this.state.numAdults - 1;
         this.setState({
           numAdults
@@ -141,7 +151,40 @@ class App extends React.Component {
   }
 
   updateButtonStatus() {
-    if (this.state.numAdults === 0) {
+    this.updateAdultChildrenButtonStatus();
+    this.updateInfantButtonStatus();
+  }
+
+  displayMaxGuests() {
+    let result = ''
+    if(this.state.maxGuests === 1) {
+      result += '1 guest ';
+    } else {
+      result += this.state.maxGuests + ' guests ';
+    }
+    result += 'maximum. Infants don\'t count toward the number of guests.';
+    return result;
+  }
+
+  displayGuests() {
+    let result = ''
+    if(this.state.numAdults + this.state.numChildren === 1) {
+      result += '1 guest';
+    } else {
+      result += (this.state.numAdults + this.state.numChildren) + ' guests';
+    }
+
+    if(this.state.numInfants === 1) {
+      result += ', 1 infant'
+    } else if (this.state.numInfants > 1) {
+      result += ', ' + this.state.numInfants + ' infants'
+    }
+
+    return result;
+  }
+
+  updateAdultChildrenButtonStatus() {
+    if (this.state.numAdults === 1) {
       this.setState({
         disableAdultMinus: true
       });
@@ -161,16 +204,6 @@ class App extends React.Component {
       });
     }
 
-    if (this.state.numInfants === 0) {
-      this.setState({
-        disableInfantMinus: true
-      });
-    } else {
-      this.setState({
-        disableInfantMinus: false
-      });
-    }
-
     if (this.state.numAdults + this.state.numChildren === this.state.maxGuests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
       this.setState({
         disableAdultPlus: true,
@@ -180,6 +213,18 @@ class App extends React.Component {
       this.setState({
         disableAdultPlus: false,
         disableChildrenPlus: false
+      });
+    }
+  }
+
+  updateInfantButtonStatus() {
+    if (this.state.numInfants === 0) {
+      this.setState({
+        disableInfantMinus: true
+      });
+    } else {
+      this.setState({
+        disableInfantMinus: false
       });
     }
 
@@ -196,8 +241,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-
-//if at 0, grey out minus
-//if at numAdults + numChildren === maxGuests grey out plus for adults and children
-//if at 5 infants, grey out plus
