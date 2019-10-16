@@ -180,22 +180,24 @@
   font-weight: 100;
   align-self: center;
   cursor: pointer;
+  justify-content: space-between;
 }
 
 #guestButtonText {
-  flex:1;
-  padding-top: 9px;
+  align-self: center;
+  margin-left: 15px;
   text-align: center;
+  justify-self: right;
 }
 
-/* USE THIS FOR WHEN BUTTON IS CLICKED */
-#guestButtonText:focus {
+.guestsInput:focus #guestButtonText {
   background-color: rgb(153, 237, 229);
   color: rgb(0, 120, 133);
+  border-radius: 5px;
 }
 
 #downwardPoint {
-  flex: 1;
+  align-self: right;
 }
 
 .reserve {
@@ -234,3 +236,195 @@
   flex: 1;
   height: 35px;
 }
+
+.guestsDropdown {
+  width: 325px;
+  height: 300px;
+  background-color: white;
+  color: black;
+  position: absolute;
+  top: 229px;
+  left:25px;
+  z-index: 1;
+  border-width: 1px;
+  box-shadow: 1px;
+  border-style: solid;
+  border-color:teal rgb(223, 223, 223) rgb(223, 223, 223) rgb(223, 223, 223);
+  border-top-width: 2px;
+  border-radius: 3px;
+  display: grid;
+  justify-items: stretch;
+  grid-template-rows: 70px 70px 70px 50px 40px; 
+  grid-template-columns: 185px 40px 45px 40px;
+}
+
+#adultGuestDropdown {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#childGuestDropdown {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#infantGuestDropdown {
+  grid-row-start: 3;
+  grid-row-end: 4;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#guestsDropdownFooter {
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row-start: 4;
+  grid-row-end: 5;
+  color: rgb(72, 72, 72);
+  font-weight: 400;
+  font-size: 14px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#closeGuestDropdown {
+  grid-column-start: 3;
+  grid-column-end: 5;
+  grid-row-start: 5;
+  grid-row-end: 6;
+
+  justify-self: right;
+  margin-right: 20px;
+}
+
+#guestsCloseButton {
+  color: rgb(0, 132, 137);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+#guestsCloseButton:hover {
+  text-decoration: underline;
+}
+
+#guestsCloseButton:active {
+  color: rgb(0, 92, 97);
+}
+
+.guestType {
+  color: rgb(72, 72, 72);
+  font-weight: 600;
+  font-size: 16px;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+.guestDetails {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  font-size:14px;
+  font-weight: 400;
+  color: rgb(72, 72, 72);
+}
+
+.addButton, .minusButton {
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-color: rgb(0, 132, 137);
+  border-radius: 50%;
+  border-width: 1px;
+  color: rgb(0, 132, 137);
+
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.addButton {
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  font-size:15px;
+  justify-self: center;
+  align-self: center;
+  outline:none;
+}
+.addButton:active {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+}
+.addButton:disabled, .minusButton:disabled {
+  color: rgb(190, 218, 220);
+  border-color: rgb(190, 218, 220);
+}
+
+.minusButton {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  font-size:25px;
+  font-weight: 200;
+  justify-self: center;
+  align-self: center;
+  outline: none;
+}
+.minusButton:active {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.guestCounter {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(72, 72, 72);
+  justify-self: center;
+  align-self: center;
+}
+
+.typeOfGuest {
+  display: grid;
+  grid-template-rows: 25px 45px; 
+  grid-template-columns: 165px 40px 45px 40px;
+}
+
+#adultGuestDropdown {
+  grid-template-rows: 70px; 
+}
+
+#adultAdd, #adultMinus, #adultCounter {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#adultGuest {
+  margin-top: 20px;
+}
+
+/* Popup arrow */
+/* .guestsDropdown::after {
+  content: "";
+  position: absolute;
+  width: 325px;
+  top: 10%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px; 
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+} */
+
