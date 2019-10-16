@@ -3,6 +3,7 @@ import PropertyDetail from './PropertyDetail';
 import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
+import { runInThisContext } from 'vm';
 
 class App extends React.Component {
   constructor(props) {
@@ -22,7 +23,9 @@ class App extends React.Component {
       disableInfantMinus: true,
       pricePerNight: 130,
       starRating: 4.16,
-      numReviews: 10
+      numReviews: 10,
+      openGuestCarot: "none",
+      closeGuestCarot: ""
     };
 
     this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
@@ -35,6 +38,7 @@ class App extends React.Component {
     this.updateButtonStatus = this.updateButtonStatus.bind(this);
     this.displayMaxGuests = this.displayMaxGuests.bind(this);
     this.displayGuests = this.displayGuests.bind(this);
+    this.toggleGuestsCarot = this.toggleGuestsCarot.bind(this);
   }
 
   componentDidMount() {
@@ -72,7 +76,9 @@ class App extends React.Component {
                   disableInfantPlus={this.state.disableInfantPlus}
                   disableInfantMinus={this.state.disableInfantMinus}
                   displayMaxGuests={this.displayMaxGuests}
-                  displayGuests={this.displayGuests}/>
+                  displayGuests={this.displayGuests}
+                  openGuestCarot={this.state.openGuestCarot}
+                  closeGuestCarot={this.state.closeGuestCarot}/>
         </div>
         <div className="reserveContainer">
           <Reserve/>
@@ -84,6 +90,20 @@ class App extends React.Component {
     );
   }
 
+  toggleGuestsCarot() {
+    if(this.state.guestDropdownVisibility === "hidden") {
+      this.setState({
+        openGuestCarot: "none",
+        closeGuestCarot: ""
+      })
+    } else {
+      this.setState({
+        openGuestCarot: "",
+        closeGuestCarot: "none"
+      })
+    }
+  }
+
   toggleGuestsDropdown() {
     let guestDropdownVisibility;
     if(this.state.guestDropdownVisibility === "hidden") {
@@ -93,7 +113,7 @@ class App extends React.Component {
     }
     this.setState({
       guestDropdownVisibility
-    });
+    }, this.toggleGuestsCarot);
   }
 
   closeGuestsDropdown() {

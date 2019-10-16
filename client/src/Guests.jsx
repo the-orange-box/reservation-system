@@ -4,7 +4,8 @@ import GuestsDropdown from './GuestsDropdown';
 //guest drop down
 const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, numAdults, numChildren, displayGuests,
                 numInfants, incrementGuestsCounter, decrementGuestsCounter, disableAdultPlus, displayMaxGuests,
-                disableAdultMinus, disableChildrenPlus, disableChildrenMinus, disableInfantPlus, disableInfantMinus}) => (
+                disableAdultMinus, disableChildrenPlus, disableChildrenMinus, disableInfantPlus, disableInfantMinus, 
+                openGuestCarot, closeGuestCarot}) => (
   <div className="guests">
     <div className="guestsHeader">
       Guests
@@ -14,9 +15,13 @@ const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown, num
         <div id="guestButtonText">
           {displayGuests()}
         </div>
-        <svg className="downwardPoint" width="40px" height="35px">
+        <svg className="downwardPoint" width="40px" height="35px" display={closeGuestCarot}>
           <line x1="10" x2="18" y1="14.5" y2="23" stroke="black" strokeWidth="1.5" strokeLinecap="butt"/>
           <line x1="26" x2="18" y1="14.5" y2="23" stroke="black" strokeWidth="1.5" strokeLinecap="butt"/>
+        </svg>
+        <svg className="upwardPoint" width="40px" height="35px" display={openGuestCarot}>
+          <line x1="10" x2="18" y1="23" y2="14.5" stroke="black" strokeWidth="1.5" strokeLinecap="butt"/>
+          <line x1="26" x2="18" y1="23" y2="14.5" stroke="black" strokeWidth="1.5" strokeLinecap="butt"/>
         </svg>
       </button>
     </div>

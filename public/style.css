@@ -428,3 +428,23 @@
   border-color: #555 transparent transparent transparent;
 } */
 
+.calendarDropdown {
+  width: 325px;
+  height: 300px;
+  background-color: white;
+  color: black;
+  position: absolute;
+  top: 229px;
+  left:25px;
+  z-index: 1;
+  border-width: 1px;
+  box-shadow: 1px;
+  border-style: solid;
+  border-color:teal rgb(223, 223, 223) rgb(223, 223, 223) rgb(223, 223, 223);
+  border-top-width: 2px;
+  border-radius: 3px;
+  display: grid;
+  justify-items: stretch;
+  grid-template-rows: 70px 70px 70px 50px 40px; 
+  grid-template-columns: 185px 40px 45px 40px;
+}
