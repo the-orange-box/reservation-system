@@ -260,39 +260,83 @@
 }
 
 #adultGuestDropdown {
- color: rgb(72, 72, 72);
- font-weight: 600;
- font-size: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 20px;
 }
 
 #childGuestDropdown {
-  color: rgb(72, 72, 72);
-  font-weight: 600;
-  font-size: 16px;
-
-  /* font-size:14px for the tiny writing 
-    font-weight: 400;*/
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 #infantGuestDropdown {
-  color: rgb(72, 72, 72);
-  font-weight: 600;
-  font-size: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 #guestsDropdownFooter {
   color: rgb(72, 72, 72);
   font-weight: 400;
   font-size: 14px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 #closeGuestDropdown {
+  justify-self: right;
+  margin-right: 20px;
 }
 
 #guestsCloseButton {
   color: rgb(0, 132, 137);
   font-size: 16px;
   font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+#guestsCloseButton:hover {
+  text-decoration: underline;
+}
+
+#guestsCloseButton:active {
+  color: rgb(0, 92, 97);
+}
+
+.guestType {
+  color: rgb(72, 72, 72);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.guestDetails {
+  font-size:14px;
+  font-weight: 400;
+  color: rgb(72, 72, 72);
+}
+
+.addButton, .minusButton {
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-color: rgb(0, 132, 137);
+  border-radius: 50%;
+  border-width: 1px;
+  color: rgb(0, 132, 137);
+
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.addButton {
+  font-size:15px;
+}
+
+.minusButton {
+  font-size:25px;
+  font-weight: 200;
 }
 
 /* Popup arrow */

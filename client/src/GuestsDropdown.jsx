@@ -22,17 +22,19 @@ class GuestsDropdown extends React.Component{
       <div ref={node => this.node = node} 
            className="guestsDropdown" id="guestsDropdown" style={{visibility: this.props.guestVisibility}}>
         <div id="adultGuestDropdown">
-          Adults
+          <span className="guestType" id="adultGuest">Adults</span>
           <button className="minusButton" id="adultMinus">-</button>
           <button className="addButton" id="adultAdd">+</button>
         </div>
         <div id="childGuestDropdown">
-          Children
+          <span className="guestType" id="childGuest">Children</span>
+          <span className="guestDetails" id="childDetails">Ages 2-12</span>
           <button className="minusButton" id="childMinus">-</button>
           <button className="addButton" id="childAdd">+</button>
         </div>
         <div id="infantGuestDropdown">
-          Infants
+          <span className="guestType" id="infantGuest">Infants</span>
+          <span className="guestDetails" id="infantDetails">Under 2</span>
           <button className="minusButton" id="infantMinus">-</button>
           <button className="addButton" id="infantAdd">+</button>
         </div>
