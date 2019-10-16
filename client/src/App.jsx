@@ -14,6 +14,15 @@ class App extends React.Component {
     };
 
     this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClick, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick, false);
   }
 
   render() {
@@ -25,7 +34,7 @@ class App extends React.Component {
         <div className="calendarContainer">
           <Calendar/>
         </div> 
-        <div className="guestsContainer">
+        <div className="guestsContainer" ref={node => this.node = node}>
           <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} guestVisibility={this.state.guestDropdownVisibility}/>
         </div>
         <div className="reserveContainer">
@@ -48,6 +57,13 @@ class App extends React.Component {
     this.setState({
       guestDropdownVisibility
     })
+  }
+
+  //fix later so that will unselect when clicking on guestsHeader as well
+  handleClick(e) {
+    if (this.state.guestDropdownVisibility === "visible" && !this.node.contains(e.target)) {
+      this.toggleGuestsDropdown();
+    }
   }
 }
 
