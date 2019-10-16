@@ -252,30 +252,38 @@
   border-color:teal rgb(223, 223, 223) rgb(223, 223, 223) rgb(223, 223, 223);
   border-top-width: 2px;
   border-radius: 3px;
-
   display: grid;
   justify-items: stretch;
-  /* grid-template-columns: 25px 145px 35px 145px 25px; */
   grid-template-rows: 70px 70px 70px 50px 40px; 
+  grid-template-columns: 185px 40px 45px 40px;
 }
 
 #adultGuestDropdown {
+  grid-row-start: 1;
+  grid-row-end: 2;
   margin-left: 20px;
   margin-right: 20px;
-  margin-top: 20px;
 }
 
 #childGuestDropdown {
+  grid-row-start: 2;
+  grid-row-end: 3;
   margin-left: 20px;
   margin-right: 20px;
 }
 
 #infantGuestDropdown {
+  grid-row-start: 3;
+  grid-row-end: 4;
   margin-left: 20px;
   margin-right: 20px;
 }
 
 #guestsDropdownFooter {
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row-start: 4;
+  grid-row-end: 5;
   color: rgb(72, 72, 72);
   font-weight: 400;
   font-size: 14px;
@@ -284,6 +292,11 @@
 }
 
 #closeGuestDropdown {
+  grid-column-start: 3;
+  grid-column-end: 5;
+  grid-row-start: 5;
+  grid-row-end: 6;
+
   justify-self: right;
   margin-right: 20px;
 }
@@ -308,9 +321,13 @@
   color: rgb(72, 72, 72);
   font-weight: 600;
   font-size: 16px;
+  grid-column-start: 1;
+  grid-column-end: 2;
 }
 
 .guestDetails {
+  grid-column-start: 1;
+  grid-column-end: 2;
   font-size:14px;
   font-weight: 400;
   color: rgb(72, 72, 72);
@@ -331,12 +348,67 @@
 }
 
 .addButton {
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 3;
   font-size:15px;
+  justify-self: center;
+  align-self: center;
+  outline:none;
+}
+.addButton:active {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
 }
 
 .minusButton {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
   font-size:25px;
   font-weight: 200;
+  justify-self: center;
+  align-self: center;
+  outline: none;
+}
+.minusButton:active {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.guestCounter {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(72, 72, 72);
+  justify-self: center;
+  align-self: center;
+}
+
+.typeOfGuest {
+  display: grid;
+  grid-template-rows: 25px 45px; 
+  grid-template-columns: 165px 40px 45px 40px;
+}
+
+#adultGuestDropdown {
+  grid-template-rows: 70px; 
+}
+
+#adultAdd, #adultMinus, #adultCounter {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#adultGuest {
+  margin-top: 20px;
 }
 
 /* Popup arrow */
