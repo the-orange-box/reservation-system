@@ -1,11 +1,11 @@
 import React from 'react';
 
 //includes daily rate and star rating link
-const PropertyDetail = ({perPerNight, starRating, numReviews}) => (
+const PropertyDetail = ({pricePerNight, starRating, numReviews}) => (
   <div className="properties">
     <div className="pricePerNight">
       <span id="price">
-        ${perPerNight} 
+        ${pricePerNight} 
       </span>
       <span id="priceText">
         per night

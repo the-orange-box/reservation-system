@@ -20,7 +20,7 @@ class App extends React.Component {
       disableChildrenMinus: true,
       disableInfantPlus: false,
       disableInfantMinus: true,
-      perPerNight: 130,
+      pricePerNight: 130,
       starRating: 4.16,
       numReviews: 10
     };
@@ -49,7 +49,7 @@ class App extends React.Component {
     return(
       <div className="container">
         <div className="propertyContainer">
-          <PropertyDetail perPerNight={this.state.perPerNight}
+          <PropertyDetail pricePerNight={this.state.pricePerNight}
                           starRating={this.state.starRating}
                           numReviews={this.state.numReviews}/>
         </div>
