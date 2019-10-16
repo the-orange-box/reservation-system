@@ -2,7 +2,7 @@ import React from 'react';
 import GuestsDropdown from './GuestsDropdown';
 
 //guest drop down
-const Guests = ({toggleGuestsDropdown, guestVisibility}) => (
+const Guests = ({toggleGuestsDropdown, guestVisibility, closeGuestsDropdown}) => (
   <div className="guests">
     <div className="guestsHeader">
       Guests
@@ -18,7 +18,7 @@ const Guests = ({toggleGuestsDropdown, guestVisibility}) => (
         </svg>
       </button>
     </div>
-    <GuestsDropdown guestVisibility={guestVisibility}/>
+    <GuestsDropdown guestVisibility={guestVisibility} closeGuestsDropdown={closeGuestsDropdown}/>
   </div>
 )
 

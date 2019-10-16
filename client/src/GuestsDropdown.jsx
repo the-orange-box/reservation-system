@@ -1,6 +1,6 @@
 import React from'react';
 
-const GuestsDropdown = ({guestVisibility}) => (
+const GuestsDropdown = ({guestVisibility, closeGuestsDropdown}) => (
   <div className="guestsDropdown" id="guestsDropdown" style={{visibility: guestVisibility}}>
     <div className="typeOfGuest" id="adultGuestDropdown">
       <span className="guestType" id="adultGuest">Adults</span>
@@ -26,7 +26,7 @@ const GuestsDropdown = ({guestVisibility}) => (
       XX guests maximum. Infants don't count toward the number of guests.
     </div>
     <div id="closeGuestDropdown">
-      <button className="guestsCloseButton" id="guestsCloseButton">Close</button>
+      <button className="guestsCloseButton" id="guestsCloseButton" onClick={closeGuestsDropdown}>Close</button>
     </div>
   </div>
 )

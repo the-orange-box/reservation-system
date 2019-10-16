@@ -15,6 +15,7 @@ class App extends React.Component {
 
     this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.closeGuestsDropdown = this.closeGuestsDropdown.bind(this);
   }
 
   componentDidMount() {
@@ -35,7 +36,9 @@ class App extends React.Component {
           <Calendar/>
         </div> 
         <div className="guestsContainer" ref={node => this.node = node}>
-          <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} guestVisibility={this.state.guestDropdownVisibility}/>
+          <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 
+                  guestVisibility={this.state.guestDropdownVisibility} 
+                  closeGuestsDropdown={this.closeGuestsDropdown}/>
         </div>
         <div className="reserveContainer">
           <Reserve/>
@@ -56,7 +59,13 @@ class App extends React.Component {
     }
     this.setState({
       guestDropdownVisibility
-    })
+    });
+  }
+
+  closeGuestsDropdown() {
+    this.setState({
+      guestDropdownVisibility: "hidden"
+    });
   }
 
   //fix later so that will unselect when clicking on guestsHeader as well
