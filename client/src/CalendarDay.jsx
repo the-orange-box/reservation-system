@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CalendarDay = ({day}) => (
-  <span>{day}</span>
+  <button className="calendarDayButton">{day}</button>
 )
 
 export default CalendarDay;
