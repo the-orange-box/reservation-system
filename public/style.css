@@ -519,11 +519,27 @@
 .calendarDayButton:focus {
 
 }
-.selectionRange {
+.selectionRange:after {
   background-color: rgb(217, 236, 237);
   border-radius: 0;
+  margin-left: -27px;
+  content: '';
+  border-style: solid;
+  border-top-width: 9px;
+  border-bottom-width: 36px;
+  border-left-width: 23px;
+  border-right-width: 23px;
+  border-color: rgb(217, 236, 237);
+  position: absolute;
+  margin-top: -14px;
+  z-index: -1;
+  overflow: hidden;
 }
 
+.selectionRange {
+  background-color: rgb(217, 236, 237);
+  border-radius: 50%;
+}
 
 .checkinSelected, .checkoutSelected {
   border-style: solid;
@@ -532,6 +548,18 @@
   color: white;
   border-style: solid;
   border-width: 2px;
+  border-color: rgb(0, 132, 137);
+  box-shadow:0px 0px 1px 1px rgb(222, 233, 234);
+}
+
+.selectionRange:hover {
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(0, 132, 137);
+  background-color: white;
+}
+
+.checkinSelected:hover, .checkoutSelected:hover {
   border-color: rgb(0, 132, 137);
 }
 
