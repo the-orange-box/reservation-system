@@ -24,22 +24,21 @@ class Calendar extends React.Component {
   selectDay(index) {
     let dayArray = this.state.dayArray.slice(0);
     let checkinCheckout = this.state.checkinCheckout.slice(0);
-
     if (this.state.currentSelection === 'checkin') {
       if (this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[0] !== index) {
         dayArray[this.state.checkinCheckout[0]].status = 'available';
       } 
       checkinCheckout[0] = index;
+      dayArray[index].status = 'selected';
       this.updateSelectionRange(dayArray, index, this.state.checkinCheckout[1]);
     } else {
       if (this.state.checkinCheckout[1] !== null && this.state.checkinCheckout[1] !== index) {
         dayArray[this.state.checkinCheckout[1]].status = 'available'; 
       } 
       checkinCheckout[1] = index;
+      dayArray[index].status = 'selected';
       this.updateSelectionRange(dayArray, this.state.checkinCheckout[0], index);
     }
-    
-    dayArray[index].status = 'selected';
     this.setState({
       dayArray,
       checkinCheckout
@@ -49,17 +48,24 @@ class Calendar extends React.Component {
   updateSelectionRange(dayArray, checkin, checkout) {
     //anything less than checkinDate, change status to available, everything greater than checkout/ change to available
     //anything in between chnage to selectionRange
-    for (let i = 0; i < checkin; i++) {
-      dayArray[i].status = 'available'
+    if(checkin) {
+      for (let i = 0; i < checkin; i++) {
+        dayArray[i].status = 'available'
+      }
     }
-    for (let i = checkin + 1; i < checkout; i++) {
-      dayArray[i].status = 'selectionRange';
+    if(checkin && checkout) {
+      for (let i = checkin + 1; i < checkout; i++) {
+        dayArray[i].status = 'selectionRange';
+      }
+      dayArray[checkin].status += ' checkinSelected';
+      dayArray[checkout].status += ' checkoutSelected';
     }
-    for(let i = checkout + 1; i < dayArray.length; i++) {
-      dayArray[i].status = 'available'
+    if(checkout) {
+      for(let i = checkout + 1; i < dayArray.length; i++) {
+        dayArray[i].status = 'available'
+      }
     }
   }
-
 
   toggleCalendar(selectType) {
     let calendarVisibility;
