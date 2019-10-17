@@ -2,7 +2,7 @@ import React from 'react';
 import CalendarDayHeader from './CalendarDayHeader';
 import CalendarDay from './CalendarDay';
 
-const CalendarDropdown = ({visibility, dayArray}) => (
+const CalendarDropdown = ({visibility, dayArray, selectDay}) => (
   <div className="calendarDropdown" style={{visibility: visibility}}>
     <button className="previousMonth">
       <svg className="innerCalendarArrow" width="40px" height="35px">
@@ -18,10 +18,10 @@ const CalendarDropdown = ({visibility, dayArray}) => (
       </svg>
     </button>
     <div className="calendarDayHeader">
-      {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => <CalendarDayHeader day={day}/>)}
+      {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day,key) => <CalendarDayHeader day={day} key={key}/>)}
     </div>
     <div className="calendarDay">
-      {dayArray.map(day => <CalendarDay day={day}/>)}
+      {dayArray.map((day,index) => <CalendarDay day={day} key={index} index={index} selectDay={selectDay}/>)}
     </div>
     <div className="calendarDropdownFooter">
       Prices do not include fees and taxes

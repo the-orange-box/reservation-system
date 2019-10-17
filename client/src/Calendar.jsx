@@ -8,15 +8,60 @@ class Calendar extends React.Component {
     super(props);
 
     this.state = {
-      dayArray: new Array(42).fill(1),
+      dayArray: new Array(42).fill(null).map(day => ({ day: 1, status: 'available'})),
       calendarVisibility: "hidden",
+      checkinCheckout: [null,null],
+      currentSelection: null
     };
 
     this.toggleCalendar = this.toggleCalendar.bind(this);
     this.handleOutsideCalendarClick = this.handleOutsideCalendarClick.bind(this);
+    this.selectDay = this.selectDay.bind(this);
+    this.updateSelectionRange = this.updateSelectionRange.bind(this);
   }
 
-  toggleCalendar() {
+  //TODO: refactor this function
+  selectDay(index) {
+    let dayArray = this.state.dayArray.slice(0);
+    let checkinCheckout = this.state.checkinCheckout.slice(0);
+
+    if (this.state.currentSelection === 'checkin') {
+      if (this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[0] !== index) {
+        dayArray[this.state.checkinCheckout[0]].status = 'available';
+      } 
+      checkinCheckout[0] = index;
+      this.updateSelectionRange(dayArray, index, this.state.checkinCheckout[1]);
+    } else {
+      if (this.state.checkinCheckout[1] !== null && this.state.checkinCheckout[1] !== index) {
+        dayArray[this.state.checkinCheckout[1]].status = 'available'; 
+      } 
+      checkinCheckout[1] = index;
+      this.updateSelectionRange(dayArray, this.state.checkinCheckout[0], index);
+    }
+    
+    dayArray[index].status = 'selected';
+    this.setState({
+      dayArray,
+      checkinCheckout
+    });
+  }
+
+  updateSelectionRange(dayArray, checkin, checkout) {
+    //anything less than checkinDate, change status to available, everything greater than checkout/ change to available
+    //anything in between chnage to selectionRange
+    for (let i = 0; i < checkin; i++) {
+      dayArray[i].status = 'available'
+    }
+    for (let i = checkin + 1; i < checkout; i++) {
+      dayArray[i].status = 'selectionRange';
+    }
+    for(let i = checkout + 1; i < dayArray.length; i++) {
+      dayArray[i].status = 'available'
+    }
+  }
+
+
+  toggleCalendar(selectType) {
     let calendarVisibility;
     if(this.state.calendarVisibility === "hidden") {
       calendarVisibility = "visible";
@@ -24,7 +69,8 @@ class Calendar extends React.Component {
       calendarVisibility = "hidden";
     }
     this.setState({
-      calendarVisibility
+      calendarVisibility,
+      currentSelection: selectType
     });
   }
 
@@ -49,17 +95,18 @@ class Calendar extends React.Component {
           Dates
         </div>
         <div className="calendarInputs">
-          <input className="checkin" id="checkin" value="Check-in" onClick={this.toggleCalendar} />
+          <input className="checkin" id="checkin" value="Check-in" onClick={() => this.toggleCalendar('checkin')} />
           <svg className="calendarArrow" width="35px" height="35px">
             <line x1="5" x2="31" y1="17.5" y2="17.5" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="10" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="25" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
           </svg>
-          <input className="checkout" id="checkout" value="Checkout" onClick={this.toggleCalendar}/>
+          <input className="checkout" id="checkout" value="Checkout" onClick={() => this.toggleCalendar('checkout')}/>
         </div>
         <div ref={node => this.node = node}>
           <CalendarDropdown dayArray={this.state.dayArray}
-                            visibility={this.state.calendarVisibility}/>
+                            visibility={this.state.calendarVisibility}
+                            selectDay={this.selectDay}/>
         </div>
       </div>
     )

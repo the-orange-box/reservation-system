@@ -340,6 +340,7 @@
   border-radius: 50%;
   border-width: 1px;
   color: rgb(0, 132, 137);
+  cursor: pointer;
 
   text-align: center;
   display: inline-block;
@@ -364,6 +365,7 @@
 .addButton:disabled, .minusButton:disabled {
   color: rgb(190, 218, 220);
   border-color: rgb(190, 218, 220);
+  cursor: default;
 }
 
 .minusButton {
@@ -500,6 +502,33 @@
   color: rgb(0, 132, 137);
   font-size: 14px;
   font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  /* background-color: yellow; */
+}
+
+.calendarDayButton:hover {
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(168, 214, 215);
+}
+
+.calendarDayButton:focus {
+
+}
+.selectionRange {
+  background-color: aquamarine;
+}
+
+.selected {
+  border-style: solid;
+  border-width: 2px;
+  background-color: rgb(0, 132, 137);
+  color: white;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(0, 132, 137);
 }
 
 .calendarDropdownFooter {
