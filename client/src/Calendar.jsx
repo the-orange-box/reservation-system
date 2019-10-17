@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import CalendarDropdown from './CalendarDropdown';
 const moment = require('moment');
 moment().format();
@@ -13,7 +14,8 @@ class Calendar extends React.Component {
       calendarVisibility: "hidden",
       checkinCheckout: [null,null],
       currentSelection: null,
-      currentMonth: moment()
+      currentMonth: moment(),
+      transition: 'fadein'
     };
 
     this.toggleCalendar = this.toggleCalendar.bind(this);
@@ -22,6 +24,8 @@ class Calendar extends React.Component {
     this.updateSelectionRange = this.updateSelectionRange.bind(this);
     this.populateCurrDisplayMonth = this.populateCurrDisplayMonth.bind(this);
     this.updateCurrentMonth = this.updateCurrentMonth.bind(this);
+    this.monthTransitionIn = this.monthTransitionIn.bind(this);
+    this.displayCheckInOutDate = this.displayCheckInOutDate.bind(this);
   }
 
   populateCurrDisplayMonth() {
@@ -40,6 +44,7 @@ class Calendar extends React.Component {
     for(let i = totalDays + startDayIndex; i < dayArray.length; i++) {
       dayArray[i].day = null;
     }
+    this.monthTransitionIn();
   }
 
   updateCurrentMonth(amount) {
@@ -110,9 +115,40 @@ class Calendar extends React.Component {
     });
   }
 
+  monthTransitionIn() {
+    let transition = this.state.transition
+    if(transition === 'fadeout') {
+      transition = 'fadein';
+    } else {
+      transition = 'fadeout';
+    }
+
+    this.setState({
+      transition
+    });
+  }
+  
   handleOutsideCalendarClick(e) {
     if (this.state.calendarVisibility === "visible" && !this.node.contains(e.target)) {
       this.toggleCalendar();
+    }
+  }
+
+  displayCheckInOutDate(index) {
+    if(this.state.checkinCheckout[index] === null) {
+      if(index === 0) {
+        return 'Check-in';
+      } else {
+        return 'Checkout';
+      }
+    } else {
+      // let startDayIndex = 
+
+      let month = this.state.currentMonth.format("MM");
+      let day = this.state.checkinCheckout[index] - this.state.currentMonth.startOf('month').day() + 1;
+      let year = this.state.currentMonth.format('YYYY');
+
+      return `${month}/${day}/${year}`;
     }
   }
 
@@ -132,19 +168,21 @@ class Calendar extends React.Component {
           Dates
         </div>
         <div className="calendarInputs">
-          <input className="checkin" id="checkin" value="Check-in" onClick={() => this.toggleCalendar('checkin')} />
+          <input className="checkin" id="checkin" value={this.displayCheckInOutDate(0)} onClick={() => this.toggleCalendar('checkin')} />
           <svg className="calendarArrow" width="35px" height="35px">
             <line x1="5" x2="31" y1="17.5" y2="17.5" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="10" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="25" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
           </svg>
-          <input className="checkout" id="checkout" value="Checkout" onClick={() => this.toggleCalendar('checkout')}/>
+          <input className="checkout" id="checkout" value={this.displayCheckInOutDate(1)} onClick={() => this.toggleCalendar('checkout')}/>
         </div>
         <div ref={node => this.node = node}>
           <CalendarDropdown dayArray={this.state.dayArray}
                             visibility={this.state.calendarVisibility}
                             selectDay={this.selectDay}
-                            updateCurrentMonth={this.updateCurrentMonth}/>
+                            updateCurrentMonth={this.updateCurrentMonth}
+                            currentMonth={this.state.currentMonth}
+                            transition={this.state.transition}/>
         </div>
       </div>
     )
