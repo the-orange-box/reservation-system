@@ -33,7 +33,6 @@ class Calendar extends React.Component {
   }
 
   calculateDisabledDates() {
-    console.log(moment().format('MM DD YYYY'));
     // calculateDayOfMonth
     let dayArray = this.state.dayArray.slice(0);
     if(this.state.currentMonth.month() === moment().month()) {
@@ -43,7 +42,6 @@ class Calendar extends React.Component {
       }
       
       let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
-      console.log('this is the lastDayIndex ' + lastDayIndex);
       for (let i = lastDayIndex; i < dayArray.length; i++) {
         dayArray[i].outOfRangeDate = true;
       }
@@ -89,16 +87,19 @@ class Calendar extends React.Component {
   selectDay(index) {
     let dayArray = this.state.dayArray.slice(0);
     let checkinCheckout = this.state.checkinCheckout.slice(0);
-    let month = this.state.currentMonth.format('DD');
+    let month = this.state.currentMonth.format('MM');
     let day = this.calculateDayOfMonth(index);
     let year = this.state.currentMonth.format('YYYY');
-    let checkInOutDate = year + ' ' + month + ' ' + day;
+    let checkInOutDate = year + '-' + month + '-' + day;
 
     if (this.state.currentSelection === 'checkin') {
-      if (this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[0] !== index) {
-        dayArray[this.state.checkinCheckout[0]].status = 'available';
+      if (this.state.checkinCheckout[0] !== null) {
+        let checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
+        if(checkinIndex !== index) {
+          dayArray[checkinIndex].status = 'available';
+        }
       } 
-
+      
       checkinCheckout[0] = checkInOutDate;
       dayArray[index].status = 'selected';
       let checkoutIndex;
@@ -107,8 +108,11 @@ class Calendar extends React.Component {
       }
       this.updateSelectionRange(dayArray, index, checkoutIndex);
     } else {
-      if (this.state.checkinCheckout[1] !== null && this.state.checkinCheckout[1] !== index) {
-        dayArray[this.state.checkinCheckout[1]].status = 'available'; 
+      if (this.state.checkinCheckout[1] !== null) {
+        let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
+        if(checkoutIndex !== index) {
+          dayArray[checkoutIndex].status = 'available';
+        }
       } 
 
       checkinCheckout[1] = checkInOutDate;
@@ -215,13 +219,7 @@ class Calendar extends React.Component {
         return 'Checkout';
       }
     } else {
-      // let startDayIndex = 
-
-      let month = this.state.currentMonth.format("MM");
-      let day = this.calculateDayOfMonth(this.state.checkinCheckout[index]);
-      let year = this.state.currentMonth.format('YYYY');
-
-      return `${month}/${day}/${year}`;
+      return moment(this.state.checkinCheckout[index]).format('L');
     }
   }
 
