@@ -89,26 +89,69 @@ class Calendar extends React.Component {
   selectDay(index) {
     let dayArray = this.state.dayArray.slice(0);
     let checkinCheckout = this.state.checkinCheckout.slice(0);
+    let month = this.state.currentMonth.format('DD');
+    let day = this.calculateDayOfMonth(index);
+    let year = this.state.currentMonth.format('YYYY');
+    let checkInOutDate = year + ' ' + month + ' ' + day;
+
     if (this.state.currentSelection === 'checkin') {
       if (this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[0] !== index) {
         dayArray[this.state.checkinCheckout[0]].status = 'available';
       } 
-      checkinCheckout[0] = index;
+
+      checkinCheckout[0] = checkInOutDate;
       dayArray[index].status = 'selected';
-      this.updateSelectionRange(dayArray, index, this.state.checkinCheckout[1]);
+      let checkoutIndex;
+      if(this.state.checkinCheckout[1] !== null) {
+        checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
+      }
+      this.updateSelectionRange(dayArray, index, checkoutIndex);
     } else {
       if (this.state.checkinCheckout[1] !== null && this.state.checkinCheckout[1] !== index) {
         dayArray[this.state.checkinCheckout[1]].status = 'available'; 
       } 
-      checkinCheckout[1] = index;
+
+      checkinCheckout[1] = checkInOutDate;
       dayArray[index].status = 'selected';
-      this.updateSelectionRange(dayArray, this.state.checkinCheckout[0], index);
+      let checkinIndex;
+      if(this.state.checkinCheckout[0] !== null) {
+        checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
+      }
+      this.updateSelectionRange(dayArray, checkinIndex, index);
     }
     this.setState({
       dayArray,
       checkinCheckout
     });
   }
+
+
+
+  // selectDay(index) {
+  //   let dayArray = this.state.dayArray.slice(0);
+  //   let checkinCheckout = this.state.checkinCheckout.slice(0);
+  //   if (this.state.currentSelection === 'checkin') {
+  //     if (this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[0] !== index) {
+  //       dayArray[this.state.checkinCheckout[0]].status = 'available';
+  //     } 
+  //     checkinCheckout[0] = index;
+  //     dayArray[index].status = 'selected';
+  //     this.updateSelectionRange(dayArray, index, this.state.checkinCheckout[1]);
+  //   } else {
+  //     if (this.state.checkinCheckout[1] !== null && this.state.checkinCheckout[1] !== index) {
+  //       dayArray[this.state.checkinCheckout[1]].status = 'available'; 
+  //     } 
+  //     checkinCheckout[1] = index;
+  //     dayArray[index].status = 'selected';
+  //     this.updateSelectionRange(dayArray, this.state.checkinCheckout[0], index);
+  //   }
+  //   this.setState({
+  //     dayArray,
+  //     checkinCheckout
+  //   });
+  // }
+
+
 
   updateSelectionRange(dayArray, checkin, checkout) {
     //anything less than checkinDate, change status to available, everything greater than checkout/ change to available
