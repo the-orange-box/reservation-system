@@ -511,6 +511,19 @@
   /* background-color: yellow; */
 }
 
+.calendarDayButton:disabled {
+  color: rgb(216, 216, 216);
+  cursor: default;
+  border-style: hidden;
+}
+
+.calendarDayButton:disabled:hover {
+  color: rgb(216, 216, 216);
+  cursor: default;
+  border-style: hidden;
+}
+
+
 .calendarDayButton:hover {
   border-style: solid;
   border-width: 2px;

@@ -15,6 +15,9 @@ const Reserve = () => (
       console.log(' YAYYY ' + test.format("MMMM"));
       test.add(-2, "months")
       console.log(' YAYYY ' + test.format("MMMM"));
+      console.log(moment().month("MMMM"));
+      console.log('this is the moment day ' + moment().day());
+      console.log(typeof moment().format('DD'));
     }
     }>Reserve</button>
   </div>

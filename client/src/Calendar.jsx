@@ -10,12 +10,13 @@ class Calendar extends React.Component {
     super(props);
 
     this.state = {
-      dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'available'})),
+      dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', outOfRangeDate: false})),
       calendarVisibility: "hidden",
       checkinCheckout: [null,null],
       currentSelection: null,
       currentMonth: moment(),
-      transition: 'fadein'
+      transition: 'fadein',
+      pastDates: []
     };
 
     this.toggleCalendar = this.toggleCalendar.bind(this);
@@ -26,6 +27,31 @@ class Calendar extends React.Component {
     this.updateCurrentMonth = this.updateCurrentMonth.bind(this);
     this.monthTransitionIn = this.monthTransitionIn.bind(this);
     this.displayCheckInOutDate = this.displayCheckInOutDate.bind(this);
+    this.calculateDisabledDates = this.calculateDisabledDates.bind(this);
+    this.calculateDayOfMonth = this.calculateDayOfMonth.bind(this);
+    this.calculateIndexOfDay = this.calculateIndexOfDay.bind(this);
+  }
+
+  calculateDisabledDates() {
+    console.log(moment().format('MM DD YYYY'));
+    // calculateDayOfMonth
+    let dayArray = this.state.dayArray.slice(0);
+    if(this.state.currentMonth.month() === moment().month()) {
+      let currentDayIndex = this.calculateIndexOfDay(Number(moment().format('DD')));
+      for (let i = 0; i < currentDayIndex; i++) {
+        dayArray[i].outOfRangeDate = true;
+      }
+      
+      let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
+      console.log('this is the lastDayIndex ' + lastDayIndex);
+      for (let i = lastDayIndex; i < dayArray.length; i++) {
+        dayArray[i].outOfRangeDate = true;
+      }
+    }
+
+    this.setState({
+      dayArray
+    });
   }
 
   populateCurrDisplayMonth() {
@@ -44,7 +70,11 @@ class Calendar extends React.Component {
     for(let i = totalDays + startDayIndex; i < dayArray.length; i++) {
       dayArray[i].day = null;
     }
-    this.monthTransitionIn();
+
+    this.setState({
+      dayArray
+    }, this.calculateDisabledDates());
+    this.monthTransitionIn() //TODO: update this transition
   }
 
   updateCurrentMonth(amount) {
@@ -145,16 +175,24 @@ class Calendar extends React.Component {
       // let startDayIndex = 
 
       let month = this.state.currentMonth.format("MM");
-      let day = this.state.checkinCheckout[index] - this.state.currentMonth.startOf('month').day() + 1;
+      let day = this.calculateDayOfMonth(this.state.checkinCheckout[index]);
       let year = this.state.currentMonth.format('YYYY');
 
       return `${month}/${day}/${year}`;
     }
   }
 
+  calculateDayOfMonth(index) {
+    return index - this.state.currentMonth.startOf('month').day() + 1;
+  }
+  calculateIndexOfDay(day) {
+    return day + this.state.currentMonth.startOf('month').day() - 1; 
+  }
+
   componentDidMount() {
     document.addEventListener('mousedown', this.handleOutsideCalendarClick, false);
     this.populateCurrDisplayMonth();
+    this.calculateDisabledDates();
   }
 
   componentWillUnmount() {
