@@ -1,6 +1,7 @@
 import React from 'react';
 import CalendarDropdown from './CalendarDropdown';
-import CalendarDay from './CalendarDay';
+const moment = require('moment');
+moment().format();
 
 //calendar of available dates
 class Calendar extends React.Component {
@@ -8,16 +9,45 @@ class Calendar extends React.Component {
     super(props);
 
     this.state = {
-      dayArray: new Array(42).fill(null).map(day => ({ day: 1, status: 'available'})),
+      dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'available'})),
       calendarVisibility: "hidden",
       checkinCheckout: [null,null],
-      currentSelection: null
+      currentSelection: null,
+      currentMonth: moment()
     };
 
     this.toggleCalendar = this.toggleCalendar.bind(this);
     this.handleOutsideCalendarClick = this.handleOutsideCalendarClick.bind(this);
     this.selectDay = this.selectDay.bind(this);
     this.updateSelectionRange = this.updateSelectionRange.bind(this);
+    this.populateCurrDisplayMonth = this.populateCurrDisplayMonth.bind(this);
+    this.updateCurrentMonth = this.updateCurrentMonth.bind(this);
+  }
+
+  populateCurrDisplayMonth() {
+    let startDayIndex = this.state.currentMonth.startOf('month').day();
+    let totalDays = this.state.currentMonth.daysInMonth();
+    let dayArray = this.state.dayArray.slice(0);
+
+    let day = 1;
+    for(let i = 0; i < startDayIndex; i++) {
+      dayArray[i].day = null;
+    }
+    for(let i = startDayIndex; i < totalDays + startDayIndex; i++) {
+      dayArray[i].day = day;
+      day++;
+    }
+    for(let i = totalDays + startDayIndex; i < dayArray.length; i++) {
+      dayArray[i].day = null;
+    }
+  }
+
+  updateCurrentMonth(amount) {
+    let currentMonth = this.state.currentMonth;
+    currentMonth.add(amount, 'months');
+    this.setState({
+      currentMonth
+    }, this.populateCurrDisplayMonth());
   }
 
   //TODO: refactor this function
@@ -88,6 +118,7 @@ class Calendar extends React.Component {
 
   componentDidMount() {
     document.addEventListener('mousedown', this.handleOutsideCalendarClick, false);
+    this.populateCurrDisplayMonth();
   }
 
   componentWillUnmount() {
@@ -112,7 +143,8 @@ class Calendar extends React.Component {
         <div ref={node => this.node = node}>
           <CalendarDropdown dayArray={this.state.dayArray}
                             visibility={this.state.calendarVisibility}
-                            selectDay={this.selectDay}/>
+                            selectDay={this.selectDay}
+                            updateCurrentMonth={this.updateCurrentMonth}/>
         </div>
       </div>
     )
