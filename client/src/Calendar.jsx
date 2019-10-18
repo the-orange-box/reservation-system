@@ -125,8 +125,12 @@ class Calendar extends React.Component {
       } 
       
       //add conditional here - if checkInOutDate (for checkin) 
-      //has enough days after the unselected day to meet min required booking days or enough days until a booked day)
+      //has enough days after the currently clicked day to meet min required booking days (has minDaysOpen before a bookedDate) or enough days until a booked day)
       //THEN 
+      // let daysBeforeBookedDate = 0;
+      // for (let i = 0; i < this.requiredBookingDays;i++) {
+
+      // }
       checkinCheckout[0] = checkInOutDate;
       dayArray[index].status = 'selected';
       //The code in between should be in an if block
