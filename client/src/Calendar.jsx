@@ -135,7 +135,7 @@ class Calendar extends React.Component {
       if (this.state.checkinCheckout[0] !== null) {
         let checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
         if(checkinIndex !== index) {
-          dayArray[checkinIndex].status = 'available';
+          dayArray[checkinIndex].status = 'unselected';
         }
       } 
       
@@ -150,7 +150,7 @@ class Calendar extends React.Component {
       if (this.state.checkinCheckout[1] !== null) {
         let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
         if(checkoutIndex !== index) {
-          dayArray[checkoutIndex].status = 'available';
+          dayArray[checkoutIndex].status = 'unselected';
         }
       } 
 
@@ -175,7 +175,7 @@ class Calendar extends React.Component {
   //til the first day
   //if check out is after month - highlight all days until last day of month.
   updateSelectionRange(dayArray, checkinDate, checkoutDate) {
-    //anything less than checkinDate, change status to available, everything greater than checkout/ change to available
+    //anything less than checkinDate, change status to unselected, everything greater than checkout/ change to unselected
     //anything in between chnage to selectionRange
     if(checkinDate && checkoutDate) {
       let checkin = this.calculateIndexOfDay(Number(checkinDate.format('DD')));
@@ -208,13 +208,13 @@ class Calendar extends React.Component {
       //same month
       if(checkoutDate.month() === this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month()) {
         for (let i = 0; i < checkin; i++) {
-          dayArray[i].status = 'available'
+          dayArray[i].status = 'unselected'
         }
         for (let i = checkin + 1; i < checkout; i++) {
           dayArray[i].status = 'selectionRange';
         }
         for(let i = checkout + 1; i < dayArray.length; i++) {
-          dayArray[i].status = 'available'
+          dayArray[i].status = 'unselected'
         }
         dayArray[checkin].status += ' checkinSelected';
         dayArray[checkout].status += ' checkoutSelected';
