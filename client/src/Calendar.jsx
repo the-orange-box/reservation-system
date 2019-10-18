@@ -96,6 +96,7 @@ class Calendar extends React.Component {
         //select checkin
         let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
         let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
+        console.log('it is here 2');
         dayArray[checkinIndex].status = 'selected';
     }
     if(this.state.checkinCheckout[1] !== null && 
@@ -103,6 +104,7 @@ class Calendar extends React.Component {
         //select checkout
         let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
         let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
+        console.log('it is here 3');
         dayArray[checkoutIndex].status = 'selected';
     }
 
@@ -143,16 +145,20 @@ class Calendar extends React.Component {
       let counter = index;
       let year = this.state.currentMonth.format('YYYY');
       let month = this.state.currentMonth.format('MM');
-      while (counter < this.requiredBookingDays + index) {
+      while (counter < this.requiredBookingDays + 1 + index) {
         var checkforBooked = this.getMomentJSofIndex(counter, month, year);
         var isBooked = false;
         for(let i = 0; i < this.bookedDates.length; i++){
           if(checkforBooked.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
             isBooked = true;
+            console.log('is booked: ' + isBooked);
             break;
           }
         }
-        if((daysBeforeBookedDate === this.requiredBookingDays) || isBooked) {
+        console.log('this is daysBeforeBookedDate ' + daysBeforeBookedDate);
+        console.log('this is this.requiredBookingDays ' + this.requiredBookingDays);
+        if((daysBeforeBookedDate === this.requiredBookingDays + 1) || isBooked) {
+          console.log('IT IS ABOUT TO BREAK OUT');
           break;
         }
 
@@ -165,13 +171,15 @@ class Calendar extends React.Component {
           nextMonth = moment(nextMonth);
           nextMonth.add(1, 'months');
           counter = nextMonth.startOf('month').day();
+          console.log('this is the counter ' + counter);
           month = nextMonth.format('MM');
           year = nextMonth.format('YYYY');
         }
       }
 
-      if(this.requiredBookingDays === daysBeforeBookedDate) {
+      if(this.requiredBookingDays + 1 === daysBeforeBookedDate) {
         checkinCheckout[0] = checkInOutDate;
+        console.log('it is here 4');
         dayArray[index].status = 'selected';
       }
 
@@ -188,7 +196,7 @@ class Calendar extends React.Component {
         }
       }
 
-      if(this.requiredBookingDays === daysBeforeBookedDate) {
+      if(this.requiredBookingDays + 1 === daysBeforeBookedDate) {
         this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
       }
     } else {
@@ -228,14 +236,14 @@ class Calendar extends React.Component {
           daysBeforeBookedDate++;
           counter--;
           
-          let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
-          if(counter === lastDayIndex) {
-            let nextMonth = this.state.currentMonth.format();
-            nextMonth = moment(nextMonth);
-            nextMonth.add(1, 'months');
-            counter = nextMonth.startOf('month').day();
-            month = nextMonth.format('MM');
-            year = nextMonth.format('YYYY');
+          let firstDayIndex = this.state.currentMonth.startOf('month').day();
+          if(counter === firstDayIndex) {
+            let prevMonth = this.state.currentMonth.format();
+            prevMonth = moment(prevMonth);
+            prevMonth.subtract(1, 'months');
+            counter = this.calculateIndexOfDay(prevMonth.daysInMonth() + 1);
+            month = prevMonth.format('MM');
+            year = prevMonth.format('YYYY');
           }
         }
 
@@ -245,6 +253,7 @@ class Calendar extends React.Component {
         //THEN 
         if(isValidDate) {
           checkinCheckout[1] = checkInOutDate;
+          console.log('it is here 1');
           dayArray[index].status = 'selected';
         }
         //above code should be in conditional.
