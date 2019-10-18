@@ -3,7 +3,6 @@ import PropertyDetail from './PropertyDetail';
 import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
-import { runInThisContext } from 'vm';
 
 class App extends React.Component {
   constructor(props) {
