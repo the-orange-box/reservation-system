@@ -9,7 +9,7 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      bookedDays = ['2019-10-20 00:00:00', '2019-10-30 00:00:00', '2019-11-14 00:00:00', '2019-11-18 00:00:00',
+      bookedDates = ['2019-10-20 00:00:00', '2019-10-30 00:00:00', '2019-11-14 00:00:00', '2019-11-18 00:00:00',
                     '2019-11-27 00:00:00', '2019-11-16 00:00:00', '2019-11-03 00:00:00', '2019-11-23 00:00:00', 
                     '2019-12-19 00:00:00', '2019-12-21 00:00:00', '2019-12-06 00:00:00', '2019-12-18 00:00:00', 
                     '2019-12-03 00:00:00', '2019-12-26 00:00:00', '2019-12-13 00:00:00', '2019-12-01 00:00:00', 
@@ -71,7 +71,8 @@ class App extends React.Component {
                           numReviews={this.state.propertyInfo.pReviews}/>
         </div>
         <div className="calendarContainer">
-          <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}/>
+          <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
+                    bookedDates={this.bookedDates}/>
         </div> 
         <div className="guestsContainer" ref={node => this.node = node}>
           <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 

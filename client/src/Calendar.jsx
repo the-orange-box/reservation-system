@@ -21,6 +21,8 @@ class Calendar extends React.Component {
     };
 
     this.requiredBookingDays = this.props.requiredBookingDays;
+    this.bookedDates = this.props.bookedDates;
+    
     this.toggleCalendar = this.toggleCalendar.bind(this);
     this.handleOutsideCalendarClick = this.handleOutsideCalendarClick.bind(this);
     this.selectDay = this.selectDay.bind(this);
