@@ -120,7 +120,7 @@ class Calendar extends React.Component {
   selectDay(index) {
     console.log('hmmmmm');
     // debugger;
-    let dayArray = this.state.dayArray.slice(0);
+    let dayArray = JSON.parse(JSON.stringify(this.state.dayArray));
     let checkinCheckout = this.state.checkinCheckout.slice(0);
 
     let checkInOutDate = this.getMomentJSofIndex(index);
@@ -129,6 +129,7 @@ class Calendar extends React.Component {
       if (this.state.checkinCheckout[0] !== null) {
         let checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
         if(checkinIndex !== index) {
+          console.log('it is here 4');
           dayArray[checkinIndex].status = 'unselected';
         }
       } 
@@ -186,6 +187,7 @@ class Calendar extends React.Component {
           checkinCheckout[1] = null;
           let startDayIndex = this.state.currentMonth.startOf('month').day();
           for (let i = startDayIndex; i < index; i++) {
+            console.log('it is here 5');
             dayArray[i].status = 'unselected';
           }
         }
@@ -199,6 +201,7 @@ class Calendar extends React.Component {
         if (this.state.checkinCheckout[1] !== null) {
           let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
           if(checkoutIndex !== index) {
+            console.log('it is here 6');
             dayArray[checkoutIndex].status = 'unselected';
           }
         } 
@@ -276,12 +279,14 @@ class Calendar extends React.Component {
       //same month
       if(checkoutDate.month() === this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month()) {
         for (let i = 0; i < checkin; i++) {
+          console.log('it is here 1');
           dayArray[i].status = 'unselected'
         }
         for (let i = checkin + 1; i < checkout; i++) {
           dayArray[i].status = 'selectionRange';
         }
         for(let i = checkout + 1; i < dayArray.length; i++) {
+          console.log('it is here 2');
           dayArray[i].status = 'unselected'
         }
         dayArray[checkin].status += ' checkinSelected';
@@ -291,8 +296,9 @@ class Calendar extends React.Component {
   }
 
   clearDates() {
-    let dayArray = this.state.dayArray.slice(0);
+    let dayArray = JSON.parse(JSON.stringify(this.state.dayArray));
     for (let i = 0; i < 42; i++) {
+      console.log('it is here 3');
       dayArray[i].status = 'unselected';
     }
     this.setState({
