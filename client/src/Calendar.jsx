@@ -141,26 +141,37 @@ class Calendar extends React.Component {
       
       checkinCheckout[0] = checkInOutDate;
       dayArray[index].status = 'selected';
+      
       let checkoutDate;
       if(this.state.checkinCheckout[1] !== null) {
         checkoutDate = moment(this.state.checkinCheckout[1]);
+        if(moment(checkInOutDate) > checkoutDate) {
+          checkoutDate = null;
+          checkinCheckout[1] = null;
+          let startDayIndex = this.state.currentMonth.startOf('month').day();
+          for (let i = startDayIndex; i < index; i++) {
+            dayArray[i].status = 'unselected';
+          }
+        }
       }
       this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
     } else {
-      if (this.state.checkinCheckout[1] !== null) {
-        let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
-        if(checkoutIndex !== index) {
-          dayArray[checkoutIndex].status = 'unselected';
+      if(moment(checkInOutDate) > moment(this.state.checkinCheckout[0])) {
+        if (this.state.checkinCheckout[1] !== null) {
+          let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
+          if(checkoutIndex !== index) {
+            dayArray[checkoutIndex].status = 'unselected';
+          }
+        } 
+  
+        checkinCheckout[1] = checkInOutDate;
+        dayArray[index].status = 'selected';
+        let checkinDate;
+        if(this.state.checkinCheckout[0] !== null) {
+          checkinDate = moment(this.state.checkinCheckout[0]);
         }
-      } 
-
-      checkinCheckout[1] = checkInOutDate;
-      dayArray[index].status = 'selected';
-      let checkinDate;
-      if(this.state.checkinCheckout[0] !== null) {
-        checkinDate = moment(this.state.checkinCheckout[0]);
+        this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
       }
-      this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
     }
     this.setState({
       dayArray,
