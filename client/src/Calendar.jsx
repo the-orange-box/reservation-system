@@ -20,6 +20,7 @@ class Calendar extends React.Component {
       pastDates: []
     };
 
+    this.requiredBookingDays = this.props.requiredBookingDays;
     this.toggleCalendar = this.toggleCalendar.bind(this);
     this.handleOutsideCalendarClick = this.handleOutsideCalendarClick.bind(this);
     this.selectDay = this.selectDay.bind(this);
@@ -122,8 +123,12 @@ class Calendar extends React.Component {
         }
       } 
       
+      //add conditional here - if checkInOutDate (for checkin) 
+      //has enough days after the unselected day to meet min required booking days or enough days until a booked day)
+      //THEN 
       checkinCheckout[0] = checkInOutDate;
       dayArray[index].status = 'selected';
+      //The code in between should be in an if block
       
       let checkoutDate;
       if(this.state.checkinCheckout[1] !== null) {
@@ -147,8 +152,15 @@ class Calendar extends React.Component {
           }
         } 
   
+        //add conditional here - if checkInOutDate (for checkout) 
+        //has enough days prior to the current clicked day to meet min required booking days and there isn't any 
+        //booked days inbetween this.state.checkincheckout[0]
+        //THEN 
         checkinCheckout[1] = checkInOutDate;
         dayArray[index].status = 'selected';
+        //above code should be in conditional.
+
+
         let checkinDate;
         if(this.state.checkinCheckout[0] !== null) {
           checkinDate = moment(this.state.checkinCheckout[0]);
@@ -157,18 +169,20 @@ class Calendar extends React.Component {
       }
     }
 
-    let prevSelection = this.state.currentSelection;
-    this.setState({
-      dayArray,
-      checkinCheckout,
-      currentSelection: 'checkout'
-    }, () => {
-      if(prevSelection === 'checkin') {
-        document.getElementById('checkout').focus();
-      } else if(this.state.checkinCheckout[1] !== null) {
-        this.toggleCalendar();
-      }
-    });
+    if(checkinCheckout[0] !== null) {
+      let prevSelection = this.state.currentSelection;
+      this.setState({
+        dayArray,
+        checkinCheckout,
+        currentSelection: 'checkout'
+      }, () => {
+        if(prevSelection === 'checkin') {
+          document.getElementById('checkout').focus();
+        } else if(this.state.checkinCheckout[1] !== null) {
+          this.toggleCalendar();
+        }
+      });
+    }
   }
 
   updateSelectionRange(dayArray, checkinDate, checkoutDate) {
