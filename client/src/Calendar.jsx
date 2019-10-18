@@ -105,11 +105,11 @@ class Calendar extends React.Component {
         this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[1]).format('MM')) {
       if(this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[1] !== null) {
 
-        let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
-        let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
-        let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
-        let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
-        this.updateSelectionRange(dayArray, checkinIndex, checkoutIndex);
+        // let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
+        // let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
+        // let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
+        // let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
+        this.updateSelectionRange(dayArray, moment(this.state.checkinCheckout[0]), moment(this.state.checkinCheckout[1]));
       }
     }
 
@@ -127,6 +127,8 @@ class Calendar extends React.Component {
     let month = this.state.currentMonth.format('MM');
     let day = this.calculateDayOfMonth(index);
     let year = this.state.currentMonth.format('YYYY');
+
+
     let checkInOutDate = year + '-' + month + '-' + day;
 
     if (this.state.currentSelection === 'checkin') {
@@ -139,11 +141,11 @@ class Calendar extends React.Component {
       
       checkinCheckout[0] = checkInOutDate;
       dayArray[index].status = 'selected';
-      let checkoutIndex;
+      let checkoutDate;
       if(this.state.checkinCheckout[1] !== null) {
-        checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
+        checkoutDate = moment(this.state.checkinCheckout[1]);
       }
-      this.updateSelectionRange(dayArray, index, checkoutIndex);
+      this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
     } else {
       if (this.state.checkinCheckout[1] !== null) {
         let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
@@ -154,11 +156,11 @@ class Calendar extends React.Component {
 
       checkinCheckout[1] = checkInOutDate;
       dayArray[index].status = 'selected';
-      let checkinIndex;
+      let checkinDate;
       if(this.state.checkinCheckout[0] !== null) {
-        checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
+        checkinDate = moment(this.state.checkinCheckout[0]);
       }
-      this.updateSelectionRange(dayArray, checkinIndex, index);
+      this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
     }
     this.setState({
       dayArray,
@@ -167,52 +169,51 @@ class Calendar extends React.Component {
   }
 
 
-
-  // selectDay(index) {
-  //   let dayArray = this.state.dayArray.slice(0);
-  //   let checkinCheckout = this.state.checkinCheckout.slice(0);
-  //   if (this.state.currentSelection === 'checkin') {
-  //     if (this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[0] !== index) {
-  //       dayArray[this.state.checkinCheckout[0]].status = 'available';
-  //     } 
-  //     checkinCheckout[0] = index;
-  //     dayArray[index].status = 'selected';
-  //     this.updateSelectionRange(dayArray, index, this.state.checkinCheckout[1]);
-  //   } else {
-  //     if (this.state.checkinCheckout[1] !== null && this.state.checkinCheckout[1] !== index) {
-  //       dayArray[this.state.checkinCheckout[1]].status = 'available'; 
-  //     } 
-  //     checkinCheckout[1] = index;
-  //     dayArray[index].status = 'selected';
-  //     this.updateSelectionRange(dayArray, this.state.checkinCheckout[0], index);
-  //   }
-  //   this.setState({
-  //     dayArray,
-  //     checkinCheckout
-  //   });
-  // }
-
-
   //this doesn't deal with crossmonths yet should prolly update to deal with crossmonth
-  updateSelectionRange(dayArray, checkin, checkout) {
+  //also deal with situation where check in is a month past and checkout is month forward
+  //can prolly just do , if check in is in prior month, then highlight everyhting backwards for this month
+  //til the first day
+  //if check out is after month - highlight all days until last day of month.
+  updateSelectionRange(dayArray, checkinDate, checkoutDate) {
     //anything less than checkinDate, change status to available, everything greater than checkout/ change to available
     //anything in between chnage to selectionRange
-    if(checkin) {
+    if(checkinDate && checkoutDate) {
+      let checkin = this.calculateIndexOfDay(Number(checkinDate.format('DD')));
+      let checkout = this.calculateIndexOfDay(Number(checkoutDate.format('DD')));
+
+      //checkin previous month
+      //checkout next month
+      if(checkinDate.month() < this.state.currentMonth.month() 
+          && checkoutDate.month() === this.state.currentMonth.month()) {
+        let startIndex = this.state.currentMonth.startOf('month').day()
+        for (let i = startIndex; i < checkout; i++) {
+          dayArray[i].status = 'selectionRange';
+        }
+      }
+      if(checkoutDate.month() > this.state.currentMonth.month() 
+          && checkinDate.month() === this.state.currentMonth.month()) {
+        let startDayIndex = this.state.currentMonth.startOf('month').day();
+        let totalDays = this.state.currentMonth.daysInMonth();
+        let endDayIndex = startDayIndex + totalDays
+        for (let i = checkin + 1; i < endDayIndex; i++) {
+          dayArray[i].status = 'selectionRange';
+        }
+      }
+
+      //same month
       for (let i = 0; i < checkin; i++) {
         dayArray[i].status = 'available'
       }
-    }
-    if(checkin && checkout) {
       for (let i = checkin + 1; i < checkout; i++) {
         dayArray[i].status = 'selectionRange';
       }
-      dayArray[checkin].status += ' checkinSelected';
-      dayArray[checkout].status += ' checkoutSelected';
-    }
-    if(checkout) {
       for(let i = checkout + 1; i < dayArray.length; i++) {
         dayArray[i].status = 'available'
       }
+
+
+      dayArray[checkin].status += ' checkinSelected';
+      dayArray[checkout].status += ' checkoutSelected';
     }
   }
 
