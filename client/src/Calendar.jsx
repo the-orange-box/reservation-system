@@ -120,7 +120,6 @@ class Calendar extends React.Component {
 
   //TODO: refactor this function
   selectDay(index) {
-    console.log('hmmmmm');
     let dayArray = JSON.parse(JSON.stringify(this.state.dayArray));
     let checkinCheckout = this.state.checkinCheckout.slice(0);
     let checkInOutDate = this.getMomentJSofIndex(index, this.state.currentMonth.format('MM'), this.state.currentMonth.format('YYYY'));
@@ -143,27 +142,29 @@ class Calendar extends React.Component {
       let counter = index;
       let year = this.state.currentMonth.format('YYYY');
       let month = this.state.currentMonth.format('MM');
+      let isValidDate = false;
       while (counter < this.requiredBookingDays + 1 + index) {
-        // debugger;
-        console.log('CHECKING IF MONTH UPDATED ' + month);
-        console.log('CHECKIN GIF YEAR UPDATED ' + year);
 
-        var checkforBooked = this.getMomentJSofIndex(counter, month, year);
+        var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
         var isBooked = false;
 
         for(let i = 0; i < this.bookedDates.length; i++){
-          console.log('checkForBooked.format( ' + checkforBooked.format('YYYY MM DD'));
-          console.log('bookdDates.form ' + this.bookedDates[i].format('YYYY MM DD'));
-          if(checkforBooked.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+          if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
             isBooked = true;
-            console.log('is booked: ' + isBooked);
             break;
           }
         }
-        console.log('this is daysBeforeBookedDate ' + daysBeforeBookedDate);
-        console.log('this is this.requiredBookingDays ' + this.requiredBookingDays);
-        if((daysBeforeBookedDate === this.requiredBookingDays + 1) || isBooked) {
-          console.log('IT IS ABOUT TO BREAK OUT');
+        // if((daysBeforeBookedDate === this.requiredBookingDays + 1) || isBooked) {
+        //   break;
+        // }
+        let isCheckedOutDate;
+        if(this.state.checkinCheckout[1]) {
+          isCheckedOutDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[1]).format('YYYY MM DD');
+        }
+        if((daysBeforeBookedDate === this.requiredBookingDays) || isBooked || isCheckedOutDate) {
+          if(daysBeforeBookedDate === this.requiredBookingDays) {
+            isValidDate = true;
+          }
           break;
         }
 
@@ -171,23 +172,18 @@ class Calendar extends React.Component {
         counter++;
         
         let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
-        console.log('LAST DAY INDEXXXXX ' + lastDayIndex);
-        console.log('THIS IS THE COUNTER ' + counter);
         if(counter === lastDayIndex) {
           let nextMonth = this.state.currentMonth.format();
           nextMonth = moment(nextMonth);
           nextMonth.add(1, 'months');
           counter = nextMonth.startOf('month').day();
-          console.log('this is the counter ' + counter);
           month = nextMonth.format('MM');
           year = nextMonth.format('YYYY');
-          console.log('this is nextMonth moment ' + nextMonth.format());
-          console.log('this is next month ' + month);
-          console.log('this is next month year ' + year);
         }
       }
 
-      if(this.requiredBookingDays + 1 === daysBeforeBookedDate) {
+      // if(this.requiredBookingDays + 1 === daysBeforeBookedDate) {
+      if(isValidDate) {
         checkinCheckout[0] = checkInOutDate;
         dayArray[index].status = 'selected';
       }
@@ -206,7 +202,8 @@ class Calendar extends React.Component {
         }
       }
 
-      if(this.requiredBookingDays + 1 === daysBeforeBookedDate) {
+      // if(this.requiredBookingDays + 1 === daysBeforeBookedDate) {
+      if (isValidDate) {
         this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
       }
     } else {
@@ -219,9 +216,6 @@ class Calendar extends React.Component {
           }
         } 
   
-
-
-
         let daysBeforeBookedDate = 0;
         let counter = index;
         let year = this.state.currentMonth.format('YYYY');
