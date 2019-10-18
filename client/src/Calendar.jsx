@@ -200,12 +200,53 @@ class Calendar extends React.Component {
           }
         } 
   
+
+
+
+        let daysBeforeBookedDate = 0;
+        let counter = index;
+        let year = this.state.currentMonth.format('YYYY');
+        let month = this.state.currentMonth.format('MM');
+        let isValidDate = false;
+        while (counter >= index - this.requiredBookingDays) {
+          var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+          var isBooked = false;
+          for(let i = 0; i < this.bookedDates.length; i++){
+            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+              isBooked = true;
+              break;
+            }
+          }
+          let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[0]).format('YYYY MM DD');
+          if((daysBeforeBookedDate === this.requiredBookingDays) || isBooked || isCheckedInDate) {
+            if(daysBeforeBookedDate === this.requiredBookingDays) {
+              isValidDate = true;
+            }
+            break;
+          }
+  
+          daysBeforeBookedDate++;
+          counter--;
+          
+          let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
+          if(counter === lastDayIndex) {
+            let nextMonth = this.state.currentMonth.format();
+            nextMonth = moment(nextMonth);
+            nextMonth.add(1, 'months');
+            counter = nextMonth.startOf('month').day();
+            month = nextMonth.format('MM');
+            year = nextMonth.format('YYYY');
+          }
+        }
+
         //add conditional here - if checkInOutDate (for checkout) 
         //has enough days prior to the current clicked day to meet min required booking days and there isn't any 
         //booked days inbetween this.state.checkincheckout[0]
         //THEN 
-        checkinCheckout[1] = checkInOutDate;
-        dayArray[index].status = 'selected';
+        if(isValidDate) {
+          checkinCheckout[1] = checkInOutDate;
+          dayArray[index].status = 'selected';
+        }
         //above code should be in conditional.
 
 
@@ -213,7 +254,10 @@ class Calendar extends React.Component {
         if(this.state.checkinCheckout[0] !== null) {
           checkinDate = moment(this.state.checkinCheckout[0]);
         }
-        this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
+
+        if(isValidDate) {
+          this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
+        }
       }
     }
     
