@@ -16,7 +16,7 @@ class Calendar extends React.Component {
       currentSelection: null,
       currentMonth: moment(),
       transition: 'fadein',
-      pastDates: []
+      pastDates: [],
     };
 
     this.requiredBookingDays = this.props.requiredBookingDays;
@@ -35,6 +35,7 @@ class Calendar extends React.Component {
     this.calculateIndexOfDay = this.calculateIndexOfDay.bind(this);
     this.clearDates = this.clearDates.bind(this);
     this.calculateBookedDates = this.calculateBookedDates.bind(this);
+    this.getMomentJSofIndex = this.getMomentJSofIndex.bind(this);
   }
 
   calculateDisabledDates(dayArray) {
@@ -55,10 +56,8 @@ class Calendar extends React.Component {
   }
 
   calculateBookedDates(dayArray) {
-    console.log(this.bookedDates);
     let currentMonthBookedDates = this.bookedDates.filter(
                                   monthDates => monthDates.month() === this.state.currentMonth.month());
-    console.log(currentMonthBookedDates);
     for (let i = 0; i < currentMonthBookedDates.length; i++) {
       dayArray[this.calculateIndexOfDay(Number(currentMonthBookedDates[i].format('DD')))].invalidDate = true;
     }
@@ -112,7 +111,7 @@ class Calendar extends React.Component {
 
     this.setState({
       currentMonth,
-      dayArray
+      dayArray,
     }); 
     this.monthTransitionIn()//TODO: update this transition
   }
@@ -121,12 +120,8 @@ class Calendar extends React.Component {
   selectDay(index) {
     let dayArray = this.state.dayArray.slice(0);
     let checkinCheckout = this.state.checkinCheckout.slice(0);
-    let month = this.state.currentMonth.format('MM');
-    let day = this.calculateDayOfMonth(index);
-    let year = this.state.currentMonth.format('YYYY');
 
-
-    let checkInOutDate = year + '-' + month + '-' + day;
+    let checkInOutDate = this.getMomentJSofIndex(index);
 
     if (this.state.currentSelection === 'checkin') {
       if (this.state.checkinCheckout[0] !== null) {
@@ -137,15 +132,49 @@ class Calendar extends React.Component {
       } 
       
       //add conditional here - if checkInOutDate (for checkin) 
-      //has enough days after the currently clicked day to meet min required booking days (has minDaysOpen before a bookedDate) or enough days until a booked day)
+      //has enough days after to meet min required booking days (has minDaysOpen before a bookedDate) or enough days until a booked day)
       //THEN 
-      // let daysBeforeBookedDate = 0;
-      // for (let i = 0; i < this.requiredBookingDays;i++) {
+      //MIGHT NEED TO WORRY ABOUT CROSS MONTH LOGIC
+      let daysBeforeBookedDate = 0;
+      let counter = index;
+      let year = this.state.currentMonth.format('YYYY');
+      let month = this.state.currentMonth.format('MM');
+      while (counter < this.requiredBookingDays + index) {
+        console.log('intial counter ' + counter);
+        
+        
+        var checkforBooked = this.getMomentJSofIndex(counter, month, year);
+        var isBooked = false;
+        for(let i = 0; i < this.bookedDates.length; i++){
+          if(checkforBooked.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+            console.log('i AM BOOKED ' + counter);
+            isBooked = true;
+            break;
+          }
+        }
+        if((daysBeforeBookedDate === this.requiredBookingDays) || isBooked) {
+          break;
+        }
+        console.log(daysBeforeBookedDate);
 
-      // }
-      checkinCheckout[0] = checkInOutDate;
-      dayArray[index].status = 'selected';
-      //The code in between should be in an if block
+        daysBeforeBookedDate++;
+        counter++;
+        //NEED TO SWITCH SO ITS NOT 42, BUT THE LAST VALID DAY.
+        let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
+        if(counter === lastDayIndex) {
+          let nextMonth = this.state.currentMonth.add(1, 'months');
+          counter = nextMonth.startOf('month').day();
+          month = nextMonth.format('MM');
+          year = nextMonth.format('YYYY');
+        }
+      }
+
+      console.log(this.requiredBookingDays);
+      if(this.requiredBookingDays === daysBeforeBookedDate) {
+        checkinCheckout[0] = checkInOutDate;
+        dayArray[index].status = 'selected';
+      }
+      //The code in between should be in an if block UPP
       
       let checkoutDate;
       if(this.state.checkinCheckout[1] !== null) {
@@ -328,6 +357,16 @@ class Calendar extends React.Component {
     } else {
       return Number(day) + Number(moment(date).startOf('month').day()) - 1;
     }
+  }
+
+  getMomentJSofIndex(index, month = this.state.currentMonth.format('MM'), 
+                            year = this.state.currentMonth.format('YYYY')) {
+    let day = this.calculateDayOfMonth(index);
+    if(day < 10) {
+      day = '0' + day;
+    }
+    
+    return moment(year + '-' + month + '-' + day);
   }
 
   componentDidMount() {
