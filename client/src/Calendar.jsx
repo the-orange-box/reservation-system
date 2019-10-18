@@ -268,8 +268,13 @@ class Calendar extends React.Component {
     }, document.getElementById('checkin').focus())
   }
 
+  //TODO: need to update so checkout doesn't get highlighted on click if 
+  //check-in date not selected
   toggleCalendar(selectType) {
- 
+    if(this.state.checkinCheckout[0] === null) {
+      document.getElementById('checkin').focus();
+      selectType = 'checkin';
+    }
     let calendarVisibility;
     if(this.state.calendarVisibility === "hidden") {
       calendarVisibility = "visible";
