@@ -10,20 +10,27 @@ class App extends React.Component {
     super(props);
 
     this.state = {
+      propertyInfo: {
+        pMax_guests: 9, 
+        pNightly_price: 290.00, 
+        pCleaning_fee: 38.00,
+        pService_fee: 0.13,
+        pTaxes_fees: 3.00,
+        pBulkDiscount: 0.95,
+        pRequired_Week_Booking_Days: 6, 
+        pRating: 3.40, 
+        pReviews: 698 
+      },
       guestDropdownVisibility: "hidden",
       numAdults: 1,
       numChildren: 0,
       numInfants: 0,
-      maxGuests: 8, //TODO: update to dynamic from DB
       disableAdultPlus: false,
       disableAdultMinus: true,
       disableChildrenPlus: false,
       disableChildrenMinus: true,
       disableInfantPlus: false,
       disableInfantMinus: true,
-      pricePerNight: 130,
-      starRating: 4.16,
-      numReviews: 10,
       openGuestCarot: "none",
       closeGuestCarot: ""
     };
@@ -53,9 +60,9 @@ class App extends React.Component {
     return(
       <div className="container">
         <div className="propertyContainer">
-          <PropertyDetail pricePerNight={this.state.pricePerNight}
-                          starRating={this.state.starRating}
-                          numReviews={this.state.numReviews}/>
+          <PropertyDetail pricePerNight={this.state.propertyInfo.pNightly_price}
+                          starRating={this.state.propertyInfo.pRating}
+                          numReviews={this.state.propertyInfo.pReviews}/>
         </div>
         <div className="calendarContainer">
           <Calendar/>
@@ -123,7 +130,7 @@ class App extends React.Component {
   }
 
   incrementGuestsCounter(type) {
-    if(this.state.numAdults + this.state.numChildren < this.state.maxGuests) {
+    if(this.state.numAdults + this.state.numChildren < this.state.propertyInfo.pMax_guests) {
       if(type === "adult") {
         let numAdults = this.state.numAdults + 1;
         this.setState({
@@ -177,10 +184,10 @@ class App extends React.Component {
 
   displayMaxGuests() {
     let result = ''
-    if(this.state.maxGuests === 1) {
+    if(this.state.propertyInfo.pMax_guests === 1) {
       result += '1 guest ';
     } else {
-      result += this.state.maxGuests + ' guests ';
+      result += this.state.propertyInfo.pMax_guests + ' guests ';
     }
     result += 'maximum. Infants don\'t count toward the number of guests.';
     return result;
@@ -224,12 +231,12 @@ class App extends React.Component {
       });
     }
 
-    if (this.state.numAdults + this.state.numChildren === this.state.maxGuests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
+    if (this.state.numAdults + this.state.numChildren === this.state.propertyInfo.pMax_guests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
       this.setState({
         disableAdultPlus: true,
         disableChildrenPlus: true
       });
-    } else if (this.state.numAdults + this.state.numChildren < this.state.maxGuests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
+    } else if (this.state.numAdults + this.state.numChildren < this.state.propertyInfo.pMax_guests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
       this.setState({
         disableAdultPlus: false,
         disableChildrenPlus: false

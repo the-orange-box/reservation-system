@@ -23,7 +23,6 @@ CREATE TABLE properties (
   pTaxes_fees DECIMAL(10,2),
   pBulkDiscount DECIMAL(3,2),
   pRequired_Week_Booking_Days int,
-  pRequired_Weekend_Booking_Days int,
   pRating DECIMAL(3,2),
   pReviews int,
 
