@@ -165,7 +165,7 @@ class Calendar extends React.Component {
     }, () => {
       if(prevSelection === 'checkin') {
         document.getElementById('checkout').focus();
-      } else {
+      } else if(this.state.checkinCheckout[1] !== null) {
         this.toggleCalendar();
       }
     });
@@ -179,10 +179,8 @@ class Calendar extends React.Component {
       //checkin previous month
       if(checkinDate.month() < this.state.currentMonth.month() 
           && checkoutDate.month() === this.state.currentMonth.month()) {
-            console.log('YAYYYYYYYY here')
         let startIndex = this.state.currentMonth.startOf('month').day()
         for (let i = startIndex; i < checkout; i++) {
-          console.log('in checkinSelectionrange');
           dayArray[i].status = 'selectionRange';
         }
         dayArray[checkout].status += ' checkoutSelected';
@@ -190,7 +188,6 @@ class Calendar extends React.Component {
       //checkout next month
       if(checkoutDate.month() > this.state.currentMonth.month() 
           && checkinDate.month() === this.state.currentMonth.month()) {
-            console.log('ALSO VERY MUCH SO HERE');
         let startDayIndex = this.state.currentMonth.startOf('month').day();
         let totalDays = this.state.currentMonth.daysInMonth();
         let endDayIndex = startDayIndex + totalDays
