@@ -165,7 +165,12 @@ class Calendar extends React.Component {
         //NEED TO SWITCH SO ITS NOT 42, BUT THE LAST VALID DAY.
         let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
         if(counter === lastDayIndex) {
-          let nextMonth = this.state.currentMonth.add(1, 'months');
+          let nextMonth = this.state.currentMonth.format();
+          console.log(typeof nextMonth);
+          nextMonth = moment(nextMonth);
+          nextMonth.add(1, 'months');
+          console.log('this is this.state.currentMonth ' + typeof this.state.currentMonth);
+          console.log('this is nextMonth ' + nextMonth);
           counter = nextMonth.startOf('month').day();
           month = nextMonth.format('MM');
           year = nextMonth.format('YYYY');

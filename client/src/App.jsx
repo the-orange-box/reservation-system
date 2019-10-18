@@ -29,7 +29,7 @@ class App extends React.Component {
         pService_fee: 0.13,
         pTaxes_fees: 3.00,
         pBulkDiscount: 0.95,
-        pRequired_Week_Booking_Days: 6, 
+        pRequired_Week_Booking_Days: 5, 
         pRating: 3.40, 
         pReviews: 698 
       },
