@@ -10,7 +10,7 @@ class Calendar extends React.Component {
     super(props);
 
     this.state = {
-      dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', outOfRangeDate: false})),
+      dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', invalidDate: false})),
       calendarVisibility: "hidden",
       checkinCheckout: [null,null],
       currentSelection: null,
@@ -34,6 +34,7 @@ class Calendar extends React.Component {
     this.calculateDayOfMonth = this.calculateDayOfMonth.bind(this);
     this.calculateIndexOfDay = this.calculateIndexOfDay.bind(this);
     this.clearDates = this.clearDates.bind(this);
+    this.calculateBookedDates = this.calculateBookedDates.bind(this);
   }
 
   calculateDisabledDates(dayArray) {
@@ -44,12 +45,22 @@ class Calendar extends React.Component {
       firstValidDay = this.state.currentMonth.startOf('month').day();
     }
     for (let i = 0; i < firstValidDay; i++) {
-      dayArray[i].outOfRangeDate = true;
+      dayArray[i].invalidDate = true;
     }
 
     let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
     for (let i = lastDayIndex; i < dayArray.length; i++) {
-      dayArray[i].outOfRangeDate = true;
+      dayArray[i].invalidDate = true;
+    }
+  }
+
+  calculateBookedDates(dayArray) {
+    console.log(this.bookedDates);
+    let currentMonthBookedDates = this.bookedDates.filter(
+                                  monthDates => monthDates.month() === this.state.currentMonth.month());
+    console.log(currentMonthBookedDates);
+    for (let i = 0; i < currentMonthBookedDates.length; i++) {
+      dayArray[this.calculateIndexOfDay(Number(currentMonthBookedDates[i].format('DD')))].invalidDate = true;
     }
   }
 
@@ -75,9 +86,10 @@ class Calendar extends React.Component {
     currentMonth.add(amount, 'months');
 
     //reset daysArray for new month
-    let dayArray = new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', outOfRangeDate: false}));
+    let dayArray = new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', invalidDate: false}));
     this.populateCurrDisplayMonth(dayArray);
     this.calculateDisabledDates(dayArray);
+    this.calculateBookedDates(dayArray);
 
     if(this.state.checkinCheckout[0] !== null && 
       this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[0]).format('MM')) {

@@ -76,7 +76,7 @@ class App extends React.Component {
         </div>
         <div className="calendarContainer">
           <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
-                    bookedDates={this.bookedDates}/>
+                    bookedDates={this.state.bookedDates}/>
         </div> 
         <div className="guestsContainer" ref={node => this.node = node}>
           <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 
