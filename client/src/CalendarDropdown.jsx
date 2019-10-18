@@ -2,7 +2,7 @@ import React from 'react';
 import CalendarDayHeader from './CalendarDayHeader';
 import CalendarDay from './CalendarDay';
 
-const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, currentMonth, transition}) => (
+const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, currentMonth, transition, clearDates}) => (
   <div className={"calendarDropdown " + transition} style={{visibility: visibility}}>
     <button className="previousMonth" onClick={() => updateCurrentMonth(-1)}>
       <svg className="innerCalendarArrow" width="40px" height="35px">
@@ -26,7 +26,7 @@ const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, 
     <div className="calendarDropdownFooter">
       Prices do not include fees and taxes
     </div>
-    <button className="clearDates">
+    <button className="clearDates" onClick={clearDates}>
       Clear dates
     </button>
   </div>

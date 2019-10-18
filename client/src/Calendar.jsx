@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CalendarDropdown from './CalendarDropdown';
+import { buildMatchMemberExpression } from '@babel/types';
 const moment = require('moment');
 moment().format();
 
@@ -30,6 +31,7 @@ class Calendar extends React.Component {
     this.calculateDisabledDates = this.calculateDisabledDates.bind(this);
     this.calculateDayOfMonth = this.calculateDayOfMonth.bind(this);
     this.calculateIndexOfDay = this.calculateIndexOfDay.bind(this);
+    this.clearDates = this.clearDates.bind(this);
   }
 
   calculateDisabledDates(dayArray) {
@@ -193,7 +195,6 @@ class Calendar extends React.Component {
       let checkout = this.calculateIndexOfDay(Number(checkoutDate.format('DD')));
 
       //checkin previous month
-      //checkout next month
       if(checkinDate.month() < this.state.currentMonth.month() 
           && checkoutDate.month() === this.state.currentMonth.month()) {
             console.log('YAYYYYYYYY here')
@@ -204,6 +205,7 @@ class Calendar extends React.Component {
         }
         dayArray[checkout].status += ' checkoutSelected';
       }
+      //checkout next month
       if(checkoutDate.month() > this.state.currentMonth.month() 
           && checkinDate.month() === this.state.currentMonth.month()) {
             console.log('ALSO VERY MUCH SO HERE');
@@ -215,6 +217,16 @@ class Calendar extends React.Component {
         }
         dayArray[checkin].status += ' checkinSelected';
       }
+
+      //checkin previous month and checkout next month
+      if(checkinDate.month() < this.state.currentMonth.month() && checkoutDate.month() > this.state.currentMonth.month()) {
+        let startDayIndex = this.state.currentMonth.startOf('month').day();
+        let totalDays = this.state.currentMonth.daysInMonth();
+        let endDayIndex = startDayIndex + totalDays
+        for (let i = startDayIndex; i < endDayIndex; i++) {
+          dayArray[i].status = 'selectionRange';
+        }
+      } 
 
       //same month
       if(checkoutDate.month() === this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month()) {
@@ -231,6 +243,19 @@ class Calendar extends React.Component {
         dayArray[checkout].status += ' checkoutSelected';
       }
     }
+  }
+
+  clearDates() {
+    //reset everything to unselected.
+    //reset checkincheckout to both null
+    let dayArray = this.state.dayArray.slice(0);
+    for (let i = 0; i < 42; i++) {
+      dayArray[i].status = 'unselected';
+    }
+    this.setState({
+      dayArray,
+      checkinCheckout: [null, null]
+    })
   }
 
   toggleCalendar(selectType) {
@@ -321,7 +346,8 @@ class Calendar extends React.Component {
                             selectDay={this.selectDay}
                             updateCurrentMonth={this.updateCurrentMonth}
                             currentMonth={this.state.currentMonth}
-                            transition={this.state.transition}/>
+                            transition={this.state.transition}
+                            clearDates={this.clearDates}/>
         </div>
       </div>
     )
