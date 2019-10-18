@@ -118,7 +118,7 @@ class Calendar extends React.Component {
     this.setState({
       currentMonth,
       dayArray
-    }, console.log(dayArray) ); 
+    }); 
     this.monthTransitionIn()//TODO: update this transition
   }
 
@@ -175,9 +175,18 @@ class Calendar extends React.Component {
         this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
       }
     }
+
+    let prevSelection = this.state.currentSelection;
     this.setState({
       dayArray,
-      checkinCheckout
+      checkinCheckout,
+      currentSelection: 'checkout'
+    }, () => {
+      if(prevSelection === 'checkin') {
+        document.getElementById('checkout').focus();
+      } else {
+        this.toggleCalendar();
+      }
     });
   }
 
@@ -254,11 +263,13 @@ class Calendar extends React.Component {
     }
     this.setState({
       dayArray,
-      checkinCheckout: [null, null]
-    })
+      checkinCheckout: [null, null],
+      currentSelection: 'checkin'
+    }, document.getElementById('checkin').focus())
   }
 
   toggleCalendar(selectType) {
+ 
     let calendarVisibility;
     if(this.state.calendarVisibility === "hidden") {
       calendarVisibility = "visible";
@@ -309,7 +320,6 @@ class Calendar extends React.Component {
   }
   calculateIndexOfDay(day, date = null) {
     if (date === null) {
-      console.log('ITS COMING IN HERE FOR SOME ODD REASON');
       return day + this.state.currentMonth.startOf('month').day() - 1; 
     } else {
       return Number(day) + Number(moment(date).startOf('month').day()) - 1;
