@@ -556,7 +556,15 @@
   z-index: -1;
 }
 
-
+.selected {
+  border-style: solid;
+  border-width: 2px;
+  background-color: rgb(0, 132, 137);
+  color: white;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(0, 132, 137);
+}
 
 .checkinSelected, .checkoutSelected {
   border-style: solid;
@@ -610,15 +618,7 @@
 }
 
 
-.selected {
-  border-style: solid;
-  border-width: 2px;
-  background-color: rgb(0, 132, 137);
-  color: white;
-  border-style: solid;
-  border-width: 2px;
-  border-color: rgb(0, 132, 137);
-}
+
 
 .calendarDropdownFooter {
   grid-column-start: 1;

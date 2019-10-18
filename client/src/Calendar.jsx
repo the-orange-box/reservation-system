@@ -101,8 +101,8 @@ class Calendar extends React.Component {
         dayArray[checkoutIndex].status = 'selected';
     }
 
-    if(this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[0]).format('MM') && 
-        this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[1]).format('MM')) {
+    // if(this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[0]).format('MM') && 
+    //     this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[1]).format('MM')) {
       if(this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[1] !== null) {
 
         // let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
@@ -111,7 +111,7 @@ class Calendar extends React.Component {
         // let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
         this.updateSelectionRange(dayArray, moment(this.state.checkinCheckout[0]), moment(this.state.checkinCheckout[1]));
       }
-    }
+    // }
 
     this.setState({
       currentMonth,
@@ -185,35 +185,40 @@ class Calendar extends React.Component {
       //checkout next month
       if(checkinDate.month() < this.state.currentMonth.month() 
           && checkoutDate.month() === this.state.currentMonth.month()) {
+            console.log('YAYYYYYYYY here')
         let startIndex = this.state.currentMonth.startOf('month').day()
         for (let i = startIndex; i < checkout; i++) {
+          console.log('in checkinSelectionrange');
           dayArray[i].status = 'selectionRange';
         }
+        dayArray[checkout].status += ' checkoutSelected';
       }
       if(checkoutDate.month() > this.state.currentMonth.month() 
           && checkinDate.month() === this.state.currentMonth.month()) {
+            console.log('ALSO VERY MUCH SO HERE');
         let startDayIndex = this.state.currentMonth.startOf('month').day();
         let totalDays = this.state.currentMonth.daysInMonth();
         let endDayIndex = startDayIndex + totalDays
         for (let i = checkin + 1; i < endDayIndex; i++) {
           dayArray[i].status = 'selectionRange';
         }
+        dayArray[checkin].status += ' checkinSelected';
       }
 
       //same month
-      for (let i = 0; i < checkin; i++) {
-        dayArray[i].status = 'available'
+      if(checkoutDate.month() === this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month()) {
+        for (let i = 0; i < checkin; i++) {
+          dayArray[i].status = 'available'
+        }
+        for (let i = checkin + 1; i < checkout; i++) {
+          dayArray[i].status = 'selectionRange';
+        }
+        for(let i = checkout + 1; i < dayArray.length; i++) {
+          dayArray[i].status = 'available'
+        }
+        dayArray[checkin].status += ' checkinSelected';
+        dayArray[checkout].status += ' checkoutSelected';
       }
-      for (let i = checkin + 1; i < checkout; i++) {
-        dayArray[i].status = 'selectionRange';
-      }
-      for(let i = checkout + 1; i < dayArray.length; i++) {
-        dayArray[i].status = 'available'
-      }
-
-
-      dayArray[checkin].status += ' checkinSelected';
-      dayArray[checkout].status += ' checkoutSelected';
     }
   }
 
