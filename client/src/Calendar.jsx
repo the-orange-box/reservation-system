@@ -6,6 +6,7 @@ moment().format();
 
 //calendar of available dates
 //TODO: need to add changing footer notes.
+//TODO: bug where if you scroll to the same month in a different year. selection dates are weird
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
@@ -122,8 +123,7 @@ class Calendar extends React.Component {
     console.log('hmmmmm');
     let dayArray = JSON.parse(JSON.stringify(this.state.dayArray));
     let checkinCheckout = this.state.checkinCheckout.slice(0);
-
-    let checkInOutDate = this.getMomentJSofIndex(index);
+    let checkInOutDate = this.getMomentJSofIndex(index, this.state.currentMonth.format('MM'), this.state.currentMonth.format('YYYY'));
 
     if (this.state.currentSelection === 'checkin') {
       if (this.state.checkinCheckout[0] !== null) {
@@ -144,9 +144,16 @@ class Calendar extends React.Component {
       let year = this.state.currentMonth.format('YYYY');
       let month = this.state.currentMonth.format('MM');
       while (counter < this.requiredBookingDays + 1 + index) {
+        // debugger;
+        console.log('CHECKING IF MONTH UPDATED ' + month);
+        console.log('CHECKIN GIF YEAR UPDATED ' + year);
+
         var checkforBooked = this.getMomentJSofIndex(counter, month, year);
         var isBooked = false;
+
         for(let i = 0; i < this.bookedDates.length; i++){
+          console.log('checkForBooked.format( ' + checkforBooked.format('YYYY MM DD'));
+          console.log('bookdDates.form ' + this.bookedDates[i].format('YYYY MM DD'));
           if(checkforBooked.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
             isBooked = true;
             console.log('is booked: ' + isBooked);
@@ -164,6 +171,8 @@ class Calendar extends React.Component {
         counter++;
         
         let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
+        console.log('LAST DAY INDEXXXXX ' + lastDayIndex);
+        console.log('THIS IS THE COUNTER ' + counter);
         if(counter === lastDayIndex) {
           let nextMonth = this.state.currentMonth.format();
           nextMonth = moment(nextMonth);
@@ -172,6 +181,9 @@ class Calendar extends React.Component {
           console.log('this is the counter ' + counter);
           month = nextMonth.format('MM');
           year = nextMonth.format('YYYY');
+          console.log('this is nextMonth moment ' + nextMonth.format());
+          console.log('this is next month ' + month);
+          console.log('this is next month year ' + year);
         }
       }
 
@@ -408,6 +420,8 @@ class Calendar extends React.Component {
   calculateDayOfMonth(index, date = null) {
     if(date === null) {
       return index - this.state.currentMonth.startOf('month').day() + 1;
+    } else {
+      return Number(index) - Number(moment(date).startOf('month').day()) + 1;
     }
   }
   calculateIndexOfDay(day, date = null) {
@@ -418,9 +432,8 @@ class Calendar extends React.Component {
     }
   }
 
-  getMomentJSofIndex(index, month = this.state.currentMonth.format('MM'), 
-                            year = this.state.currentMonth.format('YYYY')) {
-    let day = this.calculateDayOfMonth(index);
+  getMomentJSofIndex(index, month, year) {
+    let day = this.calculateDayOfMonth(index, year + '-' + month + '-' + '01');
     if(day < 10) {
       day = '0' + day;
     }
