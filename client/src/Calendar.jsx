@@ -118,6 +118,8 @@ class Calendar extends React.Component {
 
   //TODO: refactor this function
   selectDay(index) {
+    console.log('hmmmmm');
+    // debugger;
     let dayArray = this.state.dayArray.slice(0);
     let checkinCheckout = this.state.checkinCheckout.slice(0);
 
@@ -188,7 +190,10 @@ class Calendar extends React.Component {
           }
         }
       }
-      this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
+
+      if(this.requiredBookingDays === daysBeforeBookedDate) {
+        this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
+      }
     } else {
       if(moment(checkInOutDate) > moment(this.state.checkinCheckout[0])) {
         if (this.state.checkinCheckout[1] !== null) {
@@ -214,8 +219,9 @@ class Calendar extends React.Component {
         this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
       }
     }
-
-    if(checkinCheckout[0] !== null) {
+    
+    if((checkinCheckout[0] !== null && checkinCheckout[0] !== this.state.checkinCheckout[0]) 
+                                                || this.state.currentSelection === 'checkout') {
       let prevSelection = this.state.currentSelection;
       this.setState({
         dayArray,
