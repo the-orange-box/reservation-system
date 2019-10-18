@@ -32,30 +32,33 @@ class Calendar extends React.Component {
     this.calculateIndexOfDay = this.calculateIndexOfDay.bind(this);
   }
 
-  calculateDisabledDates() {
+  calculateDisabledDates(dayArray) {
     // calculateDayOfMonth
-    let dayArray = this.state.dayArray.slice(0);
+    // dayArray = this.state.dayArray.slice(0);
+    let firstValidDay;
     if(this.state.currentMonth.month() === moment().month()) {
-      let currentDayIndex = this.calculateIndexOfDay(Number(moment().format('DD')));
-      for (let i = 0; i < currentDayIndex; i++) {
-        dayArray[i].outOfRangeDate = true;
-      }
-      
-      let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
-      for (let i = lastDayIndex; i < dayArray.length; i++) {
-        dayArray[i].outOfRangeDate = true;
-      }
+      firstValidDay = this.calculateIndexOfDay(Number(moment().format('DD')));
+    } else {
+      firstValidDay = this.state.currentMonth.startOf('month').day();
+    }
+    for (let i = 0; i < firstValidDay; i++) {
+      dayArray[i].outOfRangeDate = true;
     }
 
-    this.setState({
-      dayArray
-    });
+    let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
+    for (let i = lastDayIndex; i < dayArray.length; i++) {
+      dayArray[i].outOfRangeDate = true;
+    }
+
+    // this.setState({
+    //   dayArray
+    // });
   }
 
-  populateCurrDisplayMonth() {
+  populateCurrDisplayMonth(dayArray) {
     let startDayIndex = this.state.currentMonth.startOf('month').day();
     let totalDays = this.state.currentMonth.daysInMonth();
-    let dayArray = this.state.dayArray.slice(0);
+    // let dayArray = this.state.dayArray.slice(0);
 
     let day = 1;
     for(let i = 0; i < startDayIndex; i++) {
@@ -68,19 +71,53 @@ class Calendar extends React.Component {
     for(let i = totalDays + startDayIndex; i < dayArray.length; i++) {
       dayArray[i].day = null;
     }
-
-    this.setState({
-      dayArray
-    }, this.calculateDisabledDates());
-    this.monthTransitionIn() //TODO: update this transition
+    // this.setState({
+    //   dayArray
+    // }, this.calculateDisabledDates());
+    // this.monthTransitionIn() //TODO: update this transition
   }
 
   updateCurrentMonth(amount) {
     let currentMonth = this.state.currentMonth;
     currentMonth.add(amount, 'months');
+
+    //reset daysArray for new month
+    let dayArray = new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', outOfRangeDate: false}));
+    this.populateCurrDisplayMonth(dayArray);
+    this.calculateDisabledDates(dayArray);
+
+    if(this.state.checkinCheckout[0] !== null && 
+      this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[0]).format('MM')) {
+        //select checkin
+        let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
+        let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
+        dayArray[checkinIndex].status = 'selected';
+    }
+    if(this.state.checkinCheckout[1] !== null && 
+      this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[1]).format('MM')) {
+        //select checkout
+        let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
+        let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
+        dayArray[checkoutIndex].status = 'selected';
+    }
+
+    if(this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[0]).format('MM') && 
+        this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[1]).format('MM')) {
+      if(this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[1] !== null) {
+
+        let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
+        let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
+        let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
+        let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
+        this.updateSelectionRange(dayArray, checkinIndex, checkoutIndex);
+      }
+    }
+
     this.setState({
-      currentMonth
-    }, this.populateCurrDisplayMonth());
+      currentMonth,
+      dayArray
+    }, console.log(dayArray) ); 
+    this.monthTransitionIn()//TODO: update this transition
   }
 
   //TODO: refactor this function
@@ -156,7 +193,7 @@ class Calendar extends React.Component {
   // }
 
 
-
+  //this doesn't deal with crossmonths yet should prolly update to deal with crossmonth
   updateSelectionRange(dayArray, checkin, checkout) {
     //anything less than checkinDate, change status to available, everything greater than checkout/ change to available
     //anything in between chnage to selectionRange
@@ -223,17 +260,23 @@ class Calendar extends React.Component {
     }
   }
 
-  calculateDayOfMonth(index) {
-    return index - this.state.currentMonth.startOf('month').day() + 1;
+  calculateDayOfMonth(index, date = null) {
+    if(date === null) {
+      return index - this.state.currentMonth.startOf('month').day() + 1;
+    }
   }
-  calculateIndexOfDay(day) {
-    return day + this.state.currentMonth.startOf('month').day() - 1; 
+  calculateIndexOfDay(day, date = null) {
+    if (date === null) {
+      console.log('ITS COMING IN HERE FOR SOME ODD REASON');
+      return day + this.state.currentMonth.startOf('month').day() - 1; 
+    } else {
+      return Number(day) + Number(moment(date).startOf('month').day()) - 1;
+    }
   }
 
   componentDidMount() {
     document.addEventListener('mousedown', this.handleOutsideCalendarClick, false);
-    this.populateCurrDisplayMonth();
-    this.calculateDisabledDates();
+    this.updateCurrentMonth();
   }
 
   componentWillUnmount() {

@@ -18,6 +18,8 @@ const Reserve = () => (
       // console.log(moment().month("MMMM"));
       // console.log('this is the moment day ' + moment().day());
       // console.log(typeof moment().format('DD'));
+      console.log(moment().month('10').startOf().day());
+      console.log(moment().startOf('month').day());
     }
     }>Reserve</button>
   </div>
