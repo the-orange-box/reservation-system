@@ -3,11 +3,11 @@ import PropertyDetail from './PropertyDetail';
 import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
+import BookingDetail from './BookingDetail';
 const moment = require('moment');
 moment().format();
 
 //add REPORT THIS LISTING
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -28,25 +28,79 @@ class App extends React.Component {
         pCleaning_fee: 38.00,
         pService_fee: 0.13,
         pTaxes_fees: 3.00,
-        pBulkDiscount: 0.95,
+        pBulkDiscount: 0.05,
         pRequired_Week_Booking_Days: 3, 
         pRating: 3.40, 
         pReviews: 698 
       },
+      bookingDisplay: [],
       numReservedDates: null,
       totalGuests: 1,
+      totalPrice: null,
+      totalServiceFee: null,
+      totalWeeklyDiscount: null,
+      totalAmount: null,
     };
 
     this.getNumReservedDates = this.getNumReservedDates.bind(this);
     this.getTotalGuests = this.getTotalGuests.bind(this);
+    this.populateBookingDisplay = this.populateBookingDisplay.bind(this);
+  }
+
+  populateBookingDisplay() {
+
+                            
+                                    
+    //Nightly_price': `$${this.state.propertyInfo.pNightly_price} x ${this.state.numReservedDates} nights
+    let totalPrice = null;
+    let totalServiceFee = null;
+    let totalWeeklyDiscount = null;
+    let totalAmount = null;
+
+    let bookingDisplay = [];
+    if(this.state.numReservedDates) {
+      totalPrice = this.state.propertyInfo.pNightly_price * this.state.numReservedDates;
+      totalServiceFee = this.state.propertyInfo.pService_fee * totalPrice;
+      totalWeeklyDiscount = -(totalPrice * this.state.propertyInfo.pBulkDiscount);
+      totalAmount = totalPrice + totalServiceFee + totalWeeklyDiscount;
+
+      let possibleBookingDisplays = {
+              'pNightly_price': [`$${this.state.propertyInfo.pNightly_price} x ${this.state.numReservedDates} nights`, totalPrice], 
+              'pBulkDiscount' : [`${100 - (this.state.propertyInfo.pBulkDiscount * 100)}% weekly price discount`, totalWeeklyDiscount],
+              'pCleaning_fee' : ['Cleaning Fee', this.state.propertyInfo.pCleaning_fee], 
+              'pService_fee'  : ['Service fee', totalServiceFee], 
+              'pTaxes_fees'   : ['Occupancy taxes and fees', this.state.propertyInfo.pTaxes_fees] 
+            };
+
+      for (let key in this.state.propertyInfo) {
+        if (possibleBookingDisplays.hasOwnProperty(key)) {
+          console.log('key' + possibleBookingDisplays[key]);
+          console.log('value ' + this.state.propertyInfo[key])
+          bookingDisplay.push({key: possibleBookingDisplays[key][0], value: '$' + Math.trunc(possibleBookingDisplays[key][1])})
+        }
+      }
+    }
+    this.setState({
+      bookingDisplay,
+      totalPrice,
+      totalServiceFee,
+      totalWeeklyDiscount,
+      totalAmount
+    });
   }
 
   getNumReservedDates(checkin, checkout) {
+
+    let numReservedDates = null;
     if(checkin && checkout) {
       checkin = moment(checkin);
       checkout = moment(checkout);
-      return checkout.diff(checkin, 'days');
+
+      numReservedDates = checkout.diff(checkin, 'days');
     }
+    this.setState({
+      numReservedDates
+    }, this.populateBookingDisplay);
   }
 
   getTotalGuests(numAdults, numChildren) {
@@ -69,6 +123,13 @@ class App extends React.Component {
         <div className="guestsContainer">
           <Guests pMax_guests={this.state.propertyInfo.pMax_guests}
                   getTotalGuests={this.getTotalGuests}/>
+        </div>
+        <div className="bookingInformation">
+            {this.state.bookingDisplay.map(bookingDetail => <BookingDetail bookingDetail={bookingDetail}/>)} 
+          <div className="bookingTotal">
+            { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalKey">Total</span> : null }
+            { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalValue">{'$' + Math.trunc(this.state.totalAmount)}</span> : null }                                       
+          </div>
         </div>
         <div className="reserveContainer">
           <Reserve/>

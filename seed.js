@@ -57,7 +57,7 @@ for (let i = 1; i <= 100; i++) {
   var pService_fee = 0.13;  //13% pNightly_price + pCleaning_Fee
   
   var pTaxes_fees = shouldBeDisplayed(getRandomInt(3,10));
-  var pBulkDiscount = shouldBeDisplayed(0.95);
+  var pBulkDiscount = shouldBeDisplayed(0.05);
   
 
   var pRequired_Week_Booking_Days = getRandomInt(3,8); 
