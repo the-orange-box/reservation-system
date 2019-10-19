@@ -98,7 +98,6 @@ class Calendar extends React.Component {
         //select checkin
         let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
         let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
-        console.log('ITS GETTING IN HERE 4');
         dayArray[checkinIndex].status = 'selected';
     }
     if(this.state.checkinCheckout[1] !== null && 
@@ -107,7 +106,6 @@ class Calendar extends React.Component {
         //select checkout
         let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
         let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
-        console.log('ITS GETTING IN HERE 5');
         dayArray[checkoutIndex].status = 'selected';
     }
 
@@ -179,7 +177,6 @@ class Calendar extends React.Component {
 
       if(isValidDate) {
         checkinCheckout[0] = checkInOutDate;
-        console.log('ITS GETTING IN HERE 2');
         dayArray[index].status = 'selected';
       }
 
@@ -244,7 +241,6 @@ class Calendar extends React.Component {
         }
         if(isValidDate) {
           checkinCheckout[1] = checkInOutDate;
-          console.log('ITS GETTING IN HERE 3');
           dayArray[index].status = 'selected';
         }
 
@@ -282,8 +278,8 @@ class Calendar extends React.Component {
       let checkout = this.calculateIndexOfDay(Number(checkoutDate.format('DD')));
 
       //checkin previous month
-      if(checkinDate.month() < this.state.currentMonth.month() 
-          && checkoutDate.month() === this.state.currentMonth.month()) {
+      if((checkinDate.month() < this.state.currentMonth.month() && checkoutDate.month() === this.state.currentMonth.month() )
+          || (checkinDate.year() < this.state.currentMonth.year()) && checkoutDate.month() === this.state.currentMonth.month()){
         let startIndex = this.state.currentMonth.startOf('month').day()
         for (let i = startIndex; i < checkout; i++) {
           dayArray[i].status = 'selectionRange';
@@ -291,20 +287,20 @@ class Calendar extends React.Component {
         dayArray[checkout].status += ' checkoutSelected';
       }
       //checkout next month
-      if(checkoutDate.month() > this.state.currentMonth.month() 
-          && checkinDate.month() === this.state.currentMonth.month()) {
+      if((checkoutDate.month() > this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month())
+      || (checkoutDate.year() > this.state.currentMonth.year() && checkinDate.month() === this.state.currentMonth.month())) {
         let startDayIndex = this.state.currentMonth.startOf('month').day();
         let totalDays = this.state.currentMonth.daysInMonth();
         let endDayIndex = startDayIndex + totalDays
         for (let i = checkin + 1; i < endDayIndex; i++) {
           dayArray[i].status = 'selectionRange';
         }
-        console.log('def here 1');
         dayArray[checkin].status += ' checkinSelected';
       }
 
       //checkin previous month and checkout next month
-      if(checkinDate.month() < this.state.currentMonth.month() && checkoutDate.month() > this.state.currentMonth.month()) {
+      if(checkinDate.startOf('month').diff(this.state.currentMonth.startOf('month'), 'days') < 0 
+          && checkoutDate.startOf('month').diff(this.state.currentMonth.startOf('month'), 'days') > 0) {
         let startDayIndex = this.state.currentMonth.startOf('month').day();
         let totalDays = this.state.currentMonth.daysInMonth();
         let endDayIndex = startDayIndex + totalDays
@@ -325,7 +321,6 @@ class Calendar extends React.Component {
         for(let i = checkout + 1; i < dayArray.length; i++) {
           dayArray[i].status = 'unselected'
         }
-        console.log('def here 2');
         dayArray[checkin].status += ' checkinSelected';
         dayArray[checkout].status += ' checkoutSelected';
       }

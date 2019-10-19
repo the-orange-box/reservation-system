@@ -18,11 +18,11 @@ const Reserve = () => (
       // console.log(moment().month("MMMM"));
       // console.log('this is the moment day ' + moment().day());
       // console.log(typeof moment().format('DD'));
-      console.log(moment().month('10').startOf().day());
+      console.log(moment().month('10').startOf());
       console.log(moment().startOf('month').day());
-      var firstDay = moment('2019-10-20 00:032:00');
-      var secondDay = moment('2019-10-30 00:00:00');
-      console.log('diff between first and second day ' + secondDay.diff(firstDay, 'days'));
+      var firstDay = moment('2019-12-20 00:032:00').startOf('month');
+      var secondDay = moment('2020-01-01 00:00:00').startOf('month');
+      console.log('diff between first and second day ' + firstDay.diff(secondDay, 'months'));
     }
     }>Reserve</button>
   </div>
