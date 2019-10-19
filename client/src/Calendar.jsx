@@ -209,22 +209,37 @@ class Calendar extends React.Component {
         let year = this.state.currentMonth.format('YYYY');
         let month = this.state.currentMonth.format('MM');
         let isValidDate = false;
-        while (counter >= index - this.requiredBookingDays) {
-          var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+        var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+        // while (counter >= index - this.requiredBookingDays) {
+          console.log(checkforBookedorCheckedInDate.format('YYYY MM DD'));
+          console.log(moment(this.state.checkinCheckout[0]).format('YYYY MM DD'));
+        while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[0]).format('YYYY MM DD')) {
+          checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+          console.log('its getting in here');
           var isBooked = false;
           for(let i = 0; i < this.bookedDates.length; i++){
             if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+              console.log('booked being set to true');
               isBooked = true;
               break;
             }
           }
           let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[0]).format('YYYY MM DD');
-          if((daysBeforeBookedDate === this.requiredBookingDays) || isBooked || isCheckedInDate) {
-            if(daysBeforeBookedDate === this.requiredBookingDays) {
+          console.log('isCheckedInDate ' + isCheckedInDate);
+          console.log('daysBeforeBookedDate ' + daysBeforeBookedDate);
+          console.log(' this required booking days ' + this.requiredBookingDays);
+          console.log('isBooked ' + !isBooked);
+          console.log('if statement hmmm ' + isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked);
+          if(isBooked || (isCheckedInDate && daysBeforeBookedDate < this.requiredBookingDays) || (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked)) {
+            console.log('is it getting to initial if statement');
+            if (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked) {
+              console.log('it should be getting to true');
               isValidDate = true;
             }
+            console.log('breaking out of while loop');
             break;
           }
+
   
           daysBeforeBookedDate++;
           counter--;
