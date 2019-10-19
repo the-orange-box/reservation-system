@@ -3,11 +3,11 @@ import PropertyDetail from './PropertyDetail';
 import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
+import BookingDetail from './BookingDetail';
 const moment = require('moment');
 moment().format();
 
 //add REPORT THIS LISTING
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -28,224 +28,83 @@ class App extends React.Component {
         pCleaning_fee: 38.00,
         pService_fee: 0.13,
         pTaxes_fees: 3.00,
-        pBulkDiscount: 0.95,
+        pBulkDiscount: 0.05,
         pRequired_Week_Booking_Days: 3, 
         pRating: 3.40, 
         pReviews: 698 
       },
-      guestDropdownVisibility: "hidden",
-      numAdults: 1,
-      numChildren: 0,
-      numInfants: 0,
-      disableAdultPlus: false,
-      disableAdultMinus: true,
-      disableChildrenPlus: false,
-      disableChildrenMinus: true,
-      disableInfantPlus: false,
-      disableInfantMinus: true,
-      openGuestCarot: "none",
-      closeGuestCarot: "",
-      numReservedDates: null
+      bookingDisplay: [],
+      numReservedDates: null,
+      totalGuests: 1,
+      totalPrice: null,
+      totalServiceFee: null,
+      totalWeeklyDiscount: null,
+      totalAmount: null,
     };
 
-    this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.closeGuestsDropdown = this.closeGuestsDropdown.bind(this);
-    this.incrementGuestsCounter = this.incrementGuestsCounter.bind(this);
-    this.decrementGuestsCounter = this.decrementGuestsCounter.bind(this);
-    this.updateAdultChildrenButtonStatus = this.updateAdultChildrenButtonStatus.bind(this);
-    this.updateInfantButtonStatus = this.updateInfantButtonStatus.bind(this);
-    this.updateButtonStatus = this.updateButtonStatus.bind(this);
-    this.displayMaxGuests = this.displayMaxGuests.bind(this);
-    this.displayGuests = this.displayGuests.bind(this);
-    this.toggleGuestsCarot = this.toggleGuestsCarot.bind(this);
     this.getNumReservedDates = this.getNumReservedDates.bind(this);
+    this.getTotalGuests = this.getTotalGuests.bind(this);
+    this.populateBookingDisplay = this.populateBookingDisplay.bind(this);
   }
 
-  getNumReservedDates(checkin, checkout) {
-    if(checkin && checkout) {
-      checkin = moment(checkin);
-      checkout = moment(checkout);
-      return checkout.diff(checkin, 'days');
-    }
-  }
+  populateBookingDisplay() {
 
-  toggleGuestsCarot() {
-    if(this.state.guestDropdownVisibility === "hidden") {
-      this.setState({
-        openGuestCarot: "none",
-        closeGuestCarot: ""
-      })
-    } else {
-      this.setState({
-        openGuestCarot: "",
-        closeGuestCarot: "none"
-      })
-    }
-  }
+                            
+                                    
+    //Nightly_price': `$${this.state.propertyInfo.pNightly_price} x ${this.state.numReservedDates} nights
+    let totalPrice = null;
+    let totalServiceFee = null;
+    let totalWeeklyDiscount = null;
+    let totalAmount = null;
 
-  toggleGuestsDropdown() {
-    let guestDropdownVisibility;
-    if(this.state.guestDropdownVisibility === "hidden") {
-      guestDropdownVisibility = "visible";
-    } else {
-      guestDropdownVisibility = "hidden";
+    let bookingDisplay = [];
+    if(this.state.numReservedDates) {
+      totalPrice = this.state.propertyInfo.pNightly_price * this.state.numReservedDates;
+      totalServiceFee = this.state.propertyInfo.pService_fee * totalPrice;
+      totalWeeklyDiscount = -(totalPrice * this.state.propertyInfo.pBulkDiscount);
+      totalAmount = totalPrice + totalServiceFee + totalWeeklyDiscount;
+
+      let possibleBookingDisplays = {
+              'pNightly_price': [`$${this.state.propertyInfo.pNightly_price} x ${this.state.numReservedDates} nights`, totalPrice], 
+              'pBulkDiscount' : [`${100 - (this.state.propertyInfo.pBulkDiscount * 100)}% weekly price discount`, totalWeeklyDiscount],
+              'pCleaning_fee' : ['Cleaning Fee', this.state.propertyInfo.pCleaning_fee], 
+              'pService_fee'  : ['Service fee', totalServiceFee], 
+              'pTaxes_fees'   : ['Occupancy taxes and fees', this.state.propertyInfo.pTaxes_fees] 
+            };
+
+      for (let key in this.state.propertyInfo) {
+        if (possibleBookingDisplays.hasOwnProperty(key)) {
+          console.log('key' + possibleBookingDisplays[key]);
+          console.log('value ' + this.state.propertyInfo[key])
+          bookingDisplay.push({key: possibleBookingDisplays[key][0], value: '$' + Math.trunc(possibleBookingDisplays[key][1])})
+        }
+      }
     }
     this.setState({
-      guestDropdownVisibility
-    }, this.toggleGuestsCarot);
-  }
-
-  closeGuestsDropdown() {
-    this.setState({
-      guestDropdownVisibility: "hidden"
+      bookingDisplay,
+      totalPrice,
+      totalServiceFee,
+      totalWeeklyDiscount,
+      totalAmount
     });
   }
 
-  incrementGuestsCounter(type) {
-    if(this.state.numAdults + this.state.numChildren < this.state.propertyInfo.pMax_guests) {
-      if(type === "adult") {
-        let numAdults = this.state.numAdults + 1;
-        this.setState({
-          numAdults
-        }, this.updateButtonStatus);
-      } else if (type === "children") {
-        let numChildren = this.state.numChildren + 1;
-        this.setState({
-          numChildren
-        }, this.updateButtonStatus);
-      } 
-    }   
-    if (type === "infant" && this.state.numInfants < 5) {
-      let numInfants = this.state.numInfants + 1;
-      this.setState({
-        numInfants
-      }, this.updateButtonStatus);
+  getNumReservedDates(checkin, checkout) {
+
+    let numReservedDates = null;
+    if(checkin && checkout) {
+      checkin = moment(checkin);
+      checkout = moment(checkout);
+
+      numReservedDates = checkout.diff(checkin, 'days');
     }
+    this.setState({
+      numReservedDates
+    }, this.populateBookingDisplay);
   }
 
-  decrementGuestsCounter(type) {
-      if(type === "adult" && this.state.numAdults > 1) {
-        let numAdults = this.state.numAdults - 1;
-        this.setState({
-          numAdults
-        }, this.updateButtonStatus);
-      } else if (type === "children" && this.state.numChildren > 0) {
-        let numChildren = this.state.numChildren - 1;
-        this.setState({
-          numChildren
-        }, this.updateButtonStatus);
-      } else if(type === "infant" && this.state.numInfants > 0) {
-        let numInfants = this.state.numInfants - 1;
-        this.setState({
-          numInfants
-        }, this.updateButtonStatus);
-      }
-  }
-
-  //fix later so that will unselect when clicking on guestsHeader as well
-  handleClick(e) {
-    if (this.state.guestDropdownVisibility === "visible" && !this.node.contains(e.target)) {
-      this.toggleGuestsDropdown();
-    }
-  }
-
-  updateButtonStatus() {
-    this.updateAdultChildrenButtonStatus();
-    this.updateInfantButtonStatus();
-  }
-
-  displayMaxGuests() {
-    let result = ''
-    if(this.state.propertyInfo.pMax_guests === 1) {
-      result += '1 guest ';
-    } else {
-      result += this.state.propertyInfo.pMax_guests + ' guests ';
-    }
-    result += 'maximum. Infants don\'t count toward the number of guests.';
-    return result;
-  }
-
-  displayGuests() {
-    let result = ''
-    if(this.state.numAdults + this.state.numChildren === 1) {
-      result += '1 guest';
-    } else {
-      result += (this.state.numAdults + this.state.numChildren) + ' guests';
-    }
-
-    if(this.state.numInfants === 1) {
-      result += ', 1 infant'
-    } else if (this.state.numInfants > 1) {
-      result += ', ' + this.state.numInfants + ' infants'
-    }
-
-    return result;
-  }
-
-  updateAdultChildrenButtonStatus() {
-    if (this.state.numAdults === 1) {
-      this.setState({
-        disableAdultMinus: true
-      });
-    } else {
-      this.setState({
-        disableAdultMinus: false
-      });
-    }
-
-    if (this.state.numChildren === 0) {
-      this.setState({
-        disableChildrenMinus: true
-      });
-    } else {
-      this.setState({
-        disableChildrenMinus: false
-      });
-    }
-
-    if (this.state.numAdults + this.state.numChildren === this.state.propertyInfo.pMax_guests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
-      this.setState({
-        disableAdultPlus: true,
-        disableChildrenPlus: true
-      });
-    } else if (this.state.numAdults + this.state.numChildren < this.state.propertyInfo.pMax_guests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
-      this.setState({
-        disableAdultPlus: false,
-        disableChildrenPlus: false
-      });
-    }
-  }
-
-  updateInfantButtonStatus() {
-    if (this.state.numInfants === 0) {
-      this.setState({
-        disableInfantMinus: true
-      });
-    } else {
-      this.setState({
-        disableInfantMinus: false
-      });
-    }
-
-    if (this.state.numInfants === 5 && !this.state.disableInfantPlus) {
-      this.setState({
-        disableInfantPlus: true
-      });
-    } else if (this.state.numInfants < 5 && this.state.disableInfantPlus) {
-      this.setState({
-        disableInfantPlus: false
-      });
-    }
-  }
-
-
-  componentDidMount() {
-    document.addEventListener('click', this.handleClick, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick, false);
+  getTotalGuests(numAdults, numChildren) {
+    return Number(numAdults) + Number(numChildren);
   }
 
   render() {
@@ -261,25 +120,16 @@ class App extends React.Component {
                     bookedDates={this.state.bookedDates}
                     getNumReservedDates={this.getNumReservedDates}/>
         </div> 
-        <div className="guestsContainer" ref={node => this.node = node}>
-          <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 
-                  guestVisibility={this.state.guestDropdownVisibility} 
-                  closeGuestsDropdown={this.closeGuestsDropdown}
-                  numAdults={this.state.numAdults}
-                  numChildren={this.state.numChildren}
-                  numInfants={this.state.numInfants}
-                  decrementGuestsCounter={this.decrementGuestsCounter}
-                  incrementGuestsCounter={this.incrementGuestsCounter}
-                  disableAdultPlus={this.state.disableAdultPlus}
-                  disableAdultMinus={this.state.disableAdultMinus}
-                  disableChildrenPlus={this.state.disableChildrenPlus}
-                  disableChildrenMinus={this.state.disableChildrenMinus}
-                  disableInfantPlus={this.state.disableInfantPlus}
-                  disableInfantMinus={this.state.disableInfantMinus}
-                  displayMaxGuests={this.displayMaxGuests}
-                  displayGuests={this.displayGuests}
-                  openGuestCarot={this.state.openGuestCarot}
-                  closeGuestCarot={this.state.closeGuestCarot}/>
+        <div className="guestsContainer">
+          <Guests pMax_guests={this.state.propertyInfo.pMax_guests}
+                  getTotalGuests={this.getTotalGuests}/>
+        </div>
+        <div className="bookingInformation">
+            {this.state.bookingDisplay.map(bookingDetail => <BookingDetail bookingDetail={bookingDetail}/>)} 
+          <div className="bookingTotal">
+            { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalKey">Total</span> : null }
+            { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalValue">{'$' + Math.trunc(this.state.totalAmount)}</span> : null }                                       
+          </div>
         </div>
         <div className="reserveContainer">
           <Reserve/>

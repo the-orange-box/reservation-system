@@ -11,11 +11,61 @@
   background: white;
   font-family: 'Nunito Sans', sans-serif;
   width: 375px;
-  height: 350px;
+  /* height: 350px; */
   display: grid;
   justify-items: stretch;
   grid-template-columns: 25px 145px 35px 145px 25px;
-  grid-template-rows: 22px 60px 75px 85px 60px 48px;
+  grid-template-rows: 22px 60px 75px 85px auto 60px 48px;
+}
+
+.bookingInformation {
+  grid-column-start: 2;
+  grid-column-end: 5;
+  grid-row-start: 5;
+  grid-row-end:6;
+  padding-bottom: 25px;
+}
+
+.bookingDetail {
+  color: rgb(100, 100, 100);
+  font-size: 14px;
+  font-weight: 400;
+
+  border-bottom-color: rgb(235, 235, 235);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding-bottom: 10px;
+  padding-top: 7px;
+  display:flex;
+  justify-content: space-between;
+}
+
+.bookingDetailKey {
+  text-align: start;
+  flex:2;
+}
+
+.bookingDetailValue {
+  text-align: end;
+  flex:1;
+}
+
+.bookingTotal {
+  padding-top: 10px;
+  color: rgb(72, 72, 72);
+  font-size: 14px;
+  font-weight: 600;
+  display:flex;
+  justify-content: space-between
+}
+
+.bookingTotalKey {
+  text-align: start;
+  flex:2;
+}
+.bookingTotalValue {
+  text-align: end;
+  flex:1;
 }
 
 .calendarContainer {
@@ -71,15 +121,15 @@
 .reserveContainer {
   grid-column-start: 2;
   grid-column-end: 5;
-  grid-row-start: 5;
-  grid-row-end: 6;
+  grid-row-start: 6;
+  grid-row-end: 7;
   align-self: center;
 }
 
 .footer {
   grid-column-start: 2;
   grid-column-end: 5;
-  grid-row-start: 6;
+  grid-row-start: 7;
   grid-row-end: 7;
 
   align-self: start;
