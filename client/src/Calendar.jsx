@@ -179,8 +179,8 @@ class Calendar extends React.Component {
         daysBeforeBookedDate++;
         counter++;
         
-        let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth() + 1);
-        if(counter === lastDayIndex) {
+        let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+        if(counter - 1 === lastDayIndex) {
           let nextMonth = this.state.currentMonth.format();
           nextMonth = moment(nextMonth);
           nextMonth.add(1, 'months');
@@ -219,7 +219,6 @@ class Calendar extends React.Component {
             dayArray[checkoutIndex].status = 'unselected';
           }
         } 
-  
         let daysBeforeBookedDate = 0;
         let counter = index;
         let year = this.state.currentMonth.format('YYYY');
@@ -237,6 +236,10 @@ class Calendar extends React.Component {
           let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[0]).format('YYYY MM DD');
           if((daysBeforeBookedDate === this.requiredBookingDays) || isBooked || isCheckedInDate) {
             if(daysBeforeBookedDate === this.requiredBookingDays) {
+              console.log('requiredBookingDays ' + this.requiredBookingDays);
+              console.log('daysBeforeBookedDate ' + daysBeforeBookedDate);
+              console.log('isBooked ' + isBooked);
+              console.log('isCheckedInDate ' + isCheckedInDate);
               isValidDate = true;
             }
             break;
@@ -246,13 +249,13 @@ class Calendar extends React.Component {
           counter--;
           
           let firstDayIndex = this.state.currentMonth.startOf('month').day();
-          if(counter === firstDayIndex) {
+          if(counter + 1 === firstDayIndex) {
             let prevMonth = this.state.currentMonth.format();
             prevMonth = moment(prevMonth);
             prevMonth.subtract(1, 'months');
-            counter = this.calculateIndexOfDay(prevMonth.daysInMonth() + 1);
             month = prevMonth.format('MM');
             year = prevMonth.format('YYYY');
+            counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-01-' + month);
           }
         }
         if(isValidDate) {
