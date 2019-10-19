@@ -6,7 +6,6 @@ moment().format();
 
 //calendar of available dates
 //TODO: need to add changing footer notes.
-//TODO: bug where if you scroll to the same month in a different year. selection dates are weird
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +22,7 @@ class Calendar extends React.Component {
 
     this.requiredBookingDays = this.props.requiredBookingDays;
     this.bookedDates = this.props.bookedDates;
+    this.getNumReservedDates = this.props.getNumReservedDates;
     
     this.toggleCalendar = this.toggleCalendar.bind(this);
     this.handleOutsideCalendarClick = this.handleOutsideCalendarClick.bind(this);
@@ -166,7 +166,6 @@ class Calendar extends React.Component {
 
           counter++;
           let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
-          console.log('is this a leap year? ' + this.state.currentMonth.isLeapYear());
           if(counter - 1 === lastDayIndex) {
             var nextMonth = currentMonth;
             nextMonth = moment(nextMonth);
@@ -409,7 +408,7 @@ class Calendar extends React.Component {
     this.setState({
       calendarVisibility,
       currentSelection: selectType
-    });
+    }, () => this.getNumReservedDates(this.state.checkinCheckout[0], this.state.checkinCheckout[1]));
   }
 
   monthTransitionIn() {

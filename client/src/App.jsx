@@ -21,7 +21,7 @@ class App extends React.Component {
                      moment('2019-12-01 00:00:00'), moment('2019-12-08 00:00:00'), moment('2020-01-04 00:00:00'), 
                      moment('2020-01-27 00:00:00'), moment('2020-01-09 00:00:00'), moment('2020-01-07 00:00:00'), 
                      moment('2020-01-23 00:00:00'), moment('2020-01-01 00:00:00'), moment('2020-01-03 00:00:00'), 
-                     moment('2020-01-22 00:00:00') ],
+                     moment('2020-01-22 00:00:00'), moment('2020-05-22 00:00:00') ],
       propertyInfo: {
         pMax_guests: 9, 
         pNightly_price: 290.00, 
@@ -44,7 +44,8 @@ class App extends React.Component {
       disableInfantPlus: false,
       disableInfantMinus: true,
       openGuestCarot: "none",
-      closeGuestCarot: ""
+      closeGuestCarot: "",
+      numReservedDates: null
     };
 
     this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
@@ -58,56 +59,15 @@ class App extends React.Component {
     this.displayMaxGuests = this.displayMaxGuests.bind(this);
     this.displayGuests = this.displayGuests.bind(this);
     this.toggleGuestsCarot = this.toggleGuestsCarot.bind(this);
+    this.getNumReservedDates = this.getNumReservedDates.bind(this);
   }
 
-  componentDidMount() {
-    document.addEventListener('click', this.handleClick, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick, false);
-  }
-
-  render() {
-    return(
-      <div className="container">
-        <div className="propertyContainer">
-          <PropertyDetail pricePerNight={this.state.propertyInfo.pNightly_price}
-                          starRating={this.state.propertyInfo.pRating}
-                          numReviews={this.state.propertyInfo.pReviews}/>
-        </div>
-        <div className="calendarContainer">
-          <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
-                    bookedDates={this.state.bookedDates}/>
-        </div> 
-        <div className="guestsContainer" ref={node => this.node = node}>
-          <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 
-                  guestVisibility={this.state.guestDropdownVisibility} 
-                  closeGuestsDropdown={this.closeGuestsDropdown}
-                  numAdults={this.state.numAdults}
-                  numChildren={this.state.numChildren}
-                  numInfants={this.state.numInfants}
-                  decrementGuestsCounter={this.decrementGuestsCounter}
-                  incrementGuestsCounter={this.incrementGuestsCounter}
-                  disableAdultPlus={this.state.disableAdultPlus}
-                  disableAdultMinus={this.state.disableAdultMinus}
-                  disableChildrenPlus={this.state.disableChildrenPlus}
-                  disableChildrenMinus={this.state.disableChildrenMinus}
-                  disableInfantPlus={this.state.disableInfantPlus}
-                  disableInfantMinus={this.state.disableInfantMinus}
-                  displayMaxGuests={this.displayMaxGuests}
-                  displayGuests={this.displayGuests}
-                  openGuestCarot={this.state.openGuestCarot}
-                  closeGuestCarot={this.state.closeGuestCarot}/>
-        </div>
-        <div className="reserveContainer">
-          <Reserve/>
-        </div>
-        <div className="footer">
-          You won't be charged yet
-        </div>
-      </div>
-    );
+  getNumReservedDates(checkin, checkout) {
+    if(checkin && checkout) {
+      checkin = moment(checkin);
+      checkout = moment(checkout);
+      return checkout.diff(checkin, 'days');
+    }
   }
 
   toggleGuestsCarot() {
@@ -277,6 +237,58 @@ class App extends React.Component {
         disableInfantPlus: false
       });
     }
+  }
+
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClick, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick, false);
+  }
+
+  render() {
+    return(
+      <div className="container">
+        <div className="propertyContainer">
+          <PropertyDetail pricePerNight={this.state.propertyInfo.pNightly_price}
+                          starRating={this.state.propertyInfo.pRating}
+                          numReviews={this.state.propertyInfo.pReviews}/>
+        </div>
+        <div className="calendarContainer">
+          <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
+                    bookedDates={this.state.bookedDates}
+                    getNumReservedDates={this.getNumReservedDates}/>
+        </div> 
+        <div className="guestsContainer" ref={node => this.node = node}>
+          <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 
+                  guestVisibility={this.state.guestDropdownVisibility} 
+                  closeGuestsDropdown={this.closeGuestsDropdown}
+                  numAdults={this.state.numAdults}
+                  numChildren={this.state.numChildren}
+                  numInfants={this.state.numInfants}
+                  decrementGuestsCounter={this.decrementGuestsCounter}
+                  incrementGuestsCounter={this.incrementGuestsCounter}
+                  disableAdultPlus={this.state.disableAdultPlus}
+                  disableAdultMinus={this.state.disableAdultMinus}
+                  disableChildrenPlus={this.state.disableChildrenPlus}
+                  disableChildrenMinus={this.state.disableChildrenMinus}
+                  disableInfantPlus={this.state.disableInfantPlus}
+                  disableInfantMinus={this.state.disableInfantMinus}
+                  displayMaxGuests={this.displayMaxGuests}
+                  displayGuests={this.displayGuests}
+                  openGuestCarot={this.state.openGuestCarot}
+                  closeGuestCarot={this.state.closeGuestCarot}/>
+        </div>
+        <div className="reserveContainer">
+          <Reserve/>
+        </div>
+        <div className="footer">
+          You won't be charged yet
+        </div>
+      </div>
+    );
   }
 }
 
