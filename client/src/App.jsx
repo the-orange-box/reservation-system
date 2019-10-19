@@ -3,26 +3,48 @@ import PropertyDetail from './PropertyDetail';
 import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
+const moment = require('moment');
+moment().format();
+
+//add REPORT THIS LISTING
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      bookedDates: [ moment('2019-10-20 00:00:00'), moment('2019-10-30 00:00:00'), moment('2019-11-14 00:00:00'), 
+                     moment('2019-11-18 00:00:00'), moment('2019-11-27 00:00:00'), moment('2019-11-16 00:00:00'), 
+                     moment('2019-11-03 00:00:00'), moment('2019-11-23 00:00:00'), moment('2019-12-19 00:00:00'), 
+                     moment('2019-12-21 00:00:00'), moment('2019-12-06 00:00:00'), moment('2019-12-18 00:00:00'), 
+                     moment('2019-12-03 00:00:00'), moment('2019-12-26 00:00:00'), moment('2019-12-13 00:00:00'), 
+                     moment('2019-12-01 00:00:00'), moment('2019-12-08 00:00:00'), moment('2020-01-04 00:00:00'), 
+                     moment('2020-01-27 00:00:00'), moment('2020-01-09 00:00:00'), moment('2020-01-07 00:00:00'), 
+                     moment('2020-01-23 00:00:00'), moment('2020-01-01 00:00:00'), moment('2020-01-03 00:00:00'), 
+                     moment('2020-01-22 00:00:00') ],
+      propertyInfo: {
+        pMax_guests: 9, 
+        pNightly_price: 290.00, 
+        pCleaning_fee: 38.00,
+        pService_fee: 0.13,
+        pTaxes_fees: 3.00,
+        pBulkDiscount: 0.95,
+        pRequired_Week_Booking_Days: 3, 
+        pRating: 3.40, 
+        pReviews: 698 
+      },
       guestDropdownVisibility: "hidden",
       numAdults: 1,
       numChildren: 0,
       numInfants: 0,
-      maxGuests: 8, //TODO: update to dynamic from DB
       disableAdultPlus: false,
       disableAdultMinus: true,
       disableChildrenPlus: false,
       disableChildrenMinus: true,
       disableInfantPlus: false,
       disableInfantMinus: true,
-      pricePerNight: 130,
-      starRating: 4.16,
-      numReviews: 10
+      openGuestCarot: "none",
+      closeGuestCarot: ""
     };
 
     this.toggleGuestsDropdown = this.toggleGuestsDropdown.bind(this);
@@ -35,6 +57,7 @@ class App extends React.Component {
     this.updateButtonStatus = this.updateButtonStatus.bind(this);
     this.displayMaxGuests = this.displayMaxGuests.bind(this);
     this.displayGuests = this.displayGuests.bind(this);
+    this.toggleGuestsCarot = this.toggleGuestsCarot.bind(this);
   }
 
   componentDidMount() {
@@ -49,12 +72,13 @@ class App extends React.Component {
     return(
       <div className="container">
         <div className="propertyContainer">
-          <PropertyDetail pricePerNight={this.state.pricePerNight}
-                          starRating={this.state.starRating}
-                          numReviews={this.state.numReviews}/>
+          <PropertyDetail pricePerNight={this.state.propertyInfo.pNightly_price}
+                          starRating={this.state.propertyInfo.pRating}
+                          numReviews={this.state.propertyInfo.pReviews}/>
         </div>
         <div className="calendarContainer">
-          <Calendar/>
+          <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
+                    bookedDates={this.state.bookedDates}/>
         </div> 
         <div className="guestsContainer" ref={node => this.node = node}>
           <Guests toggleGuestsDropdown={this.toggleGuestsDropdown} 
@@ -72,7 +96,9 @@ class App extends React.Component {
                   disableInfantPlus={this.state.disableInfantPlus}
                   disableInfantMinus={this.state.disableInfantMinus}
                   displayMaxGuests={this.displayMaxGuests}
-                  displayGuests={this.displayGuests}/>
+                  displayGuests={this.displayGuests}
+                  openGuestCarot={this.state.openGuestCarot}
+                  closeGuestCarot={this.state.closeGuestCarot}/>
         </div>
         <div className="reserveContainer">
           <Reserve/>
@@ -84,6 +110,20 @@ class App extends React.Component {
     );
   }
 
+  toggleGuestsCarot() {
+    if(this.state.guestDropdownVisibility === "hidden") {
+      this.setState({
+        openGuestCarot: "none",
+        closeGuestCarot: ""
+      })
+    } else {
+      this.setState({
+        openGuestCarot: "",
+        closeGuestCarot: "none"
+      })
+    }
+  }
+
   toggleGuestsDropdown() {
     let guestDropdownVisibility;
     if(this.state.guestDropdownVisibility === "hidden") {
@@ -93,7 +133,7 @@ class App extends React.Component {
     }
     this.setState({
       guestDropdownVisibility
-    });
+    }, this.toggleGuestsCarot);
   }
 
   closeGuestsDropdown() {
@@ -103,7 +143,7 @@ class App extends React.Component {
   }
 
   incrementGuestsCounter(type) {
-    if(this.state.numAdults + this.state.numChildren < this.state.maxGuests) {
+    if(this.state.numAdults + this.state.numChildren < this.state.propertyInfo.pMax_guests) {
       if(type === "adult") {
         let numAdults = this.state.numAdults + 1;
         this.setState({
@@ -157,10 +197,10 @@ class App extends React.Component {
 
   displayMaxGuests() {
     let result = ''
-    if(this.state.maxGuests === 1) {
+    if(this.state.propertyInfo.pMax_guests === 1) {
       result += '1 guest ';
     } else {
-      result += this.state.maxGuests + ' guests ';
+      result += this.state.propertyInfo.pMax_guests + ' guests ';
     }
     result += 'maximum. Infants don\'t count toward the number of guests.';
     return result;
@@ -204,12 +244,12 @@ class App extends React.Component {
       });
     }
 
-    if (this.state.numAdults + this.state.numChildren === this.state.maxGuests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
+    if (this.state.numAdults + this.state.numChildren === this.state.propertyInfo.pMax_guests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
       this.setState({
         disableAdultPlus: true,
         disableChildrenPlus: true
       });
-    } else if (this.state.numAdults + this.state.numChildren < this.state.maxGuests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
+    } else if (this.state.numAdults + this.state.numChildren < this.state.propertyInfo.pMax_guests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
       this.setState({
         disableAdultPlus: false,
         disableChildrenPlus: false
