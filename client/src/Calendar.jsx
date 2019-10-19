@@ -184,8 +184,11 @@ class Calendar extends React.Component {
           checkoutDate = moment(this.state.checkinCheckout[1]);
           if (daysBeforeBookedDate < daysBeforeCheckoutDate) {
             checkoutDate = null;
-            let checkoutDayIndex = this.calculateIndexOfDay(Number(moment(checkinCheckout[1]).format('DD')));
-            for (let i = index + 1; i <= checkoutDayIndex; i++) {
+            let unselectUpToIndex = this.calculateIndexOfDay(Number(moment(checkinCheckout[1]).format('DD')));
+            if(moment(checkinCheckout[1]).startOf('month').diff(this.state.currentMonth.startOf('month'), 'months') >= 1) {
+              unselectUpToIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+            }
+            for (let i = index + 1; i <= unselectUpToIndex; i++) {
               dayArray[i].status = 'unselected';
             }
             checkinCheckout[1] = null;
