@@ -127,76 +127,222 @@ class Calendar extends React.Component {
     let checkInOutDate = this.getMomentJSofIndex(index, this.state.currentMonth.format('MM'), this.state.currentMonth.format('YYYY'));
 
     if (this.state.currentSelection === 'checkin') {
+
       if (this.state.checkinCheckout[0] !== null) {
         let checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
         if(checkinIndex !== index) {
           dayArray[checkinIndex].status = 'unselected';
         }
       } 
-    
+
       let daysBeforeBookedDate = 0;
       let counter = index;
       let year = this.state.currentMonth.format('YYYY');
       let month = this.state.currentMonth.format('MM');
       let isValidDate = false;
-
-      while (counter <= this.requiredBookingDays + 1+ index) {
-        var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+      var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+      let loopCheck;
+      let checkoutDate = null;
+      // && checkforBookedorCheckedInDate.diff(moment(this.state.checkinCheckout[1]), 'days') < 0
+      if(this.state.checkinCheckout[1] && checkforBookedorCheckedInDate.diff(moment(this.state.checkinCheckout[1]), 'days') < 0) {
+        let daysBeforeCheckoutDate = 0;
         var isBooked = false;
+        while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[1]).format('YYYY MM DD')) {
+          console.log('its here');
+          checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+          
+          for(let i = 0; i < this.bookedDates.length; i++){
+            // console.log('this is checkforbookedorcheckindate ' + checkforBookedorCheckedInDate.format('YYYY MM DD'));
+            // console.log('this is the.bookedDates[i] ' + this.bookedDates[i].format('YYYY MM DD'));
+            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+              isBooked = true;
+              break;
+            }
+          }
+          if(!isBooked){
+            console.log('it is not booked');
+            daysBeforeBookedDate++;
+            // break;
+          }
 
-        for(let i = 0; i < this.bookedDates.length; i++){
-          if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
-            isBooked = true;
+          
+          daysBeforeCheckoutDate++;
+
+          counter++;
+          let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+          if(counter - 1 === lastDayIndex) {
+            let nextMonth = this.state.currentMonth.format();
+            nextMonth = moment(nextMonth);
+            nextMonth.add(1, 'months');
+            counter = nextMonth.startOf('month').day();
+            month = nextMonth.format('MM');
+            year = nextMonth.format('YYYY');
+          }
+        }
+        if (daysBeforeBookedDate > 0 && daysBeforeBookedDate > this.requiredBookingDays) {
+          console.log('daysBeforeBookedDate ' + daysBeforeBookedDate);
+          console.log('this.requiredBookingDays ' + this.requiredBookingDays);
+          console.log('daysBeforeCheckoutDate ' + daysBeforeCheckoutDate);
+          isValidDate = true;
+
+
+          checkoutDate = moment(this.state.checkinCheckout[1]);
+          if (daysBeforeBookedDate < daysBeforeCheckoutDate) {
+            checkoutDate = null;
+            let checkoutDayIndex = this.calculateIndexOfDay(Number(moment(checkinCheckout[1]).format('DD')));
+            for (let i = index + 1; i <= checkoutDayIndex; i++) {
+              dayArray[i].status = 'unselected';
+            }
+            checkinCheckout[1] = null;
+          }
+        } else if (daysBeforeBookedDate === 0) {
+          isValidDate = true;
+        }
+      } else {
+        while(counter <= this.requiredBookingDays + 1 + index) {
+          checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+          console.log('or its here');
+          var isBooked = false;
+          for(let i = 0; i < this.bookedDates.length; i++){
+            // console.log('this is checkforbookedorcheckindate ' + checkforBookedorCheckedInDate.format('YYYY MM DD'));
+            // console.log('this is the.bookedDates[i] ' + this.bookedDates[i].format('YYYY MM DD'));
+            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+              isBooked = true;
+              break;
+            }
+          }
+          
+          if(daysBeforeBookedDate === this.requiredBookingDays + 1) {
+            // console.log('HMMMM' + isBooked);
+            // console.log('its a valid date lower loop');
+            isValidDate = true;
+            if(this.state.checkinCheckout[1] !== null) {
+              checkoutDate = moment(this.state.checkinCheckout[1]);
+              if(moment(checkInOutDate) > checkoutDate) {
+                checkoutDate = null;
+                checkinCheckout[1] = null;
+                let startDayIndex = this.state.currentMonth.startOf('month').day();
+                for (let i = startDayIndex; i < index; i++) {
+                  dayArray[i].status = 'unselected';
+                }
+              }
+            }
             break;
           }
-        }
-
-        let isCheckedOutDate;
-        if(this.state.checkinCheckout[1]) {
-          isCheckedOutDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[1]).format('YYYY MM DD');
-        }
-        if((daysBeforeBookedDate === this.requiredBookingDays + 1) || isBooked || isCheckedOutDate) {
-          if(daysBeforeBookedDate === this.requiredBookingDays + 1 || (isCheckedOutDate && daysBeforeBookedDate === this.requiredBookingDays)) {
-            isValidDate = true;
+          if(isBooked) {
+            break;
           }
-          break;
-        }
-        daysBeforeBookedDate++;
-        counter++;
-        
-        let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
-        if(counter - 1 === lastDayIndex) {
-          let nextMonth = this.state.currentMonth.format();
-          nextMonth = moment(nextMonth);
-          nextMonth.add(1, 'months');
-          counter = nextMonth.startOf('month').day();
-          month = nextMonth.format('MM');
-          year = nextMonth.format('YYYY');
+          //add is booked logic here
+  
+          daysBeforeBookedDate++;
+          counter++;
+          let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+          if(counter - 1 === lastDayIndex) {
+            let nextMonth = this.state.currentMonth.format();
+            nextMonth = moment(nextMonth);
+            nextMonth.add(1, 'months');
+            counter = nextMonth.startOf('month').day();
+            month = nextMonth.format('MM');
+            year = nextMonth.format('YYYY');
+          }
         }
       }
+      // while () {
+//////////////////////////////////////////////////
+
+
+
+
+
+
+
+        // var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+        // var isBooked = false;
+
+        // for(let i = 0; i < this.bookedDates.length; i++){
+        //   if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+        //     isBooked = true;
+        //     break;
+        //   }
+        // }
+
+        // let isCheckedOutDate;
+        // if(this.state.checkinCheckout[1]) {
+        //   isCheckedOutDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[1]).format('YYYY MM DD');
+        //   console.log('isCheckedOutDate ' + isCheckedOutDate);
+        //   console.log('daysBeforeBookedDate ' + daysBeforeBookedDate);
+        //   console.log(' this required booking days ' + this.requiredBookingDays);
+        //   console.log('isBooked ' + !isBooked);
+        //   console.log('if statement hmmm ' + isCheckedOutDate && (daysBeforeBookedDate >= this.requiredBookingDays + 1) && !isBooked);
+        //   if(isBooked || (isCheckedOutDate && daysBeforeBookedDate <= this.requiredBookingDays) || (isCheckedOutDate && (daysBeforeBookedDate >= this.requiredBookingDays + 1) && !isBooked)) {
+        //     console.log('is it getting to initial if statement');
+        //     if (isCheckedOutDate && (daysBeforeBookedDate >= this.requiredBookingDays + 1) && !isBooked) {
+        //       console.log('it should be getting to true');
+        //       isValidDate = true;
+        //     }
+        //     break;
+        //   }
+        // } else {
+        //   if((daysBeforeBookedDate === this.requiredBookingDays + 1) || isBooked || isCheckedOutDate) {
+        //     if(daysBeforeBookedDate === this.requiredBookingDays + 1 || (isCheckedOutDate && daysBeforeBookedDate === this.requiredBookingDays)) {
+        //       isValidDate = true;
+        //     }
+        //     break;
+        //   }
+        // }
+
+        
+      // }
+
+
+
+
+
+
 
       if(isValidDate) {
         checkinCheckout[0] = checkInOutDate;
         dayArray[index].status = 'selected';
       }
 
-      let checkoutDate;
-      if(this.state.checkinCheckout[1] !== null) {
-        checkoutDate = moment(this.state.checkinCheckout[1]);
-        if(moment(checkInOutDate) > checkoutDate) {
-          checkoutDate = null;
-          checkinCheckout[1] = null;
-          let startDayIndex = this.state.currentMonth.startOf('month').day();
-          for (let i = startDayIndex; i < index; i++) {
-            dayArray[i].status = 'unselected';
-          }
-        }
-      }
+
+      //need to add an if conditional here that if bookedDateCounter > requiredBookdays and 
+      //isvalid then deselect checkoutdate (change everything from the one after 
+      //current selected checkin all the way up to and including checkout day to unselected.)
+      //this logic also is only if there is a checkoutdate
+
+      //possibly need to change this to be in isValid check
+      //changes everything from start of month to current selected checkin
+      //to unselected. 
+      // let checkoutDate;
+      // if(this.state.checkinCheckout[1] !== null) {
+      //   checkoutDate = moment(this.state.checkinCheckout[1]);
+      //   if(moment(checkInOutDate) > checkoutDate) {
+      //     checkoutDate = null;
+      //     checkinCheckout[1] = null;
+      //     let startDayIndex = this.state.currentMonth.startOf('month').day();
+      //     for (let i = startDayIndex; i < index; i++) {
+      //       dayArray[i].status = 'unselected';
+      //     }
+      //   }
+      // }
 
       if (isValidDate) {
+        console.log('its here in the selectionrange');
+        console.log('this is moment(checkInOutDate)' + moment(checkInOutDate));
+        console.log('this is checkoutDate ' + checkoutDate);
         this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
       }
-    } else {
+    } 
+    
+    
+    
+    
+    
+    
+    
+    
+    else {
       if(moment(checkInOutDate) > moment(this.state.checkinCheckout[0])) {
         if (this.state.checkinCheckout[1] !== null) {
           let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
@@ -211,36 +357,35 @@ class Calendar extends React.Component {
         let isValidDate = false;
         var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
         // while (counter >= index - this.requiredBookingDays) {
-          console.log(checkforBookedorCheckedInDate.format('YYYY MM DD'));
-          console.log(moment(this.state.checkinCheckout[0]).format('YYYY MM DD'));
+          // console.log(checkforBookedorCheckedInDate.format('YYYY MM DD'));
+          // console.log(moment(this.state.checkinCheckout[0]).format('YYYY MM DD'));
         while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[0]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-          console.log('its getting in here');
+          // console.log('its getting in here');
           var isBooked = false;
           for(let i = 0; i < this.bookedDates.length; i++){
             if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
-              console.log('booked being set to true');
+              // console.log('booked being set to true');
               isBooked = true;
               break;
             }
           }
           let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[0]).format('YYYY MM DD');
-          console.log('isCheckedInDate ' + isCheckedInDate);
-          console.log('daysBeforeBookedDate ' + daysBeforeBookedDate);
-          console.log(' this required booking days ' + this.requiredBookingDays);
-          console.log('isBooked ' + !isBooked);
-          console.log('if statement hmmm ' + isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked);
+          // console.log('isCheckedInDate ' + isCheckedInDate);
+          // console.log('daysBeforeBookedDate ' + daysBeforeBookedDate);
+          // console.log(' this required booking days ' + this.requiredBookingDays);
+          // console.log('isBooked ' + !isBooked);
+          // console.log('if statement hmmm ' + isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked);
           if(isBooked || (isCheckedInDate && daysBeforeBookedDate < this.requiredBookingDays) || (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked)) {
-            console.log('is it getting to initial if statement');
+            // console.log('is it getting to initial if statement');
             if (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked) {
-              console.log('it should be getting to true');
+              // console.log('it should be getting to true');
               isValidDate = true;
             }
-            console.log('breaking out of while loop');
+            // console.log('breaking out of while loop');
             break;
           }
 
-  
           daysBeforeBookedDate++;
           counter--;
           
