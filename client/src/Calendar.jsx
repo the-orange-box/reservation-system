@@ -148,7 +148,7 @@ class Calendar extends React.Component {
         let currentMonth = this.state.currentMonth.format();
 
         let tempLoopCounter = 0;
-        while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[1]).format('YYYY MM DD') && tempLoopCounter < 100) {
+        while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[1]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           
           for(let i = 0; i < this.bookedDates.length; i++){
@@ -175,9 +175,7 @@ class Calendar extends React.Component {
             counter = nextMonth.startOf('month').day();
             month = nextMonth.format('MM');
             year = nextMonth.format('YYYY');
-
           }
-          tempLoopCounter++;
         }
         if (daysBeforeBookedDate > 0 && daysBeforeBookedDate > this.requiredBookingDays) {
           isValidDate = true;
@@ -258,8 +256,9 @@ class Calendar extends React.Component {
         let month = this.state.currentMonth.format('MM');
         let isValidDate = false;
         var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-        var tempLoopCounter = 0
-        while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[0]).format('YYYY MM DD') && tempLoopCounter < 100) {
+        let currentMonth = this.state.currentMonth.format();
+
+        while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[0]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           var isBooked = false;
           for(let i = 0; i < this.bookedDates.length; i++){
@@ -281,14 +280,14 @@ class Calendar extends React.Component {
           
           let firstDayIndex = this.state.currentMonth.startOf('month').day();
           if(counter + 1 === firstDayIndex) {
-            let prevMonth = this.state.currentMonth.format();
+            let prevMonth = currentMonth;
             prevMonth = moment(prevMonth);
             prevMonth.subtract(1, 'months');
+            currentMonth = prevMonth.format();
             month = prevMonth.format('MM');
             year = prevMonth.format('YYYY');
             counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-01-' + month);
           }
-          tempLoopCounter++;
         }
         if(isValidDate) {
           checkinCheckout[1] = checkInOutDate;
