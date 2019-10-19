@@ -61,7 +61,6 @@ for (let i = 1; i <= 100; i++) {
   
 
   var pRequired_Week_Booking_Days = getRandomInt(3,8); 
-  var pRequired_Weekend_Booking_Days = getRandomInt(3,8); 
   var pRating = Math.floor(Math.random() * (500 - 100) + 100) / 100;
   var pReviews = getRandomInt(5,2750);
 
@@ -72,7 +71,6 @@ for (let i = 1; i <= 100; i++) {
                          pTaxes_fees: pTaxes_fees,
                          pBulkDiscount: pBulkDiscount,
                          pRequired_Week_Booking_Days: pRequired_Week_Booking_Days,
-                         pRequired_Weekend_Booking_Days: pRequired_Weekend_Booking_Days,
                          pRating: pRating,
                          pReviews: pReviews})
                 .then(()=>{
