@@ -18,6 +18,8 @@ class Calendar extends React.Component {
       currentMonth: moment(),
       transition: 'fadein',
       pastDates: [],
+      //maybe add a state for prevMonth currMonth div and prevMonth calendarDay div for sliding animation
+      //maybe add a state for nextMonth currMonth div and prevMonth calendayDay div for sliding animation
     };
 
     this.requiredBookingDays = this.props.requiredBookingDays;
@@ -319,9 +321,11 @@ class Calendar extends React.Component {
           document.getElementById('checkout').focus();
         } else if(this.state.checkinCheckout[1] !== null) {
           this.toggleCalendar();
+          document.getElementById('checkout').blur();
         }
       });
     }
+    document.getElementById(this.state.currentSelection).focus();
   }
 
   updateSelectionRange(dayArray, checkinDate, checkoutDate) {
@@ -411,6 +415,7 @@ class Calendar extends React.Component {
     }, () => this.getNumReservedDates(this.state.checkinCheckout[0], this.state.checkinCheckout[1]));
   }
 
+  //need to change this so its only currMonth and calendarDay thats sliding.
   monthTransitionIn() {
     let transition = this.state.transition
     if(transition === 'fadeout') {
