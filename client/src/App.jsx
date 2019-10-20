@@ -74,7 +74,9 @@ class App extends React.Component {
 
       for (let key in this.state.propertyInfo) {
         if (possibleBookingDisplays.hasOwnProperty(key)) {
-          bookingDisplay.push({key: possibleBookingDisplays[key][0], value: '$' + Math.trunc(possibleBookingDisplays[key][1])})
+          bookingDisplay.push( { key: possibleBookingDisplays[key][0], 
+                                 value: '$' + Math.trunc(possibleBookingDisplays[key][1]),
+                                 id: key});
         }
       }
     }

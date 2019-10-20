@@ -68,6 +68,10 @@
   flex:1;
 }
 
+#pBulkDiscount {
+  color: rgb(9, 134, 139)
+}
+
 .calendarContainer {
   grid-column-start: 2;
   grid-column-end: 5;
