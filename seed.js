@@ -3,7 +3,6 @@ const moment = require('moment');
 moment().format();
 
 const Promise = require('bluebird');
-const Sequelize = require('sequelize');
 const db = require('./server/data/db.js');
 
 //min to [max]
