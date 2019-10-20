@@ -487,13 +487,13 @@ class Calendar extends React.Component {
           Dates
         </div>
         <div className="calendarInputs">
-          <input className="checkin" id="checkin" value={this.displayCheckInOutDate(0)} onClick={() => this.toggleCalendar('checkin')} />
+          <input className="checkin" id="checkin" readOnly value={this.displayCheckInOutDate(0)} onClick={() => this.toggleCalendar('checkin')} />
           <svg className="calendarArrow" width="35px" height="35px">
             <line x1="5" x2="31" y1="17.5" y2="17.5" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="10" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="25" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
           </svg>
-          <input className="checkout" id="checkout" value={this.displayCheckInOutDate(1)} onClick={() => this.toggleCalendar('checkout')}/>
+          <input className="checkout" id="checkout" readOnly value={this.displayCheckInOutDate(1)} onClick={() => this.toggleCalendar('checkout')}/>
         </div>
         <div ref={node => this.node = node}>
           <CalendarDropdown dayArray={this.state.dayArray}

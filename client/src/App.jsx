@@ -74,8 +74,6 @@ class App extends React.Component {
 
       for (let key in this.state.propertyInfo) {
         if (possibleBookingDisplays.hasOwnProperty(key)) {
-          console.log('key' + possibleBookingDisplays[key]);
-          console.log('value ' + this.state.propertyInfo[key])
           bookingDisplay.push({key: possibleBookingDisplays[key][0], value: '$' + Math.trunc(possibleBookingDisplays[key][1])})
         }
       }
@@ -125,7 +123,7 @@ class App extends React.Component {
                   getTotalGuests={this.getTotalGuests}/>
         </div>
         <div className="bookingInformation">
-            {this.state.bookingDisplay.map(bookingDetail => <BookingDetail bookingDetail={bookingDetail}/>)} 
+            {this.state.bookingDisplay.map((bookingDetail,key) => <BookingDetail bookingDetail={bookingDetail} key={key}/>)} 
           <div className="bookingTotal">
             { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalKey">Total</span> : null }
             { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalValue">{'$' + Math.trunc(this.state.totalAmount)}</span> : null }                                       
