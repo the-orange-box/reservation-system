@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import CalendarDropdown from './CalendarDropdown';
+const axios = require('axios');
 const moment = require('moment');
 moment().format();
 
@@ -11,6 +11,7 @@ class Calendar extends React.Component {
     super(props);
 
     this.state = {
+      bookedDates: [],
       dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', invalidDate: false})),
       calendarVisibility: "hidden",
       checkinCheckout: [null,null],
@@ -23,7 +24,6 @@ class Calendar extends React.Component {
     };
 
     this.requiredBookingDays = this.props.requiredBookingDays;
-    this.bookedDates = this.props.bookedDates;
     this.getNumReservedDates = this.props.getNumReservedDates;
     
     this.toggleCalendar = this.toggleCalendar.bind(this);
@@ -40,6 +40,21 @@ class Calendar extends React.Component {
     this.clearDates = this.clearDates.bind(this);
     this.calculateBookedDates = this.calculateBookedDates.bind(this);
     this.getMomentJSofIndex = this.getMomentJSofIndex.bind(this);
+    this.getBookedDates = this.getBookedDates.bind(this);
+  }
+
+  getBookedDates() {
+    axios.get('/BookedDates:1')
+    .then((res) => {
+      let bookedDates = [];
+      for (let i = 0; i < res.data.length; i++) {
+        bookedDates.push(moment(res.data[i].Date))
+      }
+      this.setState({
+        bookedDates
+      }, () => this.updateCurrentMonth());
+    })
+    .catch((err) => console.log(err));
   }
 
   calculateDisabledDates(dayArray) {
@@ -60,7 +75,7 @@ class Calendar extends React.Component {
   }
 
   calculateBookedDates(dayArray) {
-    let currentMonthBookedDates = this.bookedDates.filter(
+    let currentMonthBookedDates = this.state.bookedDates.filter(
                                   monthDates => (monthDates.month() === this.state.currentMonth.month()) && (monthDates.year() === this.state.currentMonth.year()));
     for (let i = 0; i < currentMonthBookedDates.length; i++) {
       dayArray[this.calculateIndexOfDay(Number(currentMonthBookedDates[i].format('DD')))].invalidDate = true;
@@ -153,8 +168,8 @@ class Calendar extends React.Component {
         while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[1]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           
-          for(let i = 0; i < this.bookedDates.length; i++){
-            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+          for(let i = 0; i < this.state.bookedDates.length; i++){
+            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
               isBooked = true;
               break;
             }
@@ -201,8 +216,8 @@ class Calendar extends React.Component {
         while(counter <= this.requiredBookingDays + 1 + index) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           var isBooked = false;
-          for(let i = 0; i < this.bookedDates.length; i++){
-            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+          for(let i = 0; i < this.state.bookedDates.length; i++){
+            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
               isBooked = true;
               break;
             }
@@ -265,8 +280,8 @@ class Calendar extends React.Component {
         while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[0]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           var isBooked = false;
-          for(let i = 0; i < this.bookedDates.length; i++){
-            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.bookedDates[i].format('YYYY MM DD')) {
+          for(let i = 0; i < this.state.bookedDates.length; i++){
+            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
               isBooked = true;
               break;
             }
@@ -473,7 +488,8 @@ class Calendar extends React.Component {
 
   componentDidMount() {
     document.addEventListener('mousedown', this.handleOutsideCalendarClick, false);
-    this.updateCurrentMonth();
+
+    this.getBookedDates();
   }
 
   componentWillUnmount() {

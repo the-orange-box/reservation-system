@@ -17,5 +17,17 @@ app.get('/id:*', (req, res, next) => {
   });
 });
 
+app.get('/BookedDates:*', (req, res, next) => {
+  let bProperty_ID = req.path.split(':')[1];
+  db.Booked.findAll( {
+    where: {
+      bProperty_ID
+    }
+  }).then(property => {
+    res.send(property);
+    next();
+  });
+});
+
 
 app.listen(3000);

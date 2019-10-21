@@ -4,6 +4,8 @@ import Calendar from './Calendar';
 import Guests from './Guests';
 import Reserve from './Reserve';
 import BookingDetail from './BookingDetail';
+import GuestsLoading from './GuestsLoading';
+import CalendarLoading from './CalendarLoading';
 const moment = require('moment');
 const axios = require('axios');
 moment().format();
@@ -14,15 +16,6 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      bookedDates: [ moment('2019-10-20 00:00:00'), moment('2019-10-30 00:00:00'), moment('2019-11-14 00:00:00'), 
-                     moment('2019-11-18 00:00:00'), moment('2019-11-27 00:00:00'), moment('2019-11-16 00:00:00'), 
-                     moment('2019-11-03 00:00:00'), moment('2019-11-23 00:00:00'), moment('2019-12-19 00:00:00'), 
-                     moment('2019-12-21 00:00:00'), moment('2019-12-06 00:00:00'), moment('2019-12-18 00:00:00'), 
-                     moment('2019-12-03 00:00:00'), moment('2019-12-26 00:00:00'), moment('2019-12-13 00:00:00'), 
-                     moment('2019-12-01 00:00:00'), moment('2019-12-08 00:00:00'), moment('2020-01-04 00:00:00'), 
-                     moment('2020-01-27 00:00:00'), moment('2020-01-09 00:00:00'), moment('2020-01-07 00:00:00'), 
-                     moment('2020-01-23 00:00:00'), moment('2020-01-01 00:00:00'), moment('2020-01-03 00:00:00'), 
-                     moment('2020-01-22 00:00:00'), moment('2020-05-22 00:00:00') ],
       propertyInfo: {
         pMax_guests: null, 
         pNightly_price: null, 
@@ -50,7 +43,6 @@ class App extends React.Component {
   }
 
   getPropertyInfo() {
-    //axios get request here
     axios.get('/id:1')
       .then((res) => {
         let propertyInfo = JSON.parse(JSON.stringify(this.state.propertyInfo));
@@ -60,11 +52,12 @@ class App extends React.Component {
           } else {
             propertyInfo[key] = res.data[0][key];
           }
-          this.setState({
-            propertyInfo
-          });
         }
-      });
+        this.setState({
+          propertyInfo
+        });
+      })
+      .catch((err) => console.log(err));
   }
 
   populateBookingDisplay() {                              
@@ -78,7 +71,8 @@ class App extends React.Component {
       totalPrice = this.state.propertyInfo.pNightly_price * this.state.numReservedDates;
       totalServiceFee = this.state.propertyInfo.pService_fee * totalPrice;
       totalWeeklyDiscount = -(totalPrice * this.state.propertyInfo.pBulkDiscount);
-      totalAmount = totalPrice + totalServiceFee + totalWeeklyDiscount;
+      totalAmount = totalPrice + totalServiceFee + totalWeeklyDiscount + 
+                    this.state.propertyInfo.pCleaning_fee + this.state.propertyInfo.pTaxes_fees;
 
       let possibleBookingDisplays = {
               'pNightly_price': [`$${this.state.propertyInfo.pNightly_price} x ${this.state.numReservedDates} nights`, totalPrice], 
@@ -106,7 +100,6 @@ class App extends React.Component {
   }
 
   getNumReservedDates(checkin, checkout) {
-
     let numReservedDates = null;
     if(checkin && checkout) {
       checkin = moment(checkin);
@@ -136,13 +129,17 @@ class App extends React.Component {
                           numReviews={this.state.propertyInfo.pReviews}/>
         </div>
         <div className="calendarContainer">
-          <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
-                    bookedDates={this.state.bookedDates}
-                    getNumReservedDates={this.getNumReservedDates}/>
+          {this.state.propertyInfo.pRequired_Week_Booking_Days
+            ? <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
+                        getNumReservedDates={this.getNumReservedDates}/>
+            : <CalendarLoading/>}
+          
         </div> 
         <div className="guestsContainer">
-          <Guests pMax_guests={this.state.propertyInfo.pMax_guests}
-                  getTotalGuests={this.getTotalGuests}/>
+          {this.state.propertyInfo.pMax_guests 
+            ? <Guests pMax_guests={this.state.propertyInfo.pMax_guests}
+            getTotalGuests={this.getTotalGuests}/>
+            : <GuestsLoading/>}
         </div>
         <div className="bookingInformation">
             {this.state.bookingDisplay.map((bookingDetail,key) => <BookingDetail bookingDetail={bookingDetail} key={key}/>)} 
