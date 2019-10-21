@@ -43,6 +43,10 @@ class Calendar extends React.Component {
     this.calculateBookedDates = this.calculateBookedDates.bind(this);
     this.getMomentJSofIndex = this.getMomentJSofIndex.bind(this);
     this.getBookedDates = this.getBookedDates.bind(this);
+    this.checkSameMonthSelection = this.checkSameMonthSelection.bind(this);
+    this.checkPrevMonthCheckinNextMonthCheckout = this.checkPrevMonthCheckinNextMonthCheckout.bind(this);
+    this.checkNextMonthCheckout = this.checkNextMonthCheckout.bind(this);
+    this.checkPreviousMonthCheckin = this.checkPreviousMonthCheckin.bind(this);
   }
 
   getBookedDates() {
@@ -351,53 +355,63 @@ class Calendar extends React.Component {
       let checkin = this.calculateIndexOfDay(Number(checkinDate.format('DD')));
       let checkout = this.calculateIndexOfDay(Number(checkoutDate.format('DD')));
 
-      //checkin previous month
-      if((checkinDate.month() < this.state.currentMonth.month() && checkoutDate.month() === this.state.currentMonth.month() )
-          || (checkinDate.year() < this.state.currentMonth.year()) && checkoutDate.month() === this.state.currentMonth.month()){
-        let startIndex = this.state.currentMonth.startOf('month').day()
-        for (let i = startIndex; i < checkout; i++) {
-          dayArray[i].status = styles.selectionRange;
-        }
-        dayArray[checkout].status += ' ' + styles.checkoutSelected;
-      }
-      //checkout next month
-      if((checkoutDate.month() > this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month())
-      || (checkoutDate.year() > this.state.currentMonth.year() && checkinDate.month() === this.state.currentMonth.month())) {
-        let startDayIndex = this.state.currentMonth.startOf('month').day();
-        let totalDays = this.state.currentMonth.daysInMonth();
-        let endDayIndex = startDayIndex + totalDays
-        for (let i = checkin + 1; i < endDayIndex; i++) {
-          dayArray[i].status = styles.selectionRange;
-        }
-        dayArray[checkin].status += ' ' + styles.checkinSelected;
-      }
+      this.checkPreviousMonthCheckin(checkinDate, checkoutDate, dayArray, checkout);
+      this.checkNextMonthCheckout(checkinDate, checkoutDate, dayArray, checkin);
+      this.checkPrevMonthCheckinNextMonthCheckout(checkinDate, checkoutDate, dayArray);
+      this.checkSameMonthSelection(checkinDate, checkoutDate, checkin, checkout, dayArray);
+    }
+  }
 
-      //checkin previous month and checkout next month
-      if(checkinDate.startOf('month').diff(this.state.currentMonth.startOf('month'), 'days') < 0 
-          && checkoutDate.startOf('month').diff(this.state.currentMonth.startOf('month'), 'days') > 0) {
-        let startDayIndex = this.state.currentMonth.startOf('month').day();
-        let totalDays = this.state.currentMonth.daysInMonth();
-        let endDayIndex = startDayIndex + totalDays
-        for (let i = startDayIndex; i < endDayIndex; i++) {
-          dayArray[i].status = styles.selectionRange;
-        }
-      } 
-
-      //same month
-      if(checkoutDate.month() === this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month()
-      && checkoutDate.year() === this.state.currentMonth.year() && checkinDate.year() === this.state.currentMonth.year()) {
-        for (let i = 0; i < checkin; i++) {
-          dayArray[i].status = 'unselected'
-        }
-        for (let i = checkin + 1; i < checkout; i++) {
-          dayArray[i].status = styles.selectionRange;
-        }
-        for(let i = checkout + 1; i < dayArray.length; i++) {
-          dayArray[i].status = 'unselected'
-        }
-        dayArray[checkin].status += ' ' + styles.checkinSelected;
-        dayArray[checkout].status += ' ' + styles.checkoutSelected;
+  checkPreviousMonthCheckin(checkinDate, checkoutDate, dayArray, checkout) {
+    if((checkinDate.month() < this.state.currentMonth.month() && checkoutDate.month() === this.state.currentMonth.month() )
+        || (checkinDate.year() < this.state.currentMonth.year()) && checkoutDate.month() === this.state.currentMonth.month()){
+      let startIndex = this.state.currentMonth.startOf('month').day()
+      for (let i = startIndex; i < checkout; i++) {
+        dayArray[i].status = styles.selectionRange;
       }
+      dayArray[checkout].status += ' ' + styles.checkoutSelected;
+    }
+  }
+
+  checkNextMonthCheckout(checkinDate, checkoutDate, dayArray, checkin) {
+    if((checkoutDate.month() > this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month())
+        || (checkoutDate.year() > this.state.currentMonth.year() && checkinDate.month() === this.state.currentMonth.month())) {
+      let startDayIndex = this.state.currentMonth.startOf('month').day();
+      let totalDays = this.state.currentMonth.daysInMonth();
+      let endDayIndex = startDayIndex + totalDays
+      for (let i = checkin + 1; i < endDayIndex; i++) {
+        dayArray[i].status = styles.selectionRange;
+      }
+      dayArray[checkin].status += ' ' + styles.checkinSelected;
+    }
+  }
+
+  checkPrevMonthCheckinNextMonthCheckout(checkinDate, checkoutDate, dayArray) {
+    if(checkinDate.startOf('month').diff(this.state.currentMonth.startOf('month'), 'days') < 0 
+        && checkoutDate.startOf('month').diff(this.state.currentMonth.startOf('month'), 'days') > 0) {
+      let startDayIndex = this.state.currentMonth.startOf('month').day();
+      let totalDays = this.state.currentMonth.daysInMonth();
+      let endDayIndex = startDayIndex + totalDays
+      for (let i = startDayIndex; i < endDayIndex; i++) {
+        dayArray[i].status = styles.selectionRange;
+      }
+    } 
+  }
+
+  checkSameMonthSelection(checkinDate, checkoutDate, checkin, checkout, dayArray) {
+    if(checkoutDate.month() === this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month()
+    && checkoutDate.year() === this.state.currentMonth.year() && checkinDate.year() === this.state.currentMonth.year()) {
+      for (let i = 0; i < checkin; i++) {
+        dayArray[i].status = 'unselected'
+      }
+      for (let i = checkin + 1; i < checkout; i++) {
+        dayArray[i].status = styles.selectionRange;
+      }
+      for(let i = checkout + 1; i < dayArray.length; i++) {
+        dayArray[i].status = 'unselected'
+      }
+      dayArray[checkin].status += ' ' + styles.checkinSelected;
+      dayArray[checkout].status += ' ' + styles.checkoutSelected;
     }
   }
 

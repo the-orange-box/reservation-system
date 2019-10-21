@@ -92,12 +92,6 @@ const Booked = sequelize.define('booked', {
   freezeTableName: true
 });
 
-// Users.hasMany(Booked);
-// Properties.hasMany(Booked);
-// Booked.belongsTo(Properties);
-// Booked.belongsTo(Users);
-
-
 
 exports.Users = Users;
 exports.Properties = Properties;
