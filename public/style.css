@@ -68,6 +68,10 @@
   flex:1;
 }
 
+#pBulkDiscount {
+  color: rgb(9, 134, 139)
+}
+
 .calendarContainer {
   grid-column-start: 2;
   grid-column-end: 5;
@@ -669,7 +673,6 @@
 
 
 
-
 .calendarDropdownFooter {
   grid-column-start: 1;
   grid-column-end: 4;
@@ -724,6 +727,136 @@
   100% { opacity: 1 }
   0% { opacity: 0 }
 }
+
+
+
+
+.reserveModal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.reserveModalDetails {
+  display: flex;
+  flex-direction: column;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 35px;
+  border: 1px solid #888;
+  width: 500px;
+  height: 405px;
+}
+
+/* The Close Button */
+.reserveModalClose {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding-left: 15px;
+  padding-bottom: 10px;
+}
+
+.reserveModalClose:hover,
+.reserveModalClose:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#signUp {
+  padding-left: 15px;
+  padding-bottom: 25px;
+  font-size: 24px;
+  font-weight: 800;
+  color: rgb(72, 72, 72);
+}
+
+#moments {
+  padding-left: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(72, 72, 72);
+}
+
+#reserveModalDivider {
+  display:flex;
+  line-height: 30px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(118, 118, 118);
+}
+
+#reserveModalFooter {
+  border-top-style: solid;
+  border-top-color:  rgb(228, 228, 228);
+  border-top-width: 1px;
+  padding-top: 15px;
+  padding-left: 15px;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgb(72, 72, 72);
+}
+
+#reserveModalLogin {
+  padding-left: 10px;
+  color: rgb(0, 132, 137);
+  font-weight: 600;
+  font-size: 16px;
+}
+#reserveModalLogin:hover {
+  text-decoration: underline;
+}
+
+.ContinueSignupButtons {
+  align-self: center;
+  width: 500px;
+  flex: 1;
+  height: 47px;
+  font-size: 16px;
+  font-weight: 800;
+
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease-out;
+  outline: none;
+  margin: 5px;
+}
+
+#facebookContinue {
+  background-color: rgb(69, 104, 178);
+  color: white;
+}
+
+#emailSignup {
+  background-color: rgb(255, 90, 95);
+  color: white;
+}
+#googleContinue {
+  border-style: solid;
+  border-color: rgb(72, 72, 72);
+  border-width: 1.5px;
+}
+
+.reserveButtonContainers {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  align-self: center;
+}
+
+
+
+
 
 /* .fadein {
   opacity: 1;
