@@ -3,7 +3,11 @@ const app = express();
 const path = require('path');
 const db = require('./data/db.js');
 
-app.use(express.static(path.join(__dirname, '../public')));
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, '../client/'));
+
+app.use('/homepage/*/id', express.static(path.join(__dirname, '../public')));
 
 app.get('/id:*', (req, res, next) => {
   let pID = req.path.split(':')[1];

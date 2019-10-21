@@ -6,6 +6,7 @@ import Reserve from './Reserve';
 import BookingDetail from './BookingDetail';
 import GuestsLoading from './GuestsLoading';
 import CalendarLoading from './CalendarLoading';
+import ReserveLoading from './ReserveLoading';
 const moment = require('moment');
 const axios = require('axios');
 moment().format();
@@ -34,6 +35,7 @@ class App extends React.Component {
       totalServiceFee: null,
       totalWeeklyDiscount: null,
       totalAmount: null,
+      propertyID: window.location.href.split('/')[4]
     };
 
     this.getNumReservedDates = this.getNumReservedDates.bind(this);
@@ -43,7 +45,7 @@ class App extends React.Component {
   }
 
   getPropertyInfo() {
-    axios.get('/id:1')
+    axios.get('/id:' + this.state.propertyID)
       .then((res) => {
         let propertyInfo = JSON.parse(JSON.stringify(this.state.propertyInfo));
         for(let key in propertyInfo) {
@@ -131,7 +133,8 @@ class App extends React.Component {
         <div className="calendarContainer">
           {this.state.propertyInfo.pRequired_Week_Booking_Days
             ? <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
-                        getNumReservedDates={this.getNumReservedDates}/>
+                        getNumReservedDates={this.getNumReservedDates}
+                        propertyID={this.state.propertyID}/>
             : <CalendarLoading/>}
           
         </div> 
@@ -149,7 +152,10 @@ class App extends React.Component {
           </div>
         </div>
         <div className="reserveContainer">
-          <Reserve/>
+          {this.state.numReservedDates
+          ? <Reserve numReservedDates={this.state.numReservedDates}/>
+          : <ReserveLoading/>}
+          
         </div>
         <div className="footer">
           You won't be charged yet

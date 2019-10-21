@@ -25,6 +25,7 @@ class Calendar extends React.Component {
 
     this.requiredBookingDays = this.props.requiredBookingDays;
     this.getNumReservedDates = this.props.getNumReservedDates;
+    this.propertyID = this.props.propertyID;
     
     this.toggleCalendar = this.toggleCalendar.bind(this);
     this.handleOutsideCalendarClick = this.handleOutsideCalendarClick.bind(this);
@@ -44,7 +45,7 @@ class Calendar extends React.Component {
   }
 
   getBookedDates() {
-    axios.get('/BookedDates:1')
+    axios.get('/BookedDates:' + this.propertyID)
     .then((res) => {
       let bookedDates = [];
       for (let i = 0; i < res.data.length; i++) {
