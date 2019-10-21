@@ -74,7 +74,7 @@ class Guests extends React.Component {
   }
   
   incrementGuestsCounter(type) {
-    if(this.state.numAdults + this.state.numChildren < this.pMax_guests) {
+    if(this.state.numAdults + this.state.numChildren < this.props.pMax_guests) {
       if(type === "adult") {
         let numAdults = this.state.numAdults + 1;
         this.setState({
@@ -97,10 +97,10 @@ class Guests extends React.Component {
   
   displayMaxGuests() {
     let result = ''
-    if(this.pMax_guests === 1) {
+    if(this.props.pMax_guests === 1) {
       result += '1 guest ';
     } else {
-      result += this.pMax_guests + ' guests ';
+      result += this.props.pMax_guests + ' guests ';
     }
     result += 'maximum. Infants don\'t count toward the number of guests.';
     return result;
@@ -150,12 +150,12 @@ class Guests extends React.Component {
       });
     }
   
-    if (this.state.numAdults + this.state.numChildren === this.pMax_guests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
+    if (this.state.numAdults + this.state.numChildren === this.props.pMax_guests && !this.state.disableAdultPlus && !this.state.disableChildrenPlus) {
       this.setState({
         disableAdultPlus: true,
         disableChildrenPlus: true
       });
-    } else if (this.state.numAdults + this.state.numChildren < this.pMax_guests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
+    } else if (this.state.numAdults + this.state.numChildren < this.props.pMax_guests && this.state.disableAdultPlus && this.state.disableChildrenPlus){
       this.setState({
         disableAdultPlus: false,
         disableChildrenPlus: false

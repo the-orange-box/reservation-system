@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const db = require('./data/db.js');
 
-
+app.use(express.json());
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, '../client/'));
 
@@ -32,6 +32,16 @@ app.get('/BookedDates:*', (req, res, next) => {
     next();
   });
 });
+
+app.post('/BookedDates', (req, res, next) => {
+  console.log(req.body);
+  var promises = [];
+  let bookedDates = req.body.bookedDates;
+  for (let i = 0; i < bookedDates.length; i++) {
+    promises.push(db.Booked.create({bProperty_ID: bookedDates[i].bProperty_ID, bUser_ID: bookedDates[i].bUser_ID, Date: bookedDates[i].Date}));
+  }
+  Promise.all(promises);
+})
 
 
 app.listen(3000);

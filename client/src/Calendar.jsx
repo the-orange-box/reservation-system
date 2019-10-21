@@ -14,7 +14,6 @@ class Calendar extends React.Component {
       bookedDates: [],
       dayArray: new Array(42).fill(null).map(day => ({ day: null, status: 'unselected', invalidDate: false})),
       calendarVisibility: "hidden",
-      checkinCheckout: [null,null],
       currentSelection: null,
       currentMonth: moment(),
       transition: 'fadein',
@@ -23,6 +22,7 @@ class Calendar extends React.Component {
       //maybe add a state for nextMonth currMonth div and prevMonth calendayDay div for sliding animation
     };
 
+    this.updateCheckinCheckout = this.props.updateCheckinCheckout;
     this.requiredBookingDays = this.props.requiredBookingDays;
     this.getNumReservedDates = this.props.getNumReservedDates;
     this.propertyID = this.props.propertyID;
@@ -110,25 +110,25 @@ class Calendar extends React.Component {
     this.calculateDisabledDates(dayArray);
     this.calculateBookedDates(dayArray);
 
-    if(this.state.checkinCheckout[0] !== null && 
-      (this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[0]).format('MM'))
-      && (this.state.currentMonth.format('YYYY') === moment(this.state.checkinCheckout[0]).format('YYYY'))) {
+    if(this.props.checkinCheckout[0] !== null && 
+      (this.state.currentMonth.format('MM') === moment(this.props.checkinCheckout[0]).format('MM'))
+      && (this.state.currentMonth.format('YYYY') === moment(this.props.checkinCheckout[0]).format('YYYY'))) {
         //select checkin
-        let checkinDay = moment(this.state.checkinCheckout[0]).format('DD');
-        let checkinIndex = this.calculateIndexOfDay(checkinDay, this.state.checkinCheckout[0]);
+        let checkinDay = moment(this.props.checkinCheckout[0]).format('DD');
+        let checkinIndex = this.calculateIndexOfDay(checkinDay, this.props.checkinCheckout[0]);
         dayArray[checkinIndex].status = 'selected';
     }
-    if(this.state.checkinCheckout[1] !== null && 
-      this.state.currentMonth.format('MM') === moment(this.state.checkinCheckout[1]).format('MM')
-      && (this.state.currentMonth.format('YYYY') === moment(this.state.checkinCheckout[1]).format('YYYY'))) {
+    if(this.props.checkinCheckout[1] !== null && 
+      this.state.currentMonth.format('MM') === moment(this.props.checkinCheckout[1]).format('MM')
+      && (this.state.currentMonth.format('YYYY') === moment(this.props.checkinCheckout[1]).format('YYYY'))) {
         //select checkout
-        let checkoutDay = moment(this.state.checkinCheckout[1]).format('DD');
-        let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.state.checkinCheckout[1]);
+        let checkoutDay = moment(this.props.checkinCheckout[1]).format('DD');
+        let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.props.checkinCheckout[1]);
         dayArray[checkoutIndex].status = 'selected';
     }
 
-    if(this.state.checkinCheckout[0] !== null && this.state.checkinCheckout[1] !== null) {
-      this.updateSelectionRange(dayArray, moment(this.state.checkinCheckout[0]), moment(this.state.checkinCheckout[1]));
+    if(this.props.checkinCheckout[0] !== null && this.props.checkinCheckout[1] !== null) {
+      this.updateSelectionRange(dayArray, moment(this.props.checkinCheckout[0]), moment(this.props.checkinCheckout[1]));
     }
 
     this.setState({
@@ -141,13 +141,13 @@ class Calendar extends React.Component {
   //TODO: refactor this function
   selectDay(index) {
     let dayArray = JSON.parse(JSON.stringify(this.state.dayArray));
-    let checkinCheckout = this.state.checkinCheckout.slice(0);
+    let checkinCheckout = this.props.checkinCheckout.slice(0);
     let checkInOutDate = this.getMomentJSofIndex(index, this.state.currentMonth.format('MM'), this.state.currentMonth.format('YYYY'));
 
     if (this.state.currentSelection === 'checkin') {
 
-      if (this.state.checkinCheckout[0] !== null) {
-        let checkinIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[0]).format('DD')));
+      if (this.props.checkinCheckout[0] !== null) {
+        let checkinIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[0]).format('DD')));
         if(checkinIndex !== index) {
           dayArray[checkinIndex].status = 'unselected';
         }
@@ -160,13 +160,13 @@ class Calendar extends React.Component {
       let isValidDate = false;
       var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
       let checkoutDate = null;
-      if(this.state.checkinCheckout[1] && checkforBookedorCheckedInDate.diff(moment(this.state.checkinCheckout[1]), 'days') < 0) {
+      if(this.props.checkinCheckout[1] && checkforBookedorCheckedInDate.diff(moment(this.props.checkinCheckout[1]), 'days') < 0) {
         let daysBeforeCheckoutDate = 0;
         var isBooked = false;
         let currentMonth = this.state.currentMonth.format();
 
         let tempLoopCounter = 0;
-        while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[1]).format('YYYY MM DD')) {
+        while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.props.checkinCheckout[1]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           
           for(let i = 0; i < this.state.bookedDates.length; i++){
@@ -198,7 +198,7 @@ class Calendar extends React.Component {
           isValidDate = true;
 
 
-          checkoutDate = moment(this.state.checkinCheckout[1]);
+          checkoutDate = moment(this.props.checkinCheckout[1]);
           if (daysBeforeBookedDate < daysBeforeCheckoutDate) {
             checkoutDate = null;
             let unselectUpToIndex = this.calculateIndexOfDay(Number(moment(checkinCheckout[1]).format('DD')));
@@ -226,8 +226,8 @@ class Calendar extends React.Component {
           
           if(daysBeforeBookedDate === this.requiredBookingDays + 1) {
             isValidDate = true;
-            if(this.state.checkinCheckout[1] !== null) {
-              checkoutDate = moment(this.state.checkinCheckout[1]);
+            if(this.props.checkinCheckout[1] !== null) {
+              checkoutDate = moment(this.props.checkinCheckout[1]);
               if(moment(checkInOutDate) > checkoutDate) {
                 checkoutDate = null;
                 checkinCheckout[1] = null;
@@ -263,9 +263,9 @@ class Calendar extends React.Component {
         this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
       }
     } else {
-      if(moment(checkInOutDate) > moment(this.state.checkinCheckout[0])) {
-        if (this.state.checkinCheckout[1] !== null) {
-          let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.state.checkinCheckout[1]).format('DD')));
+      if(moment(checkInOutDate) > moment(this.props.checkinCheckout[0])) {
+        if (this.props.checkinCheckout[1] !== null) {
+          let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[1]).format('DD')));
           if(checkoutIndex !== index) {
             dayArray[checkoutIndex].status = 'unselected';
           }
@@ -278,7 +278,7 @@ class Calendar extends React.Component {
         var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
         let currentMonth = this.state.currentMonth.format();
 
-        while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.state.checkinCheckout[0]).format('YYYY MM DD')) {
+        while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.props.checkinCheckout[0]).format('YYYY MM DD')) {
           checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
           var isBooked = false;
           for(let i = 0; i < this.state.bookedDates.length; i++){
@@ -287,7 +287,7 @@ class Calendar extends React.Component {
               break;
             }
           }
-          let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.state.checkinCheckout[0]).format('YYYY MM DD');
+          let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.props.checkinCheckout[0]).format('YYYY MM DD');
           if(isBooked || (isCheckedInDate && daysBeforeBookedDate < this.requiredBookingDays) || (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked)) {
             if (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked) {
               isValidDate = true;
@@ -315,8 +315,8 @@ class Calendar extends React.Component {
         }
 
         let checkinDate;
-        if(this.state.checkinCheckout[0] !== null) {
-          checkinDate = moment(this.state.checkinCheckout[0]);
+        if(this.props.checkinCheckout[0] !== null) {
+          checkinDate = moment(this.props.checkinCheckout[0]);
         }
 
         if(isValidDate) {
@@ -325,17 +325,18 @@ class Calendar extends React.Component {
       }
     }
     
-    if((checkinCheckout[0] !== null && checkinCheckout[0] !== this.state.checkinCheckout[0]) 
-                                                || this.state.currentSelection === 'checkout' && checkinCheckout[1] !== this.state.checkinCheckout[1]) {
+    if((checkinCheckout[0] !== null && checkinCheckout[0] !== this.props.checkinCheckout[0]) 
+                                                || this.state.currentSelection === 'checkout' && checkinCheckout[1] !== this.props.checkinCheckout[1]) {
       let prevSelection = this.state.currentSelection;
+      this.updateCheckinCheckout(checkinCheckout[0], checkinCheckout[1]);
       this.setState({
         dayArray,
-        checkinCheckout,
+        // checkinCheckout, //TODO
         currentSelection: 'checkout'
       }, () => {
         if(prevSelection === 'checkin') {
           document.getElementById('checkout').focus();
-        } else if(this.state.checkinCheckout[1] !== null) {
+        } else if(this.props.checkinCheckout[1] !== null) {
           this.toggleCalendar();
           document.getElementById('checkout').blur();
         }
@@ -404,9 +405,10 @@ class Calendar extends React.Component {
     for (let i = 0; i < 42; i++) {
       dayArray[i].status = 'unselected';
     }
+    this.updateCheckinCheckout(null, null);
     this.setState({
       dayArray,
-      checkinCheckout: [null, null],
+      // checkinCheckout: [null, null], //todo
       currentSelection: 'checkin'
     }, document.getElementById('checkin').focus())
   }
@@ -415,7 +417,7 @@ class Calendar extends React.Component {
   //check-in date not selected
   //need to remove checkout date if new checkin date is selected.
   toggleCalendar(selectType) {
-    if(this.state.checkinCheckout[0] === null) {
+    if(this.props.checkinCheckout[0] === null) {
       document.getElementById('checkin').focus();
       selectType = 'checkin';
     }
@@ -428,7 +430,7 @@ class Calendar extends React.Component {
     this.setState({
       calendarVisibility,
       currentSelection: selectType
-    }, () => this.getNumReservedDates(this.state.checkinCheckout[0], this.state.checkinCheckout[1]));
+    }, () => this.getNumReservedDates(this.props.checkinCheckout[0], this.props.checkinCheckout[1]));
   }
 
   //need to change this so its only currMonth and calendarDay thats sliding.
@@ -452,14 +454,14 @@ class Calendar extends React.Component {
   }
 
   displayCheckInOutDate(index) {
-    if(this.state.checkinCheckout[index] === null) {
+    if(this.props.checkinCheckout[index] === null) {
       if(index === 0) {
         return 'Check-in';
       } else {
         return 'Checkout';
       }
     } else {
-      return moment(this.state.checkinCheckout[index]).format('L');
+      return moment(this.props.checkinCheckout[index]).format('L');
     }
   }
 

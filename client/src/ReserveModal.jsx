@@ -1,11 +1,12 @@
 import React from 'react';
 
-const ReserveModal = ({visibility, toggleReserveModal}) => (
+const ReserveModal = ({visibility, toggleReserveModal, checkinCheckout, postBookedDates}) => (
   <div className="reserveModal" style={{visibility: visibility}}>
     <div className="reserveModalDetails">
       <span className="reserveModalClose" onClick={toggleReserveModal}>&times;</span>
       <div id="signUp">
-        Sign up to book
+        Sign up to<button id="bookReservation" onClick={() => postBookedDates(checkinCheckout[0], checkinCheckout[1])
+        }>book</button>
       </div>
       <div id="moments">
         You're moments away from booking your stay

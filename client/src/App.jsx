@@ -35,13 +35,43 @@ class App extends React.Component {
       totalServiceFee: null,
       totalWeeklyDiscount: null,
       totalAmount: null,
-      propertyID: window.location.href.split('/')[4]
+      propertyID: window.location.href.split('/')[4],
+      checkinCheckout: [null,null],
     };
 
     this.getNumReservedDates = this.getNumReservedDates.bind(this);
     this.getTotalGuests = this.getTotalGuests.bind(this);
     this.populateBookingDisplay = this.populateBookingDisplay.bind(this);
     this.getPropertyInfo = this.getPropertyInfo.bind(this);
+    this.updateCheckinCheckout = this.updateCheckinCheckout.bind(this);
+    this.postBookedDates = this.postBookedDates.bind(this);
+  }
+
+
+  postBookedDates(checkin, checkout) {
+    if(checkin && checkout) {
+      let bookedDate = moment(checkin).format('YYYY-MM-DD');
+      console.log(checkin);
+      console.log(checkout);
+      let bookedDates = [];
+      for(let i = 0; i <= this.state.numReservedDates; i++) {
+        bookedDates.push({
+            bProperty_ID: this.state.propertyID,
+            bUser_ID: 1, //hardcoded to id: 1 right now since login functionality not setup
+            Date: bookedDate,
+        });
+        bookedDate = moment(bookedDate).add(1, 'days').format('YYYY-MM-DD');
+      }
+      axios.post('/BookedDates', {
+        bookedDates
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
   }
 
   getPropertyInfo() {
@@ -114,6 +144,13 @@ class App extends React.Component {
     }, this.populateBookingDisplay);
   }
 
+  updateCheckinCheckout(checkin, checkout) {
+    let checkinCheckout = [checkin, checkout]
+    this.setState({
+      checkinCheckout
+    });
+  }
+
   getTotalGuests(numAdults, numChildren) {
     return Number(numAdults) + Number(numChildren);
   }
@@ -134,7 +171,9 @@ class App extends React.Component {
           {this.state.propertyInfo.pRequired_Week_Booking_Days
             ? <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
                         getNumReservedDates={this.getNumReservedDates}
-                        propertyID={this.state.propertyID}/>
+                        propertyID={this.state.propertyID}
+                        checkinCheckout={this.state.checkinCheckout}
+                        updateCheckinCheckout={this.updateCheckinCheckout}/>
             : <CalendarLoading/>}
           
         </div> 
@@ -153,7 +192,9 @@ class App extends React.Component {
         </div>
         <div className="reserveContainer">
           {this.state.numReservedDates
-          ? <Reserve numReservedDates={this.state.numReservedDates}/>
+          ? <Reserve numReservedDates={this.state.numReservedDates} 
+                     checkinCheckout={this.state.checkinCheckout}
+                     postBookedDates={this.postBookedDates}/>
           : <ReserveLoading/>}
           
         </div>

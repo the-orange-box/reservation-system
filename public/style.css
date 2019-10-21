@@ -781,6 +781,17 @@
   color: rgb(72, 72, 72);
 }
 
+#bookReservation {
+  padding-left: 5px;
+  font-size: 24px;
+  font-weight: 600;
+  color: rgb(72, 72, 72);
+}
+#bookReservation:hover {
+  color: rgb(0, 132, 137);
+  cursor: pointer;
+}
+
 #moments {
   padding-left: 15px;
   font-size: 16px;

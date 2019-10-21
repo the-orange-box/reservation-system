@@ -1,5 +1,6 @@
 import React from 'react';
 import ReserveModal from './ReserveModal';
+const axios = require('axios');
 const moment = require('moment');
 moment().format();
 
@@ -13,9 +14,12 @@ class Reserve extends React.Component {
     };
 
     this.numReservedDates = this.props.numReservedDates;
+    this.postBookedDates = this.props.postBookedDates;
     this.handleOutsideReserveModalClick = this.handleOutsideReserveModalClick.bind(this);
     this.toggleReserveModal = this.toggleReserveModal.bind(this);
   }
+
+
 
   toggleReserveModal() {
     if(this.numReservedDates) {
@@ -51,7 +55,9 @@ class Reserve extends React.Component {
         <button className="reserveButton" id="reserve" onClick={this.toggleReserveModal}>Reserve</button>
         <div ref={node => this.node = node}>
             <ReserveModal visibility={this.state.visibility}
-                          toggleReserveModal={this.toggleReserveModal}/>
+                          toggleReserveModal={this.toggleReserveModal}
+                          postBookedDates={this.postBookedDates}
+                          checkinCheckout={this.props.checkinCheckout}/>
         </div>
       </div>
     );
