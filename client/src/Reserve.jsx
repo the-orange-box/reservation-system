@@ -1,6 +1,6 @@
 import React from 'react';
 import ReserveModal from './ReserveModal';
-const axios = require('axios');
+import styles from '../../public/styles/reserve.module.css';
 const moment = require('moment');
 moment().format();
 
@@ -51,8 +51,8 @@ class Reserve extends React.Component {
 
   render() {
     return (
-      <div className="reserve">
-        <button className="reserveButton" id="reserve" onClick={this.toggleReserveModal}>Reserve</button>
+      <div className={styles.reserve}>
+        <button className={styles.reserveButton} id={styles.reserve} onClick={this.toggleReserveModal}>Reserve</button>
         <div ref={node => this.node = node}>
             <ReserveModal visibility={this.state.visibility}
                           toggleReserveModal={this.toggleReserveModal}

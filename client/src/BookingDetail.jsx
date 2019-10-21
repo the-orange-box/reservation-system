@@ -1,9 +1,10 @@
 import React from 'react';
+import styles from '../../public/styles/bookingdetail.module.css';
 
 const BookingDetail = ({bookingDetail}) => (
-  <div className = "bookingDetail" id={bookingDetail.id}>
-    <span className="bookingDetailKey">{bookingDetail.key}</span>
-    <span className="bookingDetailValue">{bookingDetail.value}</span>
+  <div className ={styles.bookingDetail} id={styles[bookingDetail.id]}>
+    <span className={styles.bookingDetailKey}>{bookingDetail.key}</span>
+    <span className={styles.bookingDetailValue}>{bookingDetail.value}</span>
   </div>
 )
 

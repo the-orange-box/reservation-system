@@ -34,7 +34,6 @@ app.get('/BookedDates:*', (req, res, next) => {
 });
 
 app.post('/BookedDates', (req, res, next) => {
-  console.log(req.body);
   var promises = [];
   let bookedDates = req.body.bookedDates;
   for (let i = 0; i < bookedDates.length; i++) {

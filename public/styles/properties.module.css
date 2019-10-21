@@ -1,0 +1,23 @@
+
+#price {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 26px;
+}
+
+#priceText {
+  padding-left: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.review {
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+#totalReviews {
+  padding-left: 1px;
+  color: rgb(118, 118, 118);
+}

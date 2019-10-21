@@ -1,5 +1,6 @@
 import React from 'react';
 import CalendarDropdown from './CalendarDropdown';
+import styles from '../../public/styles/calendar.module.css';
 const axios = require('axios');
 const moment = require('moment');
 moment().format();
@@ -16,7 +17,7 @@ class Calendar extends React.Component {
       calendarVisibility: "hidden",
       currentSelection: null,
       currentMonth: moment(),
-      transition: 'fadein',
+      transition: styles.fadein,
       pastDates: [],
       //maybe add a state for prevMonth currMonth div and prevMonth calendarDay div for sliding animation
       //maybe add a state for nextMonth currMonth div and prevMonth calendayDay div for sliding animation
@@ -116,7 +117,7 @@ class Calendar extends React.Component {
         //select checkin
         let checkinDay = moment(this.props.checkinCheckout[0]).format('DD');
         let checkinIndex = this.calculateIndexOfDay(checkinDay, this.props.checkinCheckout[0]);
-        dayArray[checkinIndex].status = 'selected';
+        dayArray[checkinIndex].status = styles.selected;
     }
     if(this.props.checkinCheckout[1] !== null && 
       this.state.currentMonth.format('MM') === moment(this.props.checkinCheckout[1]).format('MM')
@@ -124,7 +125,7 @@ class Calendar extends React.Component {
         //select checkout
         let checkoutDay = moment(this.props.checkinCheckout[1]).format('DD');
         let checkoutIndex = this.calculateIndexOfDay(checkoutDay, this.props.checkinCheckout[1]);
-        dayArray[checkoutIndex].status = 'selected';
+        dayArray[checkoutIndex].status = styles.selected;
     }
 
     if(this.props.checkinCheckout[0] !== null && this.props.checkinCheckout[1] !== null) {
@@ -144,7 +145,7 @@ class Calendar extends React.Component {
     let checkinCheckout = this.props.checkinCheckout.slice(0);
     let checkInOutDate = this.getMomentJSofIndex(index, this.state.currentMonth.format('MM'), this.state.currentMonth.format('YYYY'));
 
-    if (this.state.currentSelection === 'checkin') {
+    if (this.state.currentSelection === styles.checkin) {
 
       if (this.props.checkinCheckout[0] !== null) {
         let checkinIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[0]).format('DD')));
@@ -259,7 +260,7 @@ class Calendar extends React.Component {
  
       if(isValidDate) {
         checkinCheckout[0] = checkInOutDate;
-        dayArray[index].status = 'selected';
+        dayArray[index].status = styles.selected;
         this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
       }
     } else {
@@ -311,7 +312,7 @@ class Calendar extends React.Component {
         }
         if(isValidDate) {
           checkinCheckout[1] = checkInOutDate;
-          dayArray[index].status = 'selected';
+          dayArray[index].status = styles.selected;
         }
 
         let checkinDate;
@@ -326,19 +327,19 @@ class Calendar extends React.Component {
     }
     
     if((checkinCheckout[0] !== null && checkinCheckout[0] !== this.props.checkinCheckout[0]) 
-                                                || this.state.currentSelection === 'checkout' && checkinCheckout[1] !== this.props.checkinCheckout[1]) {
+                                                || this.state.currentSelection === styles.checkout && checkinCheckout[1] !== this.props.checkinCheckout[1]) {
       let prevSelection = this.state.currentSelection;
       this.updateCheckinCheckout(checkinCheckout[0], checkinCheckout[1]);
       this.setState({
         dayArray,
         // checkinCheckout, //TODO
-        currentSelection: 'checkout'
+        currentSelection: styles.checkout
       }, () => {
-        if(prevSelection === 'checkin') {
-          document.getElementById('checkout').focus();
+        if(prevSelection === styles.checkin) {
+          document.getElementById(styles.checkout).focus();
         } else if(this.props.checkinCheckout[1] !== null) {
           this.toggleCalendar();
-          document.getElementById('checkout').blur();
+          document.getElementById(styles.checkout).blur();
         }
       });
     }
@@ -355,9 +356,9 @@ class Calendar extends React.Component {
           || (checkinDate.year() < this.state.currentMonth.year()) && checkoutDate.month() === this.state.currentMonth.month()){
         let startIndex = this.state.currentMonth.startOf('month').day()
         for (let i = startIndex; i < checkout; i++) {
-          dayArray[i].status = 'selectionRange';
+          dayArray[i].status = styles.selectionRange;
         }
-        dayArray[checkout].status += ' checkoutSelected';
+        dayArray[checkout].status += ' ' + styles.checkoutSelected;
       }
       //checkout next month
       if((checkoutDate.month() > this.state.currentMonth.month() && checkinDate.month() === this.state.currentMonth.month())
@@ -366,9 +367,9 @@ class Calendar extends React.Component {
         let totalDays = this.state.currentMonth.daysInMonth();
         let endDayIndex = startDayIndex + totalDays
         for (let i = checkin + 1; i < endDayIndex; i++) {
-          dayArray[i].status = 'selectionRange';
+          dayArray[i].status = styles.selectionRange;
         }
-        dayArray[checkin].status += ' checkinSelected';
+        dayArray[checkin].status += ' ' + styles.checkinSelected;
       }
 
       //checkin previous month and checkout next month
@@ -378,7 +379,7 @@ class Calendar extends React.Component {
         let totalDays = this.state.currentMonth.daysInMonth();
         let endDayIndex = startDayIndex + totalDays
         for (let i = startDayIndex; i < endDayIndex; i++) {
-          dayArray[i].status = 'selectionRange';
+          dayArray[i].status = styles.selectionRange;
         }
       } 
 
@@ -389,13 +390,13 @@ class Calendar extends React.Component {
           dayArray[i].status = 'unselected'
         }
         for (let i = checkin + 1; i < checkout; i++) {
-          dayArray[i].status = 'selectionRange';
+          dayArray[i].status = styles.selectionRange;
         }
         for(let i = checkout + 1; i < dayArray.length; i++) {
           dayArray[i].status = 'unselected'
         }
-        dayArray[checkin].status += ' checkinSelected';
-        dayArray[checkout].status += ' checkoutSelected';
+        dayArray[checkin].status += ' ' + styles.checkinSelected;
+        dayArray[checkout].status += ' ' + styles.checkoutSelected;
       }
     }
   }
@@ -409,8 +410,8 @@ class Calendar extends React.Component {
     this.setState({
       dayArray,
       // checkinCheckout: [null, null], //todo
-      currentSelection: 'checkin'
-    }, document.getElementById('checkin').focus())
+      currentSelection: styles.checkin
+    }, document.getElementById(styles.checkin).focus())
   }
 
   //TODO: need to update so checkout doesn't get highlighted on click if 
@@ -418,8 +419,8 @@ class Calendar extends React.Component {
   //need to remove checkout date if new checkin date is selected.
   toggleCalendar(selectType) {
     if(this.props.checkinCheckout[0] === null) {
-      document.getElementById('checkin').focus();
-      selectType = 'checkin';
+      document.getElementById(styles.checkin).focus();
+      selectType = styles.checkin;
     }
     let calendarVisibility;
     if(this.state.calendarVisibility === "hidden") {
@@ -436,10 +437,10 @@ class Calendar extends React.Component {
   //need to change this so its only currMonth and calendarDay thats sliding.
   monthTransitionIn() {
     let transition = this.state.transition
-    if(transition === 'fadeout') {
-      transition = 'fadein';
+    if(transition === styles.fadeout) {
+      transition = styles.fadein;
     } else {
-      transition = 'fadeout';
+      transition = styles.fadeout;
     }
 
     this.setState({
@@ -501,18 +502,18 @@ class Calendar extends React.Component {
 
   render() {
     return (
-      <div className="calendarSubGrid">
-        <div className="calendarHeader" id="calendarHeader">
+      <div className={styles.calendarSubGrid}>
+        <div className={styles.calendarHeader} id={styles.calendarHeader}>
           Dates
         </div>
-        <div className="calendarInputs">
-          <input className="checkin" id="checkin" readOnly value={this.displayCheckInOutDate(0)} onClick={() => this.toggleCalendar('checkin')} />
-          <svg className="calendarArrow" width="35px" height="35px">
+        <div className={styles.calendarInputs}>
+          <input className={styles.checkin} id={styles.checkin} readOnly value={this.displayCheckInOutDate(0)} onClick={() => this.toggleCalendar(styles.checkin)} />
+          <svg className={styles.calendarArrow} width="35px" height="35px">
             <line x1="5" x2="31" y1="17.5" y2="17.5" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="10" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
             <line x1="31" x2="24" y1="17.5" y2="25" stroke="black" strokeWidth=".70" strokeLinecap="butt"/>
           </svg>
-          <input className="checkout" id="checkout" readOnly value={this.displayCheckInOutDate(1)} onClick={() => this.toggleCalendar('checkout')}/>
+          <input className={styles.checkout} id={styles.checkout} readOnly value={this.displayCheckInOutDate(1)} onClick={() => this.toggleCalendar(styles.checkout)}/>
         </div>
         <div ref={node => this.node = node}>
           <CalendarDropdown dayArray={this.state.dayArray}
