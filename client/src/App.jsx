@@ -7,6 +7,7 @@ import BookingDetail from './BookingDetail';
 import GuestsLoading from './GuestsLoading';
 import CalendarLoading from './CalendarLoading';
 import ReserveLoading from './ReserveLoading';
+import styles from '../../public/styles/app.module.css';
 const moment = require('moment');
 const axios = require('axios');
 moment().format();
@@ -51,8 +52,6 @@ class App extends React.Component {
   postBookedDates(checkin, checkout) {
     if(checkin && checkout) {
       let bookedDate = moment(checkin).format('YYYY-MM-DD');
-      console.log(checkin);
-      console.log(checkout);
       let bookedDates = [];
       for(let i = 0; i <= this.state.numReservedDates; i++) {
         bookedDates.push({
@@ -161,13 +160,13 @@ class App extends React.Component {
 
   render() {
     return(
-      <div className="container">
-        <div className="propertyContainer">
+      <div className={styles.container}>
+        <div className={styles.propertyContainer}>
           <PropertyDetail pricePerNight={this.state.propertyInfo.pNightly_price}
                           starRating={this.state.propertyInfo.pRating}
                           numReviews={this.state.propertyInfo.pReviews}/>
         </div>
-        <div className="calendarContainer">
+        <div className={styles.calendarContainer}>
           {this.state.propertyInfo.pRequired_Week_Booking_Days
             ? <Calendar requiredBookingDays={this.state.propertyInfo.pRequired_Week_Booking_Days}
                         getNumReservedDates={this.getNumReservedDates}
@@ -177,20 +176,20 @@ class App extends React.Component {
             : <CalendarLoading/>}
           
         </div> 
-        <div className="guestsContainer">
+        <div className={styles.guestsContainer}>
           {this.state.propertyInfo.pMax_guests 
             ? <Guests pMax_guests={this.state.propertyInfo.pMax_guests}
             getTotalGuests={this.getTotalGuests}/>
             : <GuestsLoading/>}
         </div>
-        <div className="bookingInformation">
+        <div className={styles.bookingInformation}>
             {this.state.bookingDisplay.map((bookingDetail,key) => <BookingDetail bookingDetail={bookingDetail} key={key}/>)} 
-          <div className="bookingTotal">
-            { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalKey">Total</span> : null }
-            { this.state.bookingDisplay.length > 0 ? <span className="bookingTotalValue">{'$' + Math.trunc(this.state.totalAmount)}</span> : null }                                       
+          <div className={styles.bookingTotal}>
+            { this.state.bookingDisplay.length > 0 ? <span className={styles.bookingTotalKey}>Total</span> : null }
+            { this.state.bookingDisplay.length > 0 ? <span className={styles.bookingTotalValue}>{'$' + Math.trunc(this.state.totalAmount)}</span> : null }                                       
           </div>
         </div>
-        <div className="reserveContainer">
+        <div className={styles.reserveContainer}>
           {this.state.numReservedDates
           ? <Reserve numReservedDates={this.state.numReservedDates} 
                      checkinCheckout={this.state.checkinCheckout}
@@ -198,7 +197,7 @@ class App extends React.Component {
           : <ReserveLoading/>}
           
         </div>
-        <div className="footer">
+        <div className={styles.footer}>
           You won't be charged yet
         </div>
       </div>

@@ -1,9 +1,10 @@
 import React from 'react';
+import styles from '../../public/styles/reserve.module.css';
 
 //reserve button
 const ReserveLoading = () => (
-  <div className="reserve">
-    <button className="reserveButton" id="reserve">Reserve</button>
+  <div className={styles.reserve}>
+    <button className={styles.reserveButton} id={styles.reserve}>Reserve</button>
   </div>
 )
 

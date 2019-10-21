@@ -1,0 +1,28 @@
+
+.bookingDetail {
+  color: rgb(100, 100, 100);
+  font-size: 14px;
+  font-weight: 400;
+
+  border-bottom-color: rgb(235, 235, 235);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding-bottom: 10px;
+  padding-top: 7px;
+  display:flex;
+  justify-content: space-between;
+}
+
+.bookingDetailKey {
+  text-align: start;
+  flex:2;
+}
+
+.bookingDetailValue {
+  text-align: end;
+  flex:1;
+}
+
+#pBulkDiscount {
+  color: rgb(9, 134, 139)
+}
