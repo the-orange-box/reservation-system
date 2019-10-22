@@ -183,7 +183,11 @@ class App extends React.Component {
             : <GuestsLoading/>}
         </div>
         <div className={styles.bookingInformation}>
-            {this.state.bookingDisplay.map((bookingDetail,key) => <BookingDetail bookingDetail={bookingDetail} key={key}/>)} 
+            {this.state.bookingDisplay.map((bookingDetail,key) => {
+              if(bookingDetail.value !== '$0') {
+                return <BookingDetail bookingDetail={bookingDetail} key={key}/>;
+              }
+            })} 
           <div className={styles.bookingTotal}>
             { this.state.bookingDisplay.length > 0 ? <span className={styles.bookingTotalKey}>Total</span> : null }
             { this.state.bookingDisplay.length > 0 ? <span className={styles.bookingTotalValue}>{'$' + Math.trunc(this.state.totalAmount)}</span> : null }                                       
