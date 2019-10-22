@@ -355,6 +355,7 @@ class Calendar extends React.Component {
           month = prevMonth.format('MM');
           year = prevMonth.format('YYYY');
           counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-' + month + '-01');
+          
         }
       }
       if(isValidDate) {
