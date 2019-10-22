@@ -47,6 +47,10 @@ class Calendar extends React.Component {
     this.checkPrevMonthCheckinNextMonthCheckout = this.checkPrevMonthCheckinNextMonthCheckout.bind(this);
     this.checkNextMonthCheckout = this.checkNextMonthCheckout.bind(this);
     this.checkPreviousMonthCheckin = this.checkPreviousMonthCheckin.bind(this);
+    this.selectCheckout = this.selectCheckout.bind(this);
+    this.selectCheckin = this.selectCheckin.bind(this);
+    this.checkinPriorToCheckout = this.checkinPriorToCheckout.bind(this);
+    this.noCheckoutOrNewCheckinAfterCheckout = this.noCheckoutOrNewCheckinAfterCheckout.bind(this);
   }
 
   getBookedDates() {
@@ -150,184 +154,9 @@ class Calendar extends React.Component {
     let checkInOutDate = this.getMomentJSofIndex(index, this.state.currentMonth.format('MM'), this.state.currentMonth.format('YYYY'));
 
     if (this.state.currentSelection === styles.checkin) {
-
-      if (this.props.checkinCheckout[0] !== null) {
-        let checkinIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[0]).format('DD')));
-        if(checkinIndex !== index) {
-          dayArray[checkinIndex].status = 'unselected';
-        }
-      } 
-
-      let daysBeforeBookedDate = 0;
-      let counter = index;
-      let year = this.state.currentMonth.format('YYYY');
-      let month = this.state.currentMonth.format('MM');
-      let isValidDate = false;
-      var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-      let checkoutDate = null;
-      if(this.props.checkinCheckout[1] && checkforBookedorCheckedInDate.diff(moment(this.props.checkinCheckout[1]), 'days') < 0) {
-        let daysBeforeCheckoutDate = 0;
-        var isBooked = false;
-        let currentMonth = this.state.currentMonth.format();
-
-        let tempLoopCounter = 0;
-        while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.props.checkinCheckout[1]).format('YYYY MM DD')) {
-          checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-          
-          for(let i = 0; i < this.state.bookedDates.length; i++){
-            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
-              isBooked = true;
-              break;
-            }
-          }
-          if(!isBooked){
-            daysBeforeBookedDate++;
-          }
-
-          
-          daysBeforeCheckoutDate++;
-
-          counter++;
-          let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
-          if(counter - 1 === lastDayIndex) {
-            var nextMonth = currentMonth;
-            nextMonth = moment(nextMonth);
-            nextMonth.add(1, 'months');
-            currentMonth = nextMonth.format();
-            counter = nextMonth.startOf('month').day();
-            month = nextMonth.format('MM');
-            year = nextMonth.format('YYYY');
-          }
-        }
-        if (daysBeforeBookedDate > 0 && daysBeforeBookedDate > this.requiredBookingDays) {
-          isValidDate = true;
-
-
-          checkoutDate = moment(this.props.checkinCheckout[1]);
-          if (daysBeforeBookedDate < daysBeforeCheckoutDate) {
-            checkoutDate = null;
-            let unselectUpToIndex = this.calculateIndexOfDay(Number(moment(checkinCheckout[1]).format('DD')));
-            if(moment(checkinCheckout[1]).startOf('month').diff(this.state.currentMonth.startOf('month'), 'months') >= 1) {
-              unselectUpToIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
-            }
-            for (let i = index + 1; i <= unselectUpToIndex; i++) {
-              dayArray[i].status = 'unselected';
-            }
-            checkinCheckout[1] = null;
-          }
-        } else if (daysBeforeBookedDate === 0) {
-          isValidDate = true;
-        }
-      } else {
-        while(counter <= this.requiredBookingDays + 1 + index) {
-          checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-          var isBooked = false;
-          for(let i = 0; i < this.state.bookedDates.length; i++){
-            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
-              isBooked = true;
-              break;
-            }
-          }
-          
-          if(daysBeforeBookedDate === this.requiredBookingDays + 1) {
-            isValidDate = true;
-            if(this.props.checkinCheckout[1] !== null) {
-              checkoutDate = moment(this.props.checkinCheckout[1]);
-              if(moment(checkInOutDate) > checkoutDate) {
-                checkoutDate = null;
-                checkinCheckout[1] = null;
-                let startDayIndex = this.state.currentMonth.startOf('month').day();
-                for (let i = startDayIndex; i < index; i++) {
-                  dayArray[i].status = 'unselected';
-                }
-              }
-            }
-            break;
-          }
-          if(isBooked) {
-            break;
-          }
-
-          daysBeforeBookedDate++;
-          counter++;
-          let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
-          if(counter - 1 === lastDayIndex) {
-            let nextMonth = this.state.currentMonth.format();
-            nextMonth = moment(nextMonth);
-            nextMonth.add(1, 'months');
-            counter = nextMonth.startOf('month').day();
-            month = nextMonth.format('MM');
-            year = nextMonth.format('YYYY');
-          }
-        }
-      }
- 
-      if(isValidDate) {
-        checkinCheckout[0] = checkInOutDate;
-        dayArray[index].status = styles.selected;
-        this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
-      }
+      this.selectCheckin(dayArray, checkInOutDate, index, checkinCheckout);
     } else {
-      if(moment(checkInOutDate) > moment(this.props.checkinCheckout[0])) {
-        if (this.props.checkinCheckout[1] !== null) {
-          let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[1]).format('DD')));
-          if(checkoutIndex !== index) {
-            dayArray[checkoutIndex].status = 'unselected';
-          }
-        } 
-        let daysBeforeBookedDate = 0;
-        let counter = index;
-        let year = this.state.currentMonth.format('YYYY');
-        let month = this.state.currentMonth.format('MM');
-        let isValidDate = false;
-        var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-        let currentMonth = this.state.currentMonth.format();
-
-        while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.props.checkinCheckout[0]).format('YYYY MM DD')) {
-          checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
-          var isBooked = false;
-          for(let i = 0; i < this.state.bookedDates.length; i++){
-            if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
-              isBooked = true;
-              break;
-            }
-          }
-          let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.props.checkinCheckout[0]).format('YYYY MM DD');
-          if(isBooked || (isCheckedInDate && daysBeforeBookedDate < this.requiredBookingDays) || (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked)) {
-            if (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked) {
-              isValidDate = true;
-            }
-            break;
-          }
-
-          daysBeforeBookedDate++;
-          counter--;
-          
-          let firstDayIndex = this.state.currentMonth.startOf('month').day();
-          if(counter + 1 === firstDayIndex) {
-            let prevMonth = currentMonth;
-            prevMonth = moment(prevMonth);
-            prevMonth.subtract(1, 'months');
-            currentMonth = prevMonth.format();
-            month = prevMonth.format('MM');
-            year = prevMonth.format('YYYY');
-            counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-01-' + month);
-          }
-        }
-        if(isValidDate) {
-          checkinCheckout[1] = checkInOutDate;
-          dayArray[index].status = styles.selected;
-        }
-
-        let checkinDate;
-        if(this.props.checkinCheckout[0] !== null) {
-          checkinDate = moment(this.props.checkinCheckout[0]);
-        }
-
-        if(isValidDate) {
-          this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
-        }
-      }
+      this.selectCheckout(dayArray, checkInOutDate, index, checkinCheckout);
     }
     
     if((checkinCheckout[0] !== null && checkinCheckout[0] !== this.props.checkinCheckout[0]) 
@@ -336,7 +165,6 @@ class Calendar extends React.Component {
       this.updateCheckinCheckout(checkinCheckout[0], checkinCheckout[1]);
       this.setState({
         dayArray,
-        // checkinCheckout, //TODO
         currentSelection: styles.checkout
       }, () => {
         if(prevSelection === styles.checkin) {
@@ -348,6 +176,202 @@ class Calendar extends React.Component {
       });
     }
     document.getElementById(this.state.currentSelection).focus();
+  }
+
+  selectCheckin(dayArray, checkInOutDate, index, checkinCheckout) {
+    if (this.props.checkinCheckout[0] !== null) {
+      let checkinIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[0]).format('DD')));
+      if(checkinIndex !== index) {
+        dayArray[checkinIndex].status = 'unselected';
+      }
+    } 
+
+    let daysBeforeBookedDate = 0;
+    let counter = index;
+    let year = this.state.currentMonth.format('YYYY');
+    let month = this.state.currentMonth.format('MM');
+    let isValidDate = false;
+    var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+    let checkoutDate = null;
+    if(this.props.checkinCheckout[1] && checkforBookedorCheckedInDate.diff(moment(this.props.checkinCheckout[1]), 'days') < 0) {
+      let isvalidAndCheckoutDate = this.checkinPriorToCheckout(dayArray, checkoutDate, checkforBookedorCheckedInDate, 
+                                                                counter, month, year, daysBeforeBookedDate, isValidDate, checkinCheckout, index);
+      isValidDate = isvalidAndCheckoutDate[0];
+      checkoutDate = isvalidAndCheckoutDate[1];
+    } else {
+      let isvalidAndCheckoutDate = this.noCheckoutOrNewCheckinAfterCheckout(dayArray, checkoutDate, checkforBookedorCheckedInDate, counter, 
+                                                                            month, year, daysBeforeBookedDate, isValidDate, checkinCheckout, index, checkInOutDate);
+      isValidDate = isvalidAndCheckoutDate[0];
+      checkoutDate = isvalidAndCheckoutDate[1];
+    }
+
+    if(isValidDate) {
+      checkinCheckout[0] = checkInOutDate;
+      dayArray[index].status = styles.selected;
+      this.updateSelectionRange(dayArray, moment(checkInOutDate), checkoutDate);
+    }
+  }
+
+  noCheckoutOrNewCheckinAfterCheckout(dayArray, checkoutDate, checkforBookedorCheckedInDate, counter, 
+                                  month, year, daysBeforeBookedDate, isValidDate, checkinCheckout, index, checkInOutDate) {
+    while(counter <= this.requiredBookingDays + 1 + index) {
+      checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+      var isBooked = false;
+      for(let i = 0; i < this.state.bookedDates.length; i++){
+        if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
+          isBooked = true;
+          break;
+        }
+      }
+      
+      if(daysBeforeBookedDate === this.requiredBookingDays + 1) {
+        isValidDate = true;
+        if(this.props.checkinCheckout[1] !== null) {
+          checkoutDate = moment(this.props.checkinCheckout[1]);
+          if(moment(checkInOutDate) > checkoutDate) {
+            checkoutDate = null;
+            checkinCheckout[1] = null;
+            let startDayIndex = this.state.currentMonth.startOf('month').day();
+            for (let i = startDayIndex; i < index; i++) {
+              dayArray[i].status = 'unselected';
+            }
+          }
+        }
+        break;
+      }
+      if(isBooked) {
+        break;
+      }
+
+      daysBeforeBookedDate++;
+      counter++;
+      let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+      if(counter - 1 === lastDayIndex) {
+        let nextMonth = this.state.currentMonth.format();
+        nextMonth = moment(nextMonth);
+        nextMonth.add(1, 'months');
+        counter = nextMonth.startOf('month').day();
+        month = nextMonth.format('MM');
+        year = nextMonth.format('YYYY');
+      }
+    }
+    return [isValidDate, checkoutDate];
+  }
+
+  checkinPriorToCheckout(dayArray, checkoutDate, checkforBookedorCheckedInDate, counter, 
+                          month, year, daysBeforeBookedDate, isValidDate, checkinCheckout, index) {
+    let daysBeforeCheckoutDate = 0;
+    var isBooked = false;
+    let currentMonth = this.state.currentMonth.format();
+
+    while(checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.props.checkinCheckout[1]).format('YYYY MM DD')) {
+      checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+      
+      for(let i = 0; i < this.state.bookedDates.length; i++){
+        if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
+          isBooked = true;
+          break;
+        }
+      }
+      if(!isBooked){
+        daysBeforeBookedDate++;
+      }
+
+      daysBeforeCheckoutDate++;
+
+      counter++;
+      let lastDayIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+      if(counter - 1 === lastDayIndex) {
+        var nextMonth = currentMonth;
+        nextMonth = moment(nextMonth);
+        nextMonth.add(1, 'months');
+        currentMonth = nextMonth.format();
+        counter = nextMonth.startOf('month').day();
+        month = nextMonth.format('MM');
+        year = nextMonth.format('YYYY');
+      }
+    }
+    if (daysBeforeBookedDate > 0 && daysBeforeBookedDate > this.requiredBookingDays) {
+      isValidDate = true;
+      checkoutDate = moment(this.props.checkinCheckout[1]);
+      if (daysBeforeBookedDate < daysBeforeCheckoutDate) {
+        checkoutDate = null;
+        let unselectUpToIndex = this.calculateIndexOfDay(Number(moment(checkinCheckout[1]).format('DD')));
+        if(moment(checkinCheckout[1]).startOf('month').diff(this.state.currentMonth.startOf('month'), 'months') >= 1) {
+          unselectUpToIndex = this.calculateIndexOfDay(this.state.currentMonth.daysInMonth());
+        }
+        for (let i = index + 1; i <= unselectUpToIndex; i++) {
+          dayArray[i].status = 'unselected';
+        }
+        checkinCheckout[1] = null;
+      }
+    } else if (daysBeforeBookedDate === 0) {
+      isValidDate = true;
+    }
+    return [isValidDate, checkoutDate];
+  }
+
+  selectCheckout(dayArray, checkInOutDate, index, checkinCheckout) {
+    if(moment(checkInOutDate) > moment(this.props.checkinCheckout[0])) {
+      if (this.props.checkinCheckout[1] !== null) {
+        let checkoutIndex = this.calculateIndexOfDay(Number(moment(this.props.checkinCheckout[1]).format('DD')));
+        if(checkoutIndex !== index) {
+          dayArray[checkoutIndex].status = 'unselected';
+        }
+      } 
+      let daysBeforeBookedDate = 0;
+      let counter = index;
+      let year = this.state.currentMonth.format('YYYY');
+      let month = this.state.currentMonth.format('MM');
+      let isValidDate = false;
+      var checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+      let currentMonth = this.state.currentMonth.format();
+
+      while (checkforBookedorCheckedInDate.format('YYYY MM DD') !== moment(this.props.checkinCheckout[0]).format('YYYY MM DD')) {
+        checkforBookedorCheckedInDate = this.getMomentJSofIndex(counter, month, year);
+        var isBooked = false;
+        for(let i = 0; i < this.state.bookedDates.length; i++){
+          if(checkforBookedorCheckedInDate.format('YYYY MM DD') === this.state.bookedDates[i].format('YYYY MM DD')) {
+            isBooked = true;
+            break;
+          }
+        }
+        let isCheckedInDate = checkforBookedorCheckedInDate.format('YYYY MM DD') === moment(this.props.checkinCheckout[0]).format('YYYY MM DD');
+        if(isBooked || (isCheckedInDate && daysBeforeBookedDate < this.requiredBookingDays) || (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked)) {
+          if (isCheckedInDate && (daysBeforeBookedDate >= this.requiredBookingDays) && !isBooked) {
+            isValidDate = true;
+          }
+          break;
+        }
+
+        daysBeforeBookedDate++;
+        counter--;
+        
+        let firstDayIndex = this.state.currentMonth.startOf('month').day();
+        if(counter + 1 === firstDayIndex) {
+          let prevMonth = currentMonth;
+          prevMonth = moment(prevMonth);
+          prevMonth.subtract(1, 'months');
+          currentMonth = prevMonth.format();
+          month = prevMonth.format('MM');
+          year = prevMonth.format('YYYY');
+          counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-01-' + month);
+        }
+      }
+      if(isValidDate) {
+        checkinCheckout[1] = checkInOutDate;
+        dayArray[index].status = styles.selected;
+      }
+
+      let checkinDate;
+      if(this.props.checkinCheckout[0] !== null) {
+        checkinDate = moment(this.props.checkinCheckout[0]);
+      }
+
+      if(isValidDate) {
+        this.updateSelectionRange(dayArray, checkinDate, moment(checkInOutDate));
+      }
+    }
   }
 
   updateSelectionRange(dayArray, checkinDate, checkoutDate) {
@@ -423,7 +447,6 @@ class Calendar extends React.Component {
     this.updateCheckinCheckout(null, null);
     this.setState({
       dayArray,
-      // checkinCheckout: [null, null], //todo
       currentSelection: styles.checkin
     }, document.getElementById(styles.checkin).focus())
   }
