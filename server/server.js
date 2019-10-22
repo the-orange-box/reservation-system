@@ -3,14 +3,18 @@ const app = express();
 const path = require('path');
 const db = require('./data/db.js');
 
-app.use(express.json());
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, '../client/'));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
-app.use('/homepage/*/id', express.static(path.join(__dirname, '../public')));
+app.use(express.json());
+
+app.use('/propertyID/:propertyID', express.static(path.join(__dirname, '../public')));
 
 app.get('/id:*', (req, res, next) => {
-  let pID = req.path.split(':')[1];
+  let pID = req.path.split(':')[1]; 
   db.Properties.findAll( {
     where: {
       pID

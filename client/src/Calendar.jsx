@@ -54,7 +54,7 @@ class Calendar extends React.Component {
   }
 
   getBookedDates() {
-    axios.get('/BookedDates:' + this.propertyID)
+    axios.get('http://localhost:3000/BookedDates:' + this.propertyID)
     .then((res) => {
       let bookedDates = [];
       for (let i = 0; i < res.data.length; i++) {
@@ -355,7 +355,6 @@ class Calendar extends React.Component {
           month = prevMonth.format('MM');
           year = prevMonth.format('YYYY');
           counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-' + month + '-01');
-          
         }
       }
       if(isValidDate) {
