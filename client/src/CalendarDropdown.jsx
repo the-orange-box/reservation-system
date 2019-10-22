@@ -24,6 +24,7 @@ const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, 
     <div className={styles.calendarDay}>
       {dayArray.map((day,index) => <CalendarDay day={day} key={index} index={index} selectDay={selectDay}/>)}
     </div>
+    <div className={styles.minRequiredDays}>5 minimum required days</div>
     <div className={styles.calendarDropdownFooter}>
       Prices do not include fees and taxes
     </div>
