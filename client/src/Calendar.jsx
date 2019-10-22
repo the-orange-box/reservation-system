@@ -147,7 +147,6 @@ class Calendar extends React.Component {
     this.monthTransitionIn()//TODO: update this transition
   }
 
-  //TODO: refactor this function
   selectDay(index) {
     let dayArray = JSON.parse(JSON.stringify(this.state.dayArray));
     let checkinCheckout = this.props.checkinCheckout.slice(0);
@@ -355,7 +354,8 @@ class Calendar extends React.Component {
           currentMonth = prevMonth.format();
           month = prevMonth.format('MM');
           year = prevMonth.format('YYYY');
-          counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-01-' + month);
+          counter = this.calculateIndexOfDay(prevMonth.daysInMonth(), year + '-' + month + '-01');
+          
         }
       }
       if(isValidDate) {
