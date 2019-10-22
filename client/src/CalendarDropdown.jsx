@@ -3,7 +3,7 @@ import CalendarDayHeader from './CalendarDayHeader';
 import CalendarDay from './CalendarDay';
 import styles from '../../public/styles/calendar.module.css';
 
-const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, currentMonth, transition, clearDates}) => (
+const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, currentMonth, transition, clearDates, requiredBookingDays}) => (
   <div id={styles.calendarDropdown} className={styles.calendarDropdown + ' ' + transition} style={{visibility: visibility}}>
     <button className={styles.previousMonth} onClick={() => updateCurrentMonth(-1)}>
       <svg className={styles.innerCalendarArrow} width="40px" height="35px">
@@ -24,7 +24,7 @@ const CalendarDropdown = ({visibility, dayArray, selectDay, updateCurrentMonth, 
     <div className={styles.calendarDay}>
       {dayArray.map((day,index) => <CalendarDay day={day} key={index} index={index} selectDay={selectDay}/>)}
     </div>
-    <div className={styles.minRequiredDays}>5 minimum required days</div>
+    <div className={styles.minRequiredDays}>{requiredBookingDays} minimum required days</div>
     <div className={styles.calendarDropdownFooter}>
       Prices do not include fees and taxes
     </div>

@@ -559,7 +559,8 @@ class Calendar extends React.Component {
                             updateCurrentMonth={this.updateCurrentMonth}
                             currentMonth={this.state.currentMonth}
                             transition={this.state.transition}
-                            clearDates={this.clearDates}/>
+                            clearDates={this.clearDates}
+                            requiredBookingDays={this.requiredBookingDays}/>
         </div>
       </div>
     )
