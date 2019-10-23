@@ -11,9 +11,9 @@ app.use(function(req, res, next) {
 
 app.use(express.json());
 
-app.use('/:propertyId/propertyID', express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/id:*', (req, res, next) => {
+app.get('/id/:id', (req, res, next) => {
   let pID = req.path.split(':')[1]; 
   db.Properties.findAll( {
     where: {
@@ -25,7 +25,7 @@ app.get('/id:*', (req, res, next) => {
   });
 });
 
-app.get('/BookedDates:*', (req, res, next) => {
+app.get('/BookedDates/:bookedDates', (req, res, next) => {
   let bProperty_ID = req.path.split(':')[1];
   db.Booked.findAll( {
     where: {

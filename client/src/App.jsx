@@ -74,7 +74,7 @@ class App extends React.Component {
   }
 
   getPropertyInfo() {
-    axios.get('http://localhost:3000/id:' + this.state.propertyID)
+    axios.get('http://localhost:3000/id/' + this.state.propertyID)
       .then((res) => {
         let propertyInfo = JSON.parse(JSON.stringify(this.state.propertyInfo));
         for(let key in propertyInfo) {
