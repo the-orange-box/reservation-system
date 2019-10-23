@@ -14,7 +14,6 @@ app.use(express.json());
 app.use('/:id', express.static(path.join(__dirname, '../public')));
 
 app.get('/id/:id', (req, res, next) => {
-  console.log(req.params.id);
   let pID = req.params.id;
   db.Properties.findAll( {
     where: {
