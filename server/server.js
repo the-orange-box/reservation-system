@@ -11,7 +11,7 @@ app.use(function(req, res, next) {
 
 app.use(express.json());
 
-app.use('/propertyID/:propertyID', express.static(path.join(__dirname, '../public')));
+app.use('/:propertyId/propertyID', express.static(path.join(__dirname, '../public')));
 
 app.get('/id:*', (req, res, next) => {
   let pID = req.path.split(':')[1]; 

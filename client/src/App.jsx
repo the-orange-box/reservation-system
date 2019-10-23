@@ -36,7 +36,7 @@ class App extends React.Component {
       totalServiceFee: null,
       totalWeeklyDiscount: null,
       totalAmount: null,
-      propertyID: window.location.href.split('/')[4],
+      propertyID: window.location.href.split('/')[3],
       checkinCheckout: [null,null],
     };
 
@@ -156,6 +156,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getPropertyInfo();
+    console.log(window.location.href.split('/')[3]);
   }
 
   render() {
