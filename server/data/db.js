@@ -1,12 +1,15 @@
-const sqlInfo = require('../config/sqlConfig.js');
+// const sqlInfo = require('../config/sqlConfig.js');
+
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../config/sqlConfig.env') })
 const Sequelize = require('sequelize');
 
+
 // Option 1: Passing parameters separately
-const sequelize = new Sequelize('reservations', 'root', sqlInfo.SQL_PASSWORD, {
+const sequelize = new Sequelize('reservations', 'root', process.env.SQL_PASSWORD, {
   host: 'localhost',
   dialect: 'mysql'
 });
-
 
 
 const Users = sequelize.define('users', {
