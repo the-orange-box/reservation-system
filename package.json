@@ -9,6 +9,7 @@
     "start": "node ./server/server.js",
     "seed-database": "node seed.js",
     "build": "webpack",
+    "build-production": "NODE_ENV=production webpack --config ./webpack.production.config.js",
     "deploy": "npm run build & npm start",
     "schema": "mysql -u root -p < ./server/data/schema.sql",
     "dockerSchema": "mysql -h 127.0.0.1 -u root -p <./server/data/schema.sql"
@@ -19,29 +20,26 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
-    "axios": "^0.19.0",
     "babel-loader": "^8.0.6",
     "bluebird": "^3.7.0",
     "css-loader": "^3.2.0",
     "dotenv": "^8.2.0",
-    "ejs": "^2.7.1",
-    "execsql": "0.0.3",
-    "express": "^4.17.1",
-    "express-react-views": "^0.11.0",
     "faker": "^4.1.0",
     "mini-css-extract-plugin": "^0.8.0",
-    "moment": "^2.24.0",
-    "mysql2": "^1.7.0",
     "nodemon": "^1.19.3",
-    "pug": "^2.0.4",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "sequelize": "^5.19.5",
-    "style-loader": "^1.0.0",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
+    "style-loader": "^1.0.0"
   },
   "dependencies": {
-    "save-dev": "0.0.1-security"
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9",
+    "save-dev": "0.0.1-security",
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "express-react-views": "^0.11.0",
+    "moment": "^2.24.0",
+    "mysql2": "^1.7.0",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "sequelize": "^5.19.5"
   }
 }
