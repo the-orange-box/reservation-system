@@ -61,7 +61,7 @@ class App extends React.Component {
         });
         bookedDate = moment(bookedDate).add(1, 'days').format('YYYY-MM-DD');
       }
-      axios.post('http://localhost:3000/BookedDates', {
+      axios.post('http://3.133.54.136:3000/BookedDates', {
         bookedDates
       })
       .then(function (response) {
@@ -74,7 +74,7 @@ class App extends React.Component {
   }
 
   getPropertyInfo() {
-    axios.get('http://localhost:3000/id/' + this.state.propertyID)
+    axios.get('http://3.133.54.136:3000/id/' + this.state.propertyID)
       .then((res) => {
         let propertyInfo = JSON.parse(JSON.stringify(this.state.propertyInfo));
         for(let key in propertyInfo) {

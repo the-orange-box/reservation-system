@@ -54,7 +54,7 @@ class Calendar extends React.Component {
   }
 
   getBookedDates() {
-    axios.get('http://localhost:3000/BookedDates/' + this.propertyID)
+    axios.get('http://3.133.54.136:3000/BookedDates/' + this.propertyID)
     .then((res) => {
       let bookedDates = [];
       for (let i = 0; i < res.data.length; i++) {
