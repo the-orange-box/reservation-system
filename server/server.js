@@ -2,12 +2,23 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const db = require('./data/db.js');
+const compression = require('compression')
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+app.use(compression({ filter: shouldCompress }));
+
+function shouldCompress (req, res) {
+  if (req.headers['x-no-compression']) {
+    return false;
+  }
+
+  return compression.filter(req, res);
+}
 
 app.use(express.json());
 

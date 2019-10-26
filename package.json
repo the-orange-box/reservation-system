@@ -10,7 +10,7 @@
     "seed-database": "node seed.js",
     "build": "webpack",
     "build-production": "NODE_ENV=production webpack --config ./webpack.production.config.js",
-    "deploy": "npm run build & npm start",
+    "deploy": "npm run build-production & npm start",
     "schema": "mysql -u root -p < ./server/data/schema.sql",
     "dockerSchema": "mysql -h 127.0.0.1 -u root -p <./server/data/schema.sql"
   },
@@ -40,6 +40,7 @@
     "mysql2": "^1.7.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "sequelize": "^5.19.5"
+    "sequelize": "^5.19.5",
+    "compression": "^1.7.4"
   }
 }
