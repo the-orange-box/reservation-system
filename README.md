@@ -1,5 +1,4 @@
 # reservation-system
-![](https://media.giphy.com/media/duWtN8qL5luF8p6xGS/giphy.gif)
 
 ## Description
 implementing calendar reservation system
@@ -30,6 +29,7 @@ npm install
 ```javascript
 MySql -u root -p <./server/data/schema.sql
 enter password
+```
 
 3. To seed the MySQL database
 ```javascript
