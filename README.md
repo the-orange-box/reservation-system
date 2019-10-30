@@ -25,27 +25,21 @@ From within the root directory
 npm install
 ```
 
-2. To create MySQL database
-```javascript
-MySql -u root -p <./server/data/schema.sql
-enter password
-```
-
-3. To seed the MySQL database
+2. To create and seed the MySQL database
 ```javascript
 npm run seed-database
 ```
 
-4. To create a client bundle
+3. To create a client bundle
 ```javascript
 npm run react-dev
 ```
 
-5. To start the server
+4. To start the server
 ```javascript
 npm start
 ```
 
-6. Go to `localhost:3000/:propertyID/` i.e. localhost:3000/2
+5. Go to `localhost:3000/:propertyID/` i.e. localhost:3000/2
 
 
