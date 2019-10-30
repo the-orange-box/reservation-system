@@ -65,9 +65,6 @@ class App extends React.Component {
       // axios.post('http://localhost:3000/BookedDates', {
         bookedDates
       })
-      .then(function (response) {
-        console.log(response);
-      })
       .catch(function (error) {
         console.log(error);
       });
