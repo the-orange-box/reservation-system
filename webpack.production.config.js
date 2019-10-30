@@ -1,17 +1,11 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); 
-const webpack = require('webpack');
 
 module.exports = {
   entry: path.resolve(__dirname, 'client', 'index.js'),
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'public'),
-  },
-  optimization: {
-      splitChunks: {
-      chunks: 'all',
-    },
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.css', '.scss'],

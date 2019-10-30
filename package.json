@@ -10,7 +10,7 @@
     "seed-database": "mysql -u root -p < ./dump.sql",
     "build": "webpack",
     "build-production": "NODE_ENV=production webpack --config ./webpack.production.config.js",
-    "deploy": "npm run build & npm start",
+    "deploy": "npm run build-production & npm start",
     "schema": "mysql -u root -p < ./server/data/schema.sql",
     "dockerSchema": "mysql -h 127.0.0.1 -u root -p <./server/data/schema.sql"
   },

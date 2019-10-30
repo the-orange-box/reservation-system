@@ -4,6 +4,10 @@
   border:0;
 }
 
+button {
+  background: none;
+}
+
 .container {
   border-width: 1px;
   border-color: rgb(235, 235, 235);
