@@ -7,7 +7,7 @@
     "test": "jest",
     "react-dev": "webpack -w",
     "start": "node ./server/server.js",
-    "seed-database": "node seed.js",
+    "seed-database": "mysql -u root -p < ./dump.sql",
     "build": "webpack",
     "build-production": "NODE_ENV=production webpack --config ./webpack.production.config.js",
     "deploy": "npm run build & npm start",
