@@ -1,7 +1,7 @@
 # reservation-system
 implementing calendar reservation system
 The reservations components for a restaurant reservations service.
-![](Lodging Reservations System.gif)
+![](Lodging-Reservations-System.gif)
 
 ## Related Projects
   - https://github.com/the-orange-box/Ratings
