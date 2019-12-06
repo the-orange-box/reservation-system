@@ -25,7 +25,12 @@ From within the root directory
 npm install
 ```
 
-2. To create and seed the MySQL database
+2. Create sqlConfig.js file
+```javascript
+copy sqlConfigExample.js and change 'PASSWORD' to your MySQL password
+```
+
+3. To create and seed the MySQL database
 ```javascript
 npm run seed-database
 ```
