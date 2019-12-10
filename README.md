@@ -1,5 +1,6 @@
 # reservation-system
-implementing calendar reservation system
+implementing calendar reservation system.
+
 The reservations components for a restaurant reservations service.
 ![](Lodging-Reservations-System.gif)
 
