@@ -21,7 +21,7 @@ From within the root directory
 
 
 1. Install project dependencies
-```python
+```python3
 npm install
 ```
 
