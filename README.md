@@ -1,7 +1,7 @@
 # reservation-system
 implementing calendar reservation system.
 
-The reservations components for a restaurant reservations service.
+The reservations components for a lodging reservations service.
 ![](Lodging-Reservations-System.gif)
 
 ## Related Projects
